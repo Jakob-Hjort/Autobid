@@ -13,6 +13,7 @@ namespace autobid.Domain.Auctions;
 /// En auktion over et enkelt køretøj.
 /// Indeholder min. pris, alle bud og status (åben/lukket).
 /// </summary>
+/// 
 public sealed class Auction
 {
     private static uint _nextId = 1;            // Statisk tæller (krav: static member/metode)
