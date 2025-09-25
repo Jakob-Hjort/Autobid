@@ -1,0 +1,114 @@
+DROP TABLE IF EXISTS privatePersonalCar
+DROP TABLE IF EXISTS professionalPersonalCar
+DROP TABLE IF EXISTS bus
+DROP TABLE IF EXISTS truck
+DROP TABLE IF EXISTS personalCar
+DROP TABLE IF EXISTS car
+DROP TABLE IF EXISTS fuelTank
+DROP TABLE IF EXISTS [user]
+
+
+-- vehicles
+
+CREATE TABLE fuelTank(
+	fuelTankId INT IDENTITY(1,1) PRIMARY KEY,
+	kmPerLiter FLOAT NOT NULL,
+	fuel TINYINT NOT NULL
+)
+
+CREATE TABLE car(
+	carId INT IDENTITY(1,1) PRIMARY KEY,
+	[name] NVARCHAR(32) NOT NULL,
+	km INT NOT NULL,
+	registrationNumber NVARCHAR(8) NOT NULL,
+	[year] SMALLINT NOT NULL,
+	towHitch BIT NOT NULL,
+	license TINYINT NOT NULL,
+	energyClass TINYINT NOT NULL,
+	fuelTankId INT NOT NULL,
+	FOREIGN KEY (fuelTankId) REFERENCES fuelTank(fuelTankId)
+	ON DELETE CASCADE
+)
+
+CREATE TABLE heavyVehicle(
+	heavyVehicleId INT IDENTITY(1,1) PRIMARY KEY,
+	[length] REAL NOT NULL,
+	[weight] REAL NOT NULL,
+	height REAL NOT NULL,
+	carId INT NOT NULL,
+	FOREIGN KEY (carId) REFERENCES car(carId)
+	ON DELETE CASCADE
+)
+
+CREATE TABLE bus(
+	busId INT IDENTITY(1,1) PRIMARY KEY,
+	seats INT NOT NULL,
+	beds INT NOT NULL,
+	hasToilet BIT NOT NULL,
+	heavyVehicleId INT NOT NULL,
+	FOREIGN KEY (heavyVehicleId) REFERENCES heavyVehicle(heavyVehicleId)
+	ON DELETE CASCADE
+)
+
+CREATE TABLE truck(
+	truckId INT IDENTITY(1,1) PRIMARY KEY,
+	payload INT NOT NULL,
+	heavyVehicleId INT NOT NULL,
+	FOREIGN KEY (heavyVehicleId) REFERENCES heavyVehicle(heavyVehicleId)
+	ON DELETE CASCADE
+)
+
+CREATE TABLE personalCar(
+	personalCarId INT IDENTITY(1,1) PRIMARY KEY,
+	seats INT NOT NULL,
+	trunkLength REAL NOT NULL,
+	trunkWidth REAL NOT NULL,
+	trunkHeight REAL NOT NULL,
+	carId INT NOT NULL,
+	FOREIGN KEY (carId) REFERENCES car(carId)
+	ON DELETE CASCADE
+) 
+
+CREATE TABLE privatePersonalCar(
+	privatePersonalCarId INT IDENTITY(1,1) PRIMARY KEY,
+	isofix BIT NOT NULL,
+	personalCarId INT NOT NULL,
+	FOREIGN KEY (personalCarId) REFERENCES personalCar(personalCarId)
+	ON DELETE CASCADE
+)
+
+CREATE TABLE professionalPersonalCar(
+	professionalPersonalCarId INT IDENTITY(1,1) PRIMARY KEY,
+	hasSafetyBar BIT NOT NULL DEFAULT(0),
+	trailerCapacityKg INT NOT NULL,
+	personalCarId INT NOT NULL,
+	FOREIGN KEY (personalCarId) REFERENCES personalCar(personalCarId)
+	ON DELETE CASCADE
+)
+
+
+-- users
+
+CREATE TABLE [user](
+	userId INT IDENTITY(1,1) PRIMARY KEY,
+	username NVARCHAR(32) NOT NULL,
+	passwordHash NVARCHAR(32) NOT NULL,
+	balance DECIMAL NOT NULL,
+)
+
+CREATE TABLE privateCustomer(
+	privateCustomerId INT IDENTITY(1,1) PRIMARY KEY,
+	cpr VARCHAR(16) NOT NULL,
+	userId INT NOT NULL,
+	FOREIGN KEY (userId) REFERENCES user(userId)
+	ON DELETE CASCADE
+)
+
+CREATE TABLE corporateCustomer(
+	corporateCustomerId INT IDENTITY(1,1) PRIMARY KEY,
+	cvr VARCHAR(8) NOT NULL,
+	credit DECIMAL NOT NULL,
+	userId INT NOT NULL,
+	FOREIGN KEY (userId) REFERENCES user(userId)
+	ON DELETE CASCADE
+)
