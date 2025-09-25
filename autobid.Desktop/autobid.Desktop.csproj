@@ -15,6 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\autobid\autobid.csproj" />
-    <ProjectReference Include="..\autobid.Domain\autobid.Domain.csproj" />
+	<ProjectReference Include="..\autobid.Domain\autobid.Domain.csproj" />
   </ItemGroup>
 </Project>

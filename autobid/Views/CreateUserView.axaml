@@ -1,0 +1,22 @@
+<UserControl
+  x:Class="autobid.Views.CreateUserView"
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*"
+		  HorizontalAlignment="Center" VerticalAlignment="Center">
+		<TextBlock Grid.ColumnSpan="2" Text="Create user" FontSize="22" FontWeight="SemiBold"
+				   Foreground="{StaticResource Brush.Text}" Margin="0 0 0 16"/>
+		<TextBlock Grid.Row="1" Text="Username" Foreground="{StaticResource Brush.Muted}"/>
+		<TextBox   Name="UsernameBox" Grid.Row="1" Grid.Column="1" Width="260" Watermark="choose a username"/>
+		<TextBlock Grid.Row="2" Text="Password" Foreground="{StaticResource Brush.Muted}"/>
+		<TextBox   Name="PasswordBox" Grid.Row="2" Grid.Column="1" Width="260" PasswordChar="•" Watermark="choose a password"/>
+		<TextBlock Grid.Row="3" Text="Repeat password" Foreground="{StaticResource Brush.Muted}"/>
+		<TextBox   Name="RepeatBox" Grid.Row="3" Grid.Column="1" Width="260" PasswordChar="•" Watermark="repeat password"/>
+		<StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="12">
+			<CheckBox Name="CorporateBox" Content="Corporate user"/>
+			<Button Name="CreateButton" Content="Create" Classes="accent"/>
+			<Button Name="BackButton" Content="Back to login"/>
+		</StackPanel>
+		<TextBlock Name="ErrorText" Grid.Row="5" Grid.ColumnSpan="2" Foreground="#f87171"/>
+	</Grid>
+</UserControl>
