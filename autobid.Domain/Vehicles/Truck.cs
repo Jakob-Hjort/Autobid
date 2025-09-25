@@ -20,7 +20,7 @@ public sealed class Truck : HeavyVehicle
         double engineLiters, bool towHitch)
         : base(id, name, km, regNo, year)
     {
-        TowHitch = towHitch;
+        HasTowHitch = towHitch;
         // Kørekort: C – med træk CE (krav V10)
         LicenseType = towHitch ? License.CE : License.C;
 

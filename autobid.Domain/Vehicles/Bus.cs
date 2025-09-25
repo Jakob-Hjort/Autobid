@@ -13,16 +13,16 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public sealed class Bus : HeavyVehicle                  // sealed: ingen videre arv
 {
-    public int Seats { get; set; }                      // Antal siddepladser
-    public int Beds { get; set; }                       // Antal sovepladser (campingbus mv.)
-    public bool Toilet { get; set; }                    // Har toilet?
+    public int SeatsAmount { get; set; }                      // Antal siddepladser
+    public int BedsAmount { get; set; }                       // Antal sovepladser (campingbus mv.)
+    public bool HasToilet { get; set; }                    // Har toilet?
 
     public Bus(
         uint id, string name, int km, string regNo, int year,
         double engineLiters, bool towHitch)             // Motorstørrelse + træk-krog
         : base(id, name, km, regNo, year)               // Kald HeavyVehicle-ctor
     {
-        TowHitch = towHitch;                            // Sæt træk
+        HasTowHitch = towHitch;                            // Sæt træk
         // Kørekort: D (bus) – med træk bliver det DE (krav V7)
         LicenseType = towHitch ? License.DE : License.D;
 

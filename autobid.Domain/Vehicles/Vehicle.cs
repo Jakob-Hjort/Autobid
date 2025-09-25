@@ -24,12 +24,12 @@ public abstract class Vehicle
             : value.Trim();                             // Trim whitespace i kanter
     }
 
-    private int _km;                                   // Backing field for Km
-    public int Km                                       // Antal kørte kilometer
+    private int _distanceTraveledKm;                                   // Backing field for Km
+    public int DistanceTraveledKm                                       // Antal kørte kilometer
     {
-        get => _km;                                     // Returnér
-        set => _km = value < 0                          // Må ikke være negativt
-            ? throw new ArgumentOutOfRangeException(nameof(Km))
+        get => _distanceTraveledKm;                                     // Returnér
+        set => _distanceTraveledKm = value < 0                          // Må ikke være negativt
+            ? throw new ArgumentOutOfRangeException(nameof(DistanceTraveledKm))
             : value;
     }
 
@@ -50,7 +50,7 @@ public abstract class Vehicle
     }
 
     public int Year { get; init; }                      // Årgang (init—sættes kun i ctor)
-    public bool TowHitch { get; set; }                  // Træk-krog
+    public bool HasTowHitch { get; set; }                  // Træk-krog
 
     public License LicenseType { get; protected set; } = License.B; // Krævet kørekorttype
     public Fuel Fuel { get; set; }                      // Brændstof
@@ -74,7 +74,7 @@ public abstract class Vehicle
     {
         Id = id;                                        // Sæt Id
         Name = name;                                    // Valideret i set
-        Km = km;                                        // Valideret i set
+        DistanceTraveledKm = km;                                        // Valideret i set
         RegistrationNumber = regNo;                     // Valideret i set (regex)
         Year = year;                                    // Ingen validering her (kan tilføjes)
     }

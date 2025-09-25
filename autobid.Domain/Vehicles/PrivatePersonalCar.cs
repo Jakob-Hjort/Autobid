@@ -11,7 +11,7 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public sealed class PrivatePersonalCar : PersonalCar
 {
-    public bool Isofix { get; set; }                    // Har bilen ISOFIX-beslag?
+    public bool HasIsofix { get; set; }                    // Har bilen ISOFIX-beslag?
 
     public PrivatePersonalCar(
         uint id, string name, int km, string regNo, int year,

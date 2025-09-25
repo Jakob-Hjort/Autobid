@@ -12,7 +12,7 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public abstract class PersonalCar : Vehicle
 {
-    public int Seats { get; set; }                      // Antal sæder
+    public int SeatsAmount { get; set; }                      // Antal sæder
     public (double L, double W, double H) Trunk { get; set; } // Bagagerum: længde/bredde/højde i cm/m
 
     protected PersonalCar(                              // Base-ctor for personbiler
@@ -20,7 +20,7 @@ public abstract class PersonalCar : Vehicle
         double engineLiters, bool towHitch)
         : base(id, name, km, regNo, year)
     {
-        TowHitch = towHitch;                            // Træk-krog gemmes
+        HasTowHitch = towHitch;                            // Træk-krog gemmes
         LicenseType = License.B;                        // Udgangspunkt: B (krav V15)
         // Motorstørrelse: 0,7–10L (krav V13)
         SetEngineLiters(engineLiters, 0.7, 10.0);
