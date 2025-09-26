@@ -1,3 +1,5 @@
+use [jahj23.SKOLE];
+
 DROP TABLE IF EXISTS professionalPersonalCar
 DROP TABLE IF EXISTS privatePersonalCar
 DROP TABLE IF EXISTS personalCar
@@ -113,3 +115,4 @@ CREATE TABLE corporateCustomer(
 	FOREIGN KEY (userId) REFERENCES [user](userId)
 	ON DELETE CASCADE
 )
+

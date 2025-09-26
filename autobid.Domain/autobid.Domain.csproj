@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="SQL\CreateProfessionalPersonalCarView.sql" />
   </ItemGroup>
 
   <ItemGroup>

@@ -90,124 +90,6 @@ CREATE TABLE professionalPersonalCar(
 	ON DELETE CASCADE
 )
 
-CREATE VIEW busView
-AS
-	SELECT 
-	v.vehicleId,
-	v.[name],
-	v.distanceTraveledKm,
-	v.registrationNumber,
-	v.[year],
-	v.hasTowHitch,
-	v.license,
-	v.energyClass,
-	f.kmPerLiter,
-	f.fuel,
-	hv.heavyVehicleId,
-	hv.[length],
-	hv.[weight],
-	hv.height,
-	b.busId,
-	b.seatsAmount,
-	b.bedsAmount,
-	b.hasToilet
-	FROM vehicle as v
-	INNER JOIN fuelTank as f
-	ON f.fuelTankId = v.fuelTankId
-	INNER JOIN heavyVehicle as hv
-	ON hv.vehicleId = v.vehicleId
-	INNER JOIN bus AS b
-	ON b.heavyVehicleId = hv.heavyVehicleId
-GO
-
-CREATE VIEW truckView
-AS
-	SELECT
-	v.vehicleId,
-	v.[name],
-	v.distanceTraveledKm,
-	v.registrationNumber,
-	v.[year],
-	v.hasTowHitch,
-	v.license,
-	v.energyClass,
-	f.kmPerLiter,
-	f.fuel,
-	hv.heavyVehicleId,
-	hv.[length],
-	hv.[weight],
-	hv.height,
-	tr.truckId,
-	tr.payloadKg
-	FROM vehicle as v
-	INNER JOIN fuelTank as f
-	ON f.fuelTankId = v.fuelTankId
-	INNER JOIN heavyVehicle as hv
-	ON hv.vehicleId = v.vehicleId
-	INNER JOIN truck AS tr
-	ON tr.heavyVehicleId = hv.heavyVehicleId
-GO
-
-CREATE VIEW privatePersonalCarView
-AS
-	SELECT 
-	v.vehicleId,
-	v.[name],
-	v.distanceTraveledKm,
-	v.registrationNumber,
-	v.[year],
-	v.hasTowHitch,
-	v.license,
-	v.energyClass,
-	f.kmPerLiter,
-	f.fuel,
-	pc.personalCarId,
-	pc.seatsAmount,
-	pc.trunkHeight,
-	pc.trunkLength,
-	pc.trunkWidth,
-	ppc.privatePersonalCarId,
-	ppc.hasIsofix
-	FROM vehicle as v
-	INNER JOIN fuelTank as f
-	ON f.fuelTankId = v.fuelTankId
-	INNER JOIN personalCar as pc
-	ON pc.vehicleId = v.vehicleId
-	INNER JOIN privatePersonalCar AS ppc
-	ON ppc.personalCarId = pc.personalCarId
-GO
-
-CREATE VIEW professionalPersonalCarView
-AS
-	SELECT 
-	v.vehicleId,
-	v.[name],
-	v.distanceTraveledKm,
-	v.registrationNumber,
-	v.[year],
-	v.hasTowHitch,
-	v.license,
-	v.energyClass,
-	f.kmPerLiter,
-	f.fuel,
-	pc.personalCarId,
-	pc.seatsAmount,
-	pc.trunkHeight,
-	pc.trunkLength,
-	pc.trunkWidth,
-	ppc.professionalPersonalCarId,
-	ppc.hasSafetyBar,
-	ppc.trailerCapacityKg
-	FROM vehicle as v
-	INNER JOIN fuelTank as f
-	ON f.fuelTankId = v.fuelTankId
-	INNER JOIN personalCar as pc
-	ON pc.vehicleId = v.vehicleId
-	INNER JOIN professionalPersonalCar AS ppc
-	ON ppc.personalCarId = pc.personalCarId
-GO
-
-
 -- users
 
 CREATE TABLE [user](
@@ -231,5 +113,31 @@ CREATE TABLE corporateCustomer(
 	credit DECIMAL NOT NULL,
 	userId INT NOT NULL,
 	FOREIGN KEY (userId) REFERENCES [user](userId)
+	ON DELETE CASCADE
+)
+
+-- auction
+
+CREATE TABLE auction(
+	auctionId INT IDENTITY(1,1) PRIMARY KEY,
+	minimumPrice DECIMAL NOT NULL,
+	isClosed BIT NOT NULL DEFAULT(0),
+	vehicleId INT NOT NULL,
+	userId INT NOT NULL,
+	FOREIGN KEY (userId) REFERENCES [user](userId)
+	ON DELETE CASCADE,
+	FOREIGN KEY (vehicleId) REFERENCES vehicle(vehicleId)
+	ON DELETE CASCADE
+)
+
+CREATE TABLE bid(
+	bidId INT IDENTITY(1,1) PRIMARY KEY,
+	sendTime DATETIME NOT NULL,
+	amount DECIMAL NOT NULL,
+	userId INT NOT NULL,
+	auctionId INT NOT NULL,
+	FOREIGN KEY (userId) REFERENCES [user](userId)
+	ON DELETE CASCADE,
+	FOREIGN KEY (auctionId) REFERENCES auction(auctionId)
 	ON DELETE CASCADE
 )
