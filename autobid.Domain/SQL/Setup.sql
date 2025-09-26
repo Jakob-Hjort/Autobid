@@ -10,11 +10,13 @@ DROP TABLE IF EXISTS corporateCustomer
 DROP TABLE IF EXISTS privateCustomer
 DROP TABLE IF EXISTS [user]
 
+
+
 -- vehicles
 
 CREATE TABLE fuelTank(
 	fuelTankId INT IDENTITY(1,1) PRIMARY KEY,
-	kmPerLiter FLOAT,
+	kmPerLiter FLOAT NOT NULL,
 	fuel TINYINT NOT NULL
 )
 
@@ -87,6 +89,124 @@ CREATE TABLE professionalPersonalCar(
 	FOREIGN KEY (personalCarId) REFERENCES personalCar(personalCarId)
 	ON DELETE CASCADE
 )
+
+CREATE VIEW busView
+AS
+	SELECT 
+	v.vehicleId,
+	v.[name],
+	v.distanceTraveledKm,
+	v.registrationNumber,
+	v.[year],
+	v.hasTowHitch,
+	v.license,
+	v.energyClass,
+	f.kmPerLiter,
+	f.fuel,
+	hv.heavyVehicleId,
+	hv.[length],
+	hv.[weight],
+	hv.height,
+	b.busId,
+	b.seatsAmount,
+	b.bedsAmount,
+	b.hasToilet
+	FROM vehicle as v
+	INNER JOIN fuelTank as f
+	ON f.fuelTankId = v.fuelTankId
+	INNER JOIN heavyVehicle as hv
+	ON hv.vehicleId = v.vehicleId
+	INNER JOIN bus AS b
+	ON b.heavyVehicleId = hv.heavyVehicleId
+GO
+
+CREATE VIEW truckView
+AS
+	SELECT
+	v.vehicleId,
+	v.[name],
+	v.distanceTraveledKm,
+	v.registrationNumber,
+	v.[year],
+	v.hasTowHitch,
+	v.license,
+	v.energyClass,
+	f.kmPerLiter,
+	f.fuel,
+	hv.heavyVehicleId,
+	hv.[length],
+	hv.[weight],
+	hv.height,
+	tr.truckId,
+	tr.payloadKg
+	FROM vehicle as v
+	INNER JOIN fuelTank as f
+	ON f.fuelTankId = v.fuelTankId
+	INNER JOIN heavyVehicle as hv
+	ON hv.vehicleId = v.vehicleId
+	INNER JOIN truck AS tr
+	ON tr.heavyVehicleId = hv.heavyVehicleId
+GO
+
+CREATE VIEW privatePersonalCarView
+AS
+	SELECT 
+	v.vehicleId,
+	v.[name],
+	v.distanceTraveledKm,
+	v.registrationNumber,
+	v.[year],
+	v.hasTowHitch,
+	v.license,
+	v.energyClass,
+	f.kmPerLiter,
+	f.fuel,
+	pc.personalCarId,
+	pc.seatsAmount,
+	pc.trunkHeight,
+	pc.trunkLength,
+	pc.trunkWidth,
+	ppc.privatePersonalCarId,
+	ppc.hasIsofix
+	FROM vehicle as v
+	INNER JOIN fuelTank as f
+	ON f.fuelTankId = v.fuelTankId
+	INNER JOIN personalCar as pc
+	ON pc.vehicleId = v.vehicleId
+	INNER JOIN privatePersonalCar AS ppc
+	ON ppc.personalCarId = pc.personalCarId
+GO
+
+CREATE VIEW professionalPersonalCarView
+AS
+	SELECT 
+	v.vehicleId,
+	v.[name],
+	v.distanceTraveledKm,
+	v.registrationNumber,
+	v.[year],
+	v.hasTowHitch,
+	v.license,
+	v.energyClass,
+	f.kmPerLiter,
+	f.fuel,
+	pc.personalCarId,
+	pc.seatsAmount,
+	pc.trunkHeight,
+	pc.trunkLength,
+	pc.trunkWidth,
+	ppc.professionalPersonalCarId,
+	ppc.hasSafetyBar,
+	ppc.trailerCapacityKg
+	FROM vehicle as v
+	INNER JOIN fuelTank as f
+	ON f.fuelTankId = v.fuelTankId
+	INNER JOIN personalCar as pc
+	ON pc.vehicleId = v.vehicleId
+	INNER JOIN professionalPersonalCar AS ppc
+	ON ppc.personalCarId = pc.personalCarId
+GO
+
 
 -- users
 
