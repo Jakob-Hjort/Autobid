@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "autobid.Desktop", "autobid.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "autobid.Domain", "autobid.Domain\autobid.Domain.csproj", "{88959ADE-2FA2-48C7-97D9-BA079F408B06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "autobid.ReactiveUI", "autobid.ReactiveUI\autobid.ReactiveUI.csproj", "{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{88959ADE-2FA2-48C7-97D9-BA079F408B06}.Release|x64.Build.0 = Release|Any CPU
 		{88959ADE-2FA2-48C7-97D9-BA079F408B06}.Release|x86.ActiveCfg = Release|Any CPU
 		{88959ADE-2FA2-48C7-97D9-BA079F408B06}.Release|x86.Build.0 = Release|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Debug|x64.Build.0 = Debug|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Debug|x86.Build.0 = Debug|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Release|x64.ActiveCfg = Release|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Release|x64.Build.0 = Release|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Release|x86.ActiveCfg = Release|Any CPU
+		{0733EA9C-AFC4-4230-BACE-262E4F9BBA86}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

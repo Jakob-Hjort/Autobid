@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:autobid.ReactiveUI.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="autobid.ReactiveUI.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="autobid.ReactiveUI">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+	<DockPanel>
+		<Border DockPanel.Dock="Top" Background="{StaticResource Brush.Card}" Padding="12"
+				BorderBrush="{StaticResource Brush.Border}" BorderThickness="0 0 0 1">
+			<TextBlock Name="HeaderText" Text="autobid — Login"
+					   Foreground="{StaticResource Brush.Text}" FontSize="18" FontWeight="SemiBold"/>
+		</Border>
+
+		<Border DockPanel.Dock="Bottom" Margin="16" Background="{StaticResource Brush.Card}" CornerRadius="12" Padding="16">
+			<StackPanel>
+				<TextBlock Text="Her viser vi Login / CreateUser / Home"/>
+				<ContentControl Name="MainContent" Content="{Binding Content}"/>
+			</StackPanel>
+		</Border>
+	</DockPanel>
+</Window>

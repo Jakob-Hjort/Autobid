@@ -1,5 +1,6 @@
-﻿using Avalonia;
-using autobid;                // <- vigtigt: App-klassen ligger i UI-projektet
+﻿using autobid;                // <- vigtigt: App-klassen ligger i UI-projektet
+using Avalonia;
+using Avalonia.ReactiveUI;
 
 internal static class Program
 {
@@ -9,5 +10,6 @@ internal static class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()      // <- autobid.App
                      .UsePlatformDetect()
-                     .LogToTrace();
+                     .LogToTrace()
+                     .UseReactiveUI();
 }

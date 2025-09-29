@@ -1,0 +1,17 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="autobid.ReactiveUI.App"
+             xmlns:local="using:autobid.ReactiveUI"
+             RequestedThemeVariant="Default"
+             xmlns:fluent="clr-namespace:Avalonia.Themes.Fluent;assembly=Avalonia.Themes.Fluent">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+  
+    <Application.Styles>
+		<fluent:FluentTheme/>
+		<StyleInclude Source="avares://autobid.ReactiveUI/Styles/DesignStyles.axaml"/>
+    </Application.Styles>
+</Application>

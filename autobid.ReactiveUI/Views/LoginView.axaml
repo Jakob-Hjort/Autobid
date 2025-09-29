@@ -1,0 +1,21 @@
+<UserControl
+  x:Class="autobid.ReactiveUI.Views.LoginView"
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:autobid.ReactiveUI.ViewModels"
+  x:DataType="vm:LoginViewModel">
+	<Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*"
+		  HorizontalAlignment="Center" VerticalAlignment="Center">
+		<TextBlock Grid.ColumnSpan="2" Text="Login" FontSize="22" FontWeight="SemiBold"
+				   Foreground="{StaticResource Brush.Text}" Margin="0 0 0 16"/>
+		<TextBlock Grid.Row="1" Text="Username" Foreground="{StaticResource Brush.Muted}" Margin="0 0 8 0"/>
+		<TextBox   Name="UsernameBox" Grid.Row="1" Grid.Column="1" Width="260" Watermark="enter username"/>
+		<TextBlock Grid.Row="2" Text="Password" Foreground="{StaticResource Brush.Muted}"/>
+		<TextBox   Name="PasswordBox" Grid.Row="2" Grid.Column="1" Width="260" PasswordChar="•" Watermark="enter password"/>
+		<StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="8" Margin="0 10 0 0">
+			<Button Name="LoginButton" Content="Login" Classes="accent"/>
+			<Button Name="CreateUserButton" Content="Create User"/>
+		</StackPanel>
+		<TextBlock Name="ErrorText" Grid.Row="3" Grid.ColumnSpan="2" Margin="0 44 0 0" Foreground="#f87171"/>
+	</Grid>
+</UserControl>

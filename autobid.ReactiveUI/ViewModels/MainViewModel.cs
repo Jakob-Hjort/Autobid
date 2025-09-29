@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace autobid.ViewModels;
+namespace autobid.ReactiveUI.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
