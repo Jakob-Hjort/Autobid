@@ -14,6 +14,9 @@ public abstract class User                         // Abstrakt: man laver ikke "
 {
     public uint Id { get; set; }                   // Primærnøgle (fra DB Identity/Sequence)
 
+    public const int MinPasswordLength = 8;
+    public const int MaxPasswordLength = 16;
+
     private string _username = string.Empty;       // Privat backing-field til Username
     public string Username                          // Offentlig property for brugernavn
     {

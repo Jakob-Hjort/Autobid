@@ -17,7 +17,7 @@
 		<TextBlock Grid.Row="4" Grid.Column="0" Text="CVR" IsVisible="{Binding IsCorporate}"/>
 		<TextBox   Grid.Row="4" Grid.Column="1" Text="{Binding CVR}" IsVisible="{Binding IsCorporate}" Watermark="CVR"/>
 		<TextBlock Grid.Row="4" Grid.Column="0" Text="CPR" IsVisible="{Binding !IsCorporate}"/>
-		<TextBox   Grid.Row="4" Grid.Column="1" Text="{Binding CPR}" IsVisible="{Binding !IsCorporate}" Watermark="CVR"/>
+		<TextBox   Grid.Row="4" Grid.Column="1" Text="{Binding CPR}" IsVisible="{Binding !IsCorporate}" Watermark="CPR"/>
 
 
 		<StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="12">

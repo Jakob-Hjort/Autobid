@@ -1,3 +1,4 @@
+using autobid.ReactiveUI.ViewModels;
 using Avalonia.Controls;
 
 namespace autobid.ReactiveUI.Views
@@ -7,6 +8,7 @@ namespace autobid.ReactiveUI.Views
 		public MainWindow()
 		{
 			InitializeComponent();
+			DataContext = new MainWindowViewModel();
 		}
 	}
 }

@@ -50,7 +50,7 @@ public class CreateUserViewModel : ViewModelBase
 	public string CVR
 	{
 		get => _cvr;
-		set => this.RaiseAndSetIfChanged(ref _cpr, value, nameof(CVR));
+		set => this.RaiseAndSetIfChanged(ref _cvr, value, nameof(CVR));
 	}
 	
 	IUserRepository userRepository = null!;
@@ -66,11 +66,16 @@ public class CreateUserViewModel : ViewModelBase
 
 	private void GoBack()
 	{
-		MainViewModel.ChangeContent(new LoginViewModel());
+		MainWindowViewModel.ChangeContent(new LoginViewModel());
 	}
 
 	private void CreateUser()
 	{
+		if (Password != PasswordRepeat && Password.Length < User.MinPasswordLength && Password.Length > User.MaxPasswordLength)
+		{
+			return;
+		}
+
 		User user;
 		if (IsCorporate)
 		{

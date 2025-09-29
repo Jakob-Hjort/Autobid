@@ -21,6 +21,7 @@ namespace autobid.ReactiveUI
 				{
 					DataContext = new MainWindowViewModel(),
 				};
+				desktop.MainWindow.Show();
 			}
 
 			base.OnFrameworkInitializationCompleted();

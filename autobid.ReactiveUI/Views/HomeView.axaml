@@ -1,6 +1,11 @@
 <UserControl x:Class="autobid.ReactiveUI.Views.HomeView"
              xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:vm="using:autobid.ReactiveUI.ViewModels"
+			 x:DataType="vm:HomeViewModel">
+	<UserControl.DataContext>
+		<vm:HomeViewModel/>
+	</UserControl.DataContext>
 	<StackPanel Spacing="8">
 		<TextBlock Name="WelcomeText" Text="Welcome" FontSize="20"
 				   FontWeight="SemiBold" Foreground="{StaticResource Brush.Text}"/>
