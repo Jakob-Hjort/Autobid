@@ -32,4 +32,7 @@ public sealed class Bus : HeavyVehicle                  // sealed: ingen videre 
         // Brændstof: krav siger diesel (krav V9)
         Fuel = Fuel.Diesel;
     }
+
+    public override string ToString() =>
+        $"{base.ToString()} {nameof(SeatsAmount)}:";
 }

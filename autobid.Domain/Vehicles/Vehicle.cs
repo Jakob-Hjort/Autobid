@@ -80,6 +80,6 @@ public abstract class Vehicle
     }
 
     public override string ToString()                   // Pæn visning i lister/debug
-        => $"{Name} ({Year}) [{RegistrationNumber}]";
+        => $"{nameof(Name)}:{Name} {nameof(Year)}:({Year}) {nameof(RegistrationNumber)}:[{RegistrationNumber}]";
 }
 
