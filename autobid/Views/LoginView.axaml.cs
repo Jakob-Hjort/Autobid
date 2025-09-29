@@ -14,6 +14,7 @@ namespace autobid.Views
             // hook events in code
             this.FindControl<Button>("LoginButton")!.Click += OnLoginClick;
             this.FindControl<Button>("CreateUserButton")!.Click += OnGoCreateClick;
+            
         }
 
         private void OnGoCreateClick(object? s, RoutedEventArgs e)
