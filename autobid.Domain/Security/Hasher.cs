@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace autobid.Domain.Security
 {
-	internal class Hasher : IPasswordHasher
+	public class Hasher : IPasswordHasher
 	{
 		private const int SaltSize = 16; // bytes
 		private const int KeySize = 32;  // bytes (256-bit)

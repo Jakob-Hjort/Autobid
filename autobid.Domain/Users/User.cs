@@ -34,11 +34,12 @@ public abstract class User                         // Abstrakt: man laver ikke "
 
     public decimal Balance { get; set; }            // Konto/balance – bruges når man byder/køber
 
-    protected User(uint id, string username, string passwordHash) // Beskyttet ctor: kun subklasser må konstruere
+    protected User(uint id, string username, string passwordHash, decimal balance) // Beskyttet ctor: kun subklasser må konstruere
     {
         Id = id;                                    // Sæt Id (0 hvis ikke fra DB endnu)
         Username = username;                        // Sæt brugernavn (rammer init-setter med validering)
         PasswordHash = passwordHash;                // Sæt hash (kommer typisk fra DB eller via SetPassword)
+        Balance = balance;
     }
 
     public void SetPassword(string raw, IPasswordHasher hasher)   // Metode til at opdatere hash

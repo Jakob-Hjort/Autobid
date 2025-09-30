@@ -9,7 +9,6 @@ namespace autobid.ReactiveUI.Views
         public HomeView()
         {
 			InitializeComponent();
-            DataContext = new HomeViewModel();
         }
         public void SetUsername(string username)
             => this.FindControl<TextBlock>("WelcomeText")!.Text = $"Welcome, {username}";

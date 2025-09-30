@@ -6,7 +6,8 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
-
+using autobid.Domain.Database;
+using autobid.Domain.Security;
 namespace autobid.ReactiveUI.ViewModels;
 
 public class CreateUserViewModel : ViewModelBase
@@ -15,7 +16,20 @@ public class CreateUserViewModel : ViewModelBase
 	public bool IsCorporate
 	{
 		get => _isCorporate;
-		set => this.RaiseAndSetIfChanged(ref _isCorporate, value, nameof(IsCorporate));
+		set
+		{
+			if ( value)
+			{
+				CPR = string.Empty;
+				Balance = 0;
+			}
+			else
+			{
+				CVR = string.Empty;
+				Credit = 0;
+			}
+			this.RaiseAndSetIfChanged(ref _isCorporate, value, nameof(IsCorporate));
+		}
 	}
 
 	string _username = string.Empty;
@@ -52,9 +66,23 @@ public class CreateUserViewModel : ViewModelBase
 		get => _cvr;
 		set => this.RaiseAndSetIfChanged(ref _cvr, value, nameof(CVR));
 	}
-	
-	IUserRepository userRepository = null!;
-	public ReactiveCommand<Unit, Unit> CreateUserCommand { get;}
+
+	int _credit = 0;
+	public int Credit
+	{
+		get => _credit;
+		set => this.RaiseAndSetIfChanged(ref _credit, value, nameof(Credit));
+	}
+
+	int _balance = 0;
+	public int Balance
+	{
+		get => _balance;
+		set => this.RaiseAndSetIfChanged(ref _balance, value, nameof(Balance));
+	}
+
+	UserRepository repository = new();
+	public ReactiveCommand<Unit, Task> CreateUserCommand { get;}
 	public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
 
 	public CreateUserViewModel()
@@ -69,23 +97,26 @@ public class CreateUserViewModel : ViewModelBase
 		MainWindowViewModel.ChangeContent(new LoginViewModel());
 	}
 
-	private void CreateUser()
+	private async Task CreateUser()
 	{
-		if (Password != PasswordRepeat && Password.Length < User.MinPasswordLength && Password.Length > User.MaxPasswordLength)
+		if ((Password != PasswordRepeat && Password.Length < User.MinPasswordLength && 
+			Password.Length > User.MaxPasswordLength) || await repository.UsernameExistsAsync(Username))
 		{
 			return;
 		}
 
-		User user;
+		string hash = new Hasher().Hash(Password);
+
 		if (IsCorporate)
 		{
-			user = new CorporateCustomer(0, Username, Password, CVR, 0);
+			CorporateCustomer user = new(0, Username, hash, CVR, Credit, Balance);
+
+			user.Id = Convert.ToUInt32(await repository.Add(user));
 		}
 		else
 		{
-			user = new PrivateCustomer(0, Username, Password, CPR);
+			PrivateCustomer user = new(0, Username, hash, CPR, Balance);
+			user.Id = Convert.ToUInt32(await repository.Add(user));
 		}
-
-		userRepository.Add(user);
 	}
 }

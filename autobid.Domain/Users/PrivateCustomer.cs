@@ -17,8 +17,9 @@ public sealed class PrivateCustomer : User         // sealed: kan ikke arves vid
         uint id,                                   // Primærnøgle (0 inden DB insert)
         string username,                           // Brugernavn (valideres i base)
         string passwordHash,                       // Hash af password (ikke klartekst)
-        string cpr)                                // CPR
-        : base(id, username, passwordHash)         // Kald base-ctor for fælles felter
+        string cpr,
+        decimal balance)                                // CPR
+        : base(id, username, passwordHash, balance)         // Kald base-ctor for fælles felter
     {
         if (string.IsNullOrWhiteSpace(cpr))        // Simpel validering af CPR
             throw new ArgumentException(           // Kaster fejl hvis tom/whitespace

@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Users;
+﻿using autobid.Domain.Database;
+using autobid.Domain.Users;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace autobid.ReactiveUI.ViewModels
 	public class LoginViewModel : ViewModelBase
 	{
 		string _passWord = string.Empty;
+		UserRepository repository = new();
 		public string PassWord
 		{
 			get => _passWord; 
@@ -26,7 +28,7 @@ namespace autobid.ReactiveUI.ViewModels
 		}
 
 		public ReactiveCommand<Unit,Unit> GoToSignUpCommand { get; }
-		public ReactiveCommand<Unit, Unit> LoginCommand { get; }
+		public ReactiveCommand<Unit, Task> LoginCommand { get; }
 		public LoginViewModel()
 		{
 			GoToSignUpCommand = ReactiveCommand.Create(GoToSignUpPage);
@@ -38,11 +40,16 @@ namespace autobid.ReactiveUI.ViewModels
 			MainWindowViewModel.ChangeContent(new CreateUserViewModel());
 		}
 
-		void Login()
+		async Task Login()
 		{
-			// login
+			User? user = await repository.LoginAsync(Username, PassWord);
 
-			MainWindowViewModel.ChangeContent(new HomeViewModel());
+			if (user == null)
+			{
+				return;
+			}
+
+			MainWindowViewModel.ChangeContent(new HomeViewModel(user));
 		}
 	}
 }

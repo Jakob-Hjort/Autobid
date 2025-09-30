@@ -19,8 +19,9 @@ public sealed class CorporateCustomer : User       // sealed: ingen yderligere a
         string username,                           // Brugernavn
         string passwordHash,                       // Hash
         string cvr,                                // CVR
-        decimal credit)                            // Kredit
-        : base(id, username, passwordHash)         // Base-fællesfelter
+        decimal credit,
+        decimal balance)                            // Kredit
+        : base(id, username, passwordHash, balance)         // Base-fællesfelter
     {
         if (string.IsNullOrWhiteSpace(cvr))        // Valider CVR
             throw new ArgumentException(           // Kaster fejl hvis ugyldig

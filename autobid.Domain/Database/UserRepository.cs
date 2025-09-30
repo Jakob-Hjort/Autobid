@@ -11,37 +11,28 @@ using System.Threading.Tasks;
 
 namespace autobid.Domain.Database
 {
-    internal class UserRepository
+    public class UserRepository
     {
         public async Task<int> Add(PrivateCustomer user)
         {
-            await using var conn = await Connection.OpenAsync();
+			await using var conn = await Connection.OpenAsync(); // returns SqlConnection
+			await using var cmd = new SqlCommand("dbo.AppCreatePrivateUser", conn)
+			{
+				CommandType = CommandType.StoredProcedure
+			};
 
-            using var cmd = new SqlCommand("dbo.AppCreatePrivateUser", conn)
-            {
-                CommandType = CommandType.StoredProcedure
-            };
-            cmd.Parameters.AddWithValue("username", user.Username);
-            cmd.Parameters.AddWithValue("passwordHash", user.PasswordHash);
-            cmd.Parameters.AddWithValue("cpr", user.CPR);
-            cmd.Parameters.AddWithValue("balance", user.Balance);
+			cmd.Parameters.Add(new SqlParameter("@Username", SqlDbType.NVarChar, 32) { Value = (object?)user.Username ?? DBNull.Value });
+			cmd.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.NVarChar, 256) { Value = (object?)user.PasswordHash ?? DBNull.Value });
+			cmd.Parameters.Add(new SqlParameter("@CPR", SqlDbType.VarChar, 16) { Value = (object?)user.CPR ?? DBNull.Value });
+			cmd.Parameters.Add(new SqlParameter("@InitialBalance", SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = user.Balance });
 
-            var pOut = new SqlParameter("@NewUserId", SqlDbType.Int)
-            {
-                Direction = ParameterDirection.Output
-            };
-            cmd.Parameters.Add(pOut);
+			var pOut = new SqlParameter("@NewUserId", SqlDbType.Int) { Direction = ParameterDirection.Output };
+			cmd.Parameters.Add(pOut);
 
-            await cmd.ExecuteNonQueryAsync();
+			await cmd.ExecuteNonQueryAsync();
 
-            int newId = Convert.ToInt32(pOut.Value);
-            // hvis din model har en Id-property:
-            // user.UserId = newId;
-
-            return newId;
-
-
-        }
+			return (pOut.Value == DBNull.Value) ? 0 : Convert.ToInt32(pOut.Value);
+		}
 
         public async Task<int> Add(CorporateCustomer user)
         {
@@ -122,7 +113,7 @@ namespace autobid.Domain.Database
                 int ordCvr = r.GetOrdinal("cvr");
                 int ordCredit = r.GetOrdinal("credit");
 
-                string cvr = r.IsDBNull(ordCvr) ? "" : r.GetString(ordCvr);
+				string cvr = r.IsDBNull(ordCvr) ? "" : r.GetString(ordCvr);
                 decimal credit = r.IsDBNull(ordCredit) ? 0m : r.GetDecimal(ordCredit);
 
                 return new CorporateCustomer(
@@ -130,7 +121,8 @@ namespace autobid.Domain.Database
                     username: uname,
                     passwordHash: storedHash,
                     cvr: cvr,
-                    credit: credit
+                    credit: credit,
+                    balance: balance
                 );
             }
             else
@@ -142,7 +134,8 @@ namespace autobid.Domain.Database
                     id: (uint)userId,
                     username: uname,
                     passwordHash: storedHash,
-                    cpr: cpr
+                    cpr: cpr,
+                    balance: balance
                 );
             }
         }

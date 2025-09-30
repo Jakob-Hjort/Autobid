@@ -10,8 +10,7 @@ namespace autobid.ReactiveUI.Views
     {
         public CreateUserView()
         {
-			InitializeComponent();
-            DataContext = new CreateUserViewModel();
+			AvaloniaXamlLoader.Load(this);
         }
     }
 }
