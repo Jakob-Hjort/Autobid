@@ -3,7 +3,7 @@
     <OutputType>WinExe</OutputType>
     <!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
     One for Windows with net8.0-windows TFM, one for MacOS with net8.0-macos and one with net8.0 TFM for Linux.-->
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -11,10 +11,11 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.3.6" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\autobid\autobid.csproj" />
 	<ProjectReference Include="..\autobid.Domain\autobid.Domain.csproj" />
+	<ProjectReference Include="..\autobid.ReactiveUI\autobid.ReactiveUI.csproj" />
   </ItemGroup>
 </Project>

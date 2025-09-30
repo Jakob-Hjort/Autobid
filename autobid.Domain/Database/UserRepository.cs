@@ -13,8 +13,6 @@ namespace autobid.Domain.Database
 {
     internal class UserRepository
     {
-       
-
         public async Task<int> Add(PrivateCustomer user)
         {
             await using var conn = await Connection.OpenAsync();
