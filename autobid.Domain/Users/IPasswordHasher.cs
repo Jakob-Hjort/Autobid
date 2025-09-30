@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace autobid.Domain.Users;                   // Namespace for bruger-relaterede typer
+namespace autobid.Domain.Users;                   
 
 /// <summary>
 /// Abstraktion for hashing af passwords – så Domain

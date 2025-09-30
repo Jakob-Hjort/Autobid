@@ -1,6 +1,5 @@
 ﻿using autobid;                // <- vigtigt: App-klassen ligger i UI-projektet
 using Avalonia;
-using Avalonia;
 using Avalonia.ReactiveUI;
 
 internal static class Program

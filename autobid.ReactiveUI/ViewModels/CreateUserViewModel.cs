@@ -1,4 +1,7 @@
-﻿using autobid.Domain.Users;
+﻿using autobid.Domain.Database;
+using autobid.Domain.Security;
+using autobid.Domain.Users;
+using autobid.Domain.Vehicles;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -6,8 +9,6 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
-using autobid.Domain.Database;
-using autobid.Domain.Security;
 namespace autobid.ReactiveUI.ViewModels;
 
 public class CreateUserViewModel : ViewModelBase
@@ -107,16 +108,21 @@ public class CreateUserViewModel : ViewModelBase
 
 		string hash = new Hasher().Hash(Password);
 
-		if (IsCorporate)
-		{
-			CorporateCustomer user = new(0, Username, hash, CVR, Credit, Balance);
+        User created;
 
-			user.Id = Convert.ToUInt32(await repository.Add(user));
-		}
+        if (IsCorporate)
+		{
+            created  = new CorporateCustomer(0, Username, hash, CVR, Credit, Balance);
+            created.Id = Convert.ToUInt32(await repository.Add((CorporateCustomer)created));
+        }
 		else
 		{
-			PrivateCustomer user = new(0, Username, hash, CPR, Balance);
-			user.Id = Convert.ToUInt32(await repository.Add(user));
-		}
-	}
+            created = new PrivateCustomer(0, Username, hash, CPR, Balance);
+            created.Id = Convert.ToUInt32(await repository.Add((PrivateCustomer)created));
+        }
+        
+
+
+        MainWindowViewModel.ChangeContent(new HomeViewModel(created));
+    }
 }

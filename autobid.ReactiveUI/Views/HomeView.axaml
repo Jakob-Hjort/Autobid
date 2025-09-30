@@ -1,15 +1,54 @@
 <UserControl x:Class="autobid.ReactiveUI.Views.HomeView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:vm="using:autobid.ReactiveUI.ViewModels"
-			 x:DataType="vm:HomeViewModel">
-	<UserControl.DataContext>
-		<vm:HomeViewModel/>
-	</UserControl.DataContext>
-	<StackPanel Spacing="8">
-		<TextBlock Name="WelcomeText" Text="Welcome" FontSize="20"
-				   FontWeight="SemiBold" Foreground="{StaticResource Brush.Text}"/>
-		<TextBlock Text="(Her kommer listerne Your auctions / Current auctions)"
-				   Foreground="{StaticResource Brush.Muted}"/>
-	</StackPanel>
+             xmlns:vm="using:autobid.ReactiveUI.ViewModels"
+             x:DataType="vm:HomeViewModel"
+             Margin="16">
+	<Grid ColumnDefinitions="*,240">
+
+		<!-- Venstre kolonne -->
+		<Grid Grid.Column="0" RowDefinitions="Auto,*,Auto,*" Margin="0,0,16,0">
+			<TextBlock Grid.Row="0" Text="Your auctions" FontSize="28" FontWeight="SemiBold"/>
+
+			<DataGrid Grid.Row="1"
+					  ItemsSource="{Binding YourAuctions}"
+					  AutoGenerateColumns="False"
+					  IsReadOnly="True"
+					  HeadersVisibility="All"
+					  GridLinesVisibility="All"
+					  MinHeight="220"
+					  RowHeight="32">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Name"   Binding="{Binding VehicleName}" />
+					<DataGridTextColumn Header="Årgang" Binding="{Binding Year}" />
+					<DataGridTextColumn Header="Bud"    Binding="{Binding Bid}" />
+				</DataGrid.Columns>
+			</DataGrid>
+
+			<TextBlock Grid.Row="2" Text="Current Auctions" FontSize="28" FontWeight="SemiBold" Margin="0,16,0,0"/>
+
+			<DataGrid Grid.Row="3"
+					  ItemsSource="{Binding CurrentAuctions}"
+					  AutoGenerateColumns="False"
+					  IsReadOnly="True"
+					  HeadersVisibility="All"
+					  GridLinesVisibility="All"
+					  MinHeight="220"
+					  RowHeight="32">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Name"   Binding="{Binding VehicleName}" />
+					<DataGridTextColumn Header="Årgang" Binding="{Binding Year}" />
+					<DataGridTextColumn Header="Bud"    Binding="{Binding Bid}" />
+				</DataGrid.Columns>
+			</DataGrid>
+		</Grid>
+
+		<!-- Højre kolonne -->
+		<StackPanel Grid.Column="1" Spacing="12" HorizontalAlignment="Stretch">
+			<Button Content="+ Set for sale" Command="{Binding SetForSaleCommand}" Classes="accent"/>
+			<Button Content="User profile"   Command="{Binding ShowProfileCommand}"/>
+			<Button Content="Bid history"    Command="{Binding ShowBidHistoryCommand}"/>
+		</StackPanel>
+
+	</Grid>
 </UserControl>
