@@ -1,0 +1,69 @@
+<rxui:ReactiveUserControl
+    x:Class="autobid.ReactiveUI.Views.SetForSaleView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+    xmlns:vm="clr-namespace:autobid.ReactiveUI.ViewModels"
+    x:DataType="vm:SetForSaleViewModel">
+
+	<Border Padding="24">
+		<Grid ColumnDefinitions="*,24,*" RowDefinitions="Auto,*,Auto">
+			<TextBlock Grid.ColumnSpan="3" Text="Set for sale" FontSize="28" FontWeight="SemiBold"/>
+
+			<!-- left -->
+			<Grid Grid.Row="1" Column="0" Margin="0,8,0,0"
+				  RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,24,Auto,8,Auto"
+				  ColumnDefinitions="Auto,12,*">
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Name"/>
+				<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding Name}"/>
+
+				<TextBlock Grid.Row="2" Grid.Column="0" Text="Milage"/>
+				<TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding Mileage}"/>
+
+				<TextBlock Grid.Row="4" Grid.Column="0" Text="Reg. num"/>
+				<TextBox   Grid.Row="4" Grid.Column="2" Text="{Binding RegNum}"/>
+
+				<TextBlock Grid.Row="6" Grid.Column="0" Text="Year"/>
+				<ComboBox  Grid.Row="6" Grid.Column="2" Items="{Binding Years}" SelectedItem="{Binding Year}" PlaceholderText="Select"/>
+
+				<TextBlock Grid.Row="8" Grid.Column="0" Text="Starting bid"/>
+				<TextBox   Grid.Row="8" Grid.Column="2" Text="{Binding StartingBid}"/>
+
+				<TextBlock Grid.Row="10" Grid.Column="0" Text="Close Auction"/>
+				<DatePicker Grid.Row="10" Grid.Column="2" SelectedDate="{Binding CloseAuctionDate}"/>
+			</Grid>
+
+			<!-- right -->
+			<Border Grid.Row="1" Grid.Column="2" Padding="16" BorderBrush="#AAA" BorderThickness="1" CornerRadius="6">
+				<Grid RowDefinitions="Auto,12,Auto,8,Auto,8,Auto,8,Auto,8,Auto"
+					  ColumnDefinitions="Auto,12,*">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="Vehicle type"/>
+					<ComboBox  Grid.Row="0" Grid.Column="2" Items="{Binding VehicleTypes}" SelectedItem="{Binding SelectedVehicleType}"/>
+
+					<TextBlock Grid.Row="2" Grid.Column="0" Text="Height"/>
+					<TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding Height}"/>
+
+					<TextBlock Grid.Row="4" Grid.Column="0" Text="Length"/>
+					<TextBox   Grid.Row="4" Grid.Column="2" Text="{Binding Length}"/>
+
+					<TextBlock Grid.Row="6" Grid.Column="0" Text="Weight"/>
+					<TextBox   Grid.Row="6" Grid.Column="2" Text="{Binding Weight}"/>
+
+					<TextBlock Grid.Row="8" Grid.Column="0" Text="Engine size (L)"/>
+					<TextBox   Grid.Row="8" Grid.Column="2" Text="{Binding EngineLiters}"/>
+
+					<StackPanel Grid.Row="10" Grid.Column="2" Orientation="Horizontal" Spacing="12">
+						<CheckBox Content="Tow bar" IsChecked="{Binding TowBar}"/>
+					</StackPanel>
+				</Grid>
+			</Border>
+
+			<!-- footer -->
+			<StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="12" Margin="0,16,0,0">
+				<Button Content="Cancel" Width="140" Height="40" Command="{Binding CancelCommand}"/>
+				<Button Content="Create auction" Width="160" Height="40"
+						Command="{Binding CreateAuctionCommand}" IsEnabled="{Binding CanCreate}"/>
+			</StackPanel>
+		</Grid>
+	</Border>
+</rxui:ReactiveUserControl>

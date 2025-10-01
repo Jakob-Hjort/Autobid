@@ -9,6 +9,7 @@ namespace autobid.ReactiveUI.ViewModels
     public class HomeViewModel : ViewModelBase
     {
         private readonly User _user;
+        
 
         public ObservableCollection<AuctionRow> YourAuctions { get; } = new();
         public ObservableCollection<AuctionRow> CurrentAuctions { get; } = new();
@@ -29,10 +30,17 @@ namespace autobid.ReactiveUI.ViewModels
             CurrentAuctions.Add(new("Scania R 730 V8", 2019, null));
             CurrentAuctions.Add(new("Skoda Octavia", 2008, null));
 
-            SetForSaleCommand = ReactiveCommand.Create(() => { /* open create-auction */ });
+            SetForSaleCommand = ReactiveCommand.Create(OpenSetForSale);
             ShowProfileCommand = ReactiveCommand.Create(OpenProfile);    // ← hook metoden op her
             ShowBidHistoryCommand = ReactiveCommand.Create(() => { /* navigate bid history */ });
         }
+
+        private void OpenSetForSale()
+        {
+            var vm = new SetForSaleViewModel(_user); // VM-first
+            MainWindowViewModel.ChangeContent(vm);   // ViewLocator viser SetForSaleView
+        }
+
 
         private void OpenProfile()
         {
