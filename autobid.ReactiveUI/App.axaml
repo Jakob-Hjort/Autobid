@@ -12,6 +12,7 @@
   
     <Application.Styles>
 		<fluent:FluentTheme/>
+		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 		<StyleInclude Source="avares://autobid.ReactiveUI/Styles/DesignStyles.axaml"/>
     </Application.Styles>
 </Application>

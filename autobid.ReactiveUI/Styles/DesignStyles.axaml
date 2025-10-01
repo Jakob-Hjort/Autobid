@@ -18,17 +18,62 @@
 		<SolidColorBrush x:Key="Brush.Muted" Color="{StaticResource Col.Muted}"/>
 	</Styles.Resources>
 
-	<!-- Styles (these are IStyle, so this file can be StyleIncluded) -->
+	<!-- BASE SURFACE -->
+	<Style Selector="Window, UserControl">
+		<Setter Property="Background" Value="{StaticResource Brush.Bg}"/>
+	</Style>
+
+	<!-- TEKST -->
+	<Style Selector="TextBlock">
+		<Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
+	</Style>
+	<!-- Label og andre content-kontroller: brug TextElement.Foreground -->
+	<Style Selector="Label">
+		<Setter Property="TextElement.Foreground" Value="{StaticResource Brush.Text}"/>
+	</Style>
+
+	<!-- INPUTS -->
+	<Style Selector="TextBox">
+		<Setter Property="TextElement.Foreground" Value="{StaticResource Brush.Text}"/>
+		<Setter Property="Background" Value="{StaticResource Brush.Panel}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+		<Setter Property="CornerRadius" Value="8"/>
+		<Setter Property="Padding" Value="10,8"/>
+	</Style>
+	<Style Selector="TextBox:pointerover">
+		<Setter Property="BorderBrush" Value="#334155"/>
+	</Style>
+	<Style Selector="TextBox:focus">
+		<Setter Property="BorderBrush" Value="#2563eb"/>
+	</Style>
+
+	<!-- KNAPPER (default) -->
+	<Style Selector="Button">
+		<Setter Property="Background" Value="{StaticResource Brush.Panel}"/>
+		<Setter Property="TextElement.Foreground" Value="{StaticResource Brush.Text}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+		<Setter Property="CornerRadius" Value="10"/>
+		<Setter Property="Padding" Value="12 8"/>
+	</Style>
+	<Style Selector="Button:pointerover">
+		<Setter Property="Background" Value="#1f2937"/>
+	</Style>
+	<Style Selector="Button:pressed">
+		<Setter Property="Background" Value="#374151"/>
+	</Style>
+
+	<!-- KNAPPER (accent) -->
 	<Style Selector="Button.accent">
 		<Setter Property="Background" Value="#2563eb"/>
-		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="TextElement.Foreground" Value="White"/>
 		<Setter Property="CornerRadius" Value="10"/>
 		<Setter Property="Padding" Value="10 8"/>
 	</Style>
 
+	<!-- DINE sidebar-styles kan beholdes, men skift Foreground -> TextElement.Foreground -->
 	<Style Selector="Button.sidebar">
 		<Setter Property="Background" Value="Transparent"/>
-		<Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
+		<Setter Property="TextElement.Foreground" Value="{StaticResource Brush.Text}"/>
 		<Setter Property="HorizontalContentAlignment" Value="Left"/>
 		<Setter Property="BorderThickness" Value="0"/>
 		<Setter Property="CornerRadius" Value="8"/>
@@ -42,4 +87,37 @@
 	<Style Selector="Button.sidebar:pressed">
 		<Setter Property="Background" Value="#1f2a44"/>
 	</Style>
+
+	<!-- DATAGRID (mørkt tema) -->
+	<Style Selector="DataGrid">
+		<Setter Property="Background" Value="{StaticResource Brush.Card}"/>
+		<Setter Property="TextElement.Foreground" Value="{StaticResource Brush.Text}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+		<Setter Property="HeadersVisibility" Value="All"/>
+		<Setter Property="GridLinesVisibility" Value="All"/>
+	</Style>
+
+	<!-- Header -->
+	<Style Selector="DataGridColumnHeader">
+		<Setter Property="Background" Value="#0E1624"/>
+		<Setter Property="TextElement.Foreground" Value="{StaticResource Brush.Text}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+	</Style>
+
+	<!-- Rækker + zebra -->
+	<Style Selector="DataGridRow">
+		<Setter Property="Background" Value="#0B121D"/>
+	</Style>
+	<Style Selector="DataGridRow:nth-child(odd)">
+		<Setter Property="Background" Value="#0E1624"/>
+	</Style>
+
+	<!-- Celler -->
+	<Style Selector="DataGridCell">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="TextElement.Foreground" Value="{StaticResource Brush.Text}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+	</Style>
 </Styles>
+

@@ -34,6 +34,13 @@ namespace autobid.Domain.Database
 			return (pOut.Value == DBNull.Value) ? 0 : Convert.ToInt32(pOut.Value);
 		}
 
+
+        /// <summary>
+        /// return -1 if user not found
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">user</exception>
         public async Task<int> Add(CorporateCustomer user)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
@@ -54,7 +61,11 @@ namespace autobid.Domain.Database
             var pOut = cmd.Parameters.Add("@NewUserId", SqlDbType.Int);
             pOut.Direction = ParameterDirection.Output;
 
-            await cmd.ExecuteNonQueryAsync();
+            if (await cmd.ExecuteNonQueryAsync() == 0){
+                return -1;
+            }
+
+            
 
             return Convert.ToInt32(pOut.Value);
         }

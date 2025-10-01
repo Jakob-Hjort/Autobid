@@ -12,7 +12,7 @@ namespace autobid.ReactiveUI.ViewModels
 			_currentViewModel.Content = content;
 		}
 
-		object? _content = new LoginView();
+		object? _content = new LoginViewModel();
 		public object? Content
 		{
 			get => _content;
