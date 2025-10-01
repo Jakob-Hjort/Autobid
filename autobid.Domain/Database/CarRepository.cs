@@ -20,7 +20,7 @@ namespace autobid.Domain.Database
 			string sql = @"INSERT INTO truck([payloadKg], [heavyVehicleId])
 				VALUES(@payLoad, @heavyVehicleId);
 				SET @NewVehicleId = SCOPE_IDENTITY();
-";
+				";
 
 			await using var conn = await Connection.OpenAsync(); // returns SqlConnection
 			int id = await Add(car as HeavyVehicle, conn);
@@ -224,6 +224,114 @@ namespace autobid.Domain.Database
 			await cmd.ExecuteNonQueryAsync();
 
 			return Convert.ToInt32(pOut.Value);
+		}
+
+		async Task<bool> IsVehicleFound(SqlDataReader reader) =>
+			reader.Read() && await reader.IsDBNullAsync(reader.GetOrdinal("vehicleId"));
+
+
+		public async Task<Vehicle?> GetSingle(int vehicleId)
+		{
+			await using var conn = await Connection.OpenAsync();
+			const string truckViewSql = "SELECT TOP(1) * FROM truckView WHERE vehicleId = @vehicleId";
+			const string busViewSql = "SELECT TOP(1) * FROM busView WHERE vehicleId = @vehicleId";
+			const string privatePersonalCarViewSql = "SELECT TOP(1) * FROM privatePersonalCarView WHERE vehicleId = @vehicleId";
+			const string professionalPersonalCarViewSql = "SELECT TOP(1) * FROM professionalPersonalCarView WHERE vehicleId = @vehicleId";
+			await using SqlCommand truckCmd = new(truckViewSql, conn);
+			truckCmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+			var truckReader = await truckCmd.ExecuteReaderAsync();
+			if (await IsVehicleFound(truckReader))
+			{
+				uint truckId = Convert.ToUInt32(truckReader.GetInt32(truckReader.GetOrdinal("truckId")));
+				return new Truck(
+					truckId,
+					truckReader.GetString(truckReader.GetOrdinal("name")),
+					truckReader.GetInt32(truckReader.GetOrdinal("distanceTraveledKm")),
+					truckReader.GetString(truckReader.GetOrdinal("registrationNumber")),
+					truckReader.GetInt32(truckReader.GetOrdinal("year")),
+					truckReader.GetDouble(truckReader.GetOrdinal("kmPerLiter")),
+					truckReader.GetBoolean(truckReader.GetOrdinal("hasTowHitch"))
+				);
+			}
+			await using SqlCommand busCmd = new(busViewSql, conn);
+			busCmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+
+			var busReader = await busCmd.ExecuteReaderAsync();
+			if (await IsVehicleFound(busReader))
+			{
+				uint truckId = Convert.ToUInt32(busReader.GetInt32(busReader.GetOrdinal("busId")));
+				return new Bus(
+					truckId,
+						busReader.GetString(busReader.GetOrdinal("name")),
+						busReader.GetInt32(busReader.GetOrdinal("distanceTraveledKm")),
+						busReader.GetString(busReader.GetOrdinal("registrationNumber")),
+						busReader.GetInt32(busReader.GetOrdinal("year")),
+						busReader.GetDouble(busReader.GetOrdinal("kmPerLiter")),
+						busReader.GetBoolean(busReader.GetOrdinal("hasTowHitch"))
+					)
+				{
+					SeatsAmount = busReader.GetInt32(busReader.GetOrdinal("seatsAmount")),
+					BedsAmount = busReader.GetInt32(busReader.GetOrdinal("bedsAmount")),
+					HasToilet = busReader.GetBoolean(busReader.GetOrdinal("hasToilet"))
+				};
+			}
+			await using SqlCommand privatePersonalCarCmd = new(privatePersonalCarViewSql, conn);
+			privatePersonalCarCmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+
+			var privatePersonalCarReader = await privatePersonalCarCmd.ExecuteReaderAsync();
+			if (await IsVehicleFound(privatePersonalCarReader))
+			{
+				uint truckId = Convert.ToUInt32(privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("privatePersonalCarId")));
+
+				return new PrivatePersonalCar(
+					truckId,
+					privatePersonalCarReader.GetString(privatePersonalCarReader.GetOrdinal("name")),
+						privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("distanceTraveledKm")),
+						privatePersonalCarReader.GetString(privatePersonalCarReader.GetOrdinal("registrationNumber")),
+						privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("year")),
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("kmPerLiter")),
+						privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasTowHitch"))
+					)
+				{
+					SeatsAmount = privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("seatsAmount")),
+					Trunk = (
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkLength")),
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkWidth")),
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkHeight"))
+					),
+					HasIsofix = privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasIsofix"))
+				};
+			}
+			await using SqlCommand professionalPersonalCarCmd = new(professionalPersonalCarViewSql, conn);
+			professionalPersonalCarCmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+
+			var professionalPersonalCarReader = await professionalPersonalCarCmd.ExecuteReaderAsync();
+			if (await IsVehicleFound(professionalPersonalCarReader))
+			{
+				uint truckId = Convert.ToUInt32(privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("privatePersonalCarId")));
+
+				return new ProfessionalPersonalCar(
+					truckId,
+					privatePersonalCarReader.GetString(privatePersonalCarReader.GetOrdinal("name")),
+						privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("distanceTraveledKm")),
+						privatePersonalCarReader.GetString(privatePersonalCarReader.GetOrdinal("registrationNumber")),
+						privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("year")),
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("kmPerLiter")),
+						privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasTowHitch"))
+					)
+				{
+					SeatsAmount = privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("seatsAmount")),
+					Trunk = (
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkLength")),
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkWidth")),
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkHeight"))
+					),
+					HasSafetyBar = privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasSafetyBar")),
+					TrailerCapacityKg = privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("trailerCapacityKg"))
+				};
+			}
+
+			return null;
 		}
 	}
 }
