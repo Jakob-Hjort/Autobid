@@ -1,0 +1,41 @@
+<rxui:ReactiveUserControl
+    x:Class="autobid.ReactiveUI.Views.ProfileView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:autobid.ReactiveUI.ViewModels"
+    xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+    x:DataType="vm:ProfileViewModel">
+
+	<Border Padding="24">
+		<Grid RowDefinitions="Auto,*,Auto">
+			<TextBlock Text="Your profile" FontSize="28" FontWeight="SemiBold"/>
+
+			<Grid Grid.Row="1" Margin="0,16,0,0"
+				  ColumnDefinitions="Auto,12,*"
+				  RowDefinitions="Auto,8,Auto,8,Auto,24,Auto,8,Auto">
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Username:"/>
+				<TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Username}"/>
+
+				<TextBlock Grid.Row="2" Grid.Column="0" Text="Password:"/>
+				<Button Grid.Row="2" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="0"
+					Command="{Binding ChangePasswordCommand}" HorizontalAlignment="Left">
+					<TextBlock Text="Change password" TextDecorations="Underline"/>
+				</Button>
+
+				<TextBlock Grid.Row="4" Grid.Column="0" Text="Balance:"/>
+				<TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding BalanceText}"/>
+
+				<TextBlock Grid.Row="6" Grid.Column="0" Text="Your auctions:"/>
+				<TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding AuctionCount}"/>
+
+				<TextBlock Grid.Row="8" Grid.Column="0" Text="Auctions won:"/>
+				<TextBlock Grid.Row="8" Grid.Column="2" Text="{Binding AuctionsWon}"/>
+			</Grid>
+
+			<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,16,0,0">
+				<Button Content="Back" Width="140" Height="40" Command="{Binding BackCommand}"/>
+				<Button Content="Refresh" Margin="12,0,0,0" Command="{Binding RefreshCommand}"/>
+			</StackPanel>
+		</Grid>
+	</Border>
+</rxui:ReactiveUserControl>
