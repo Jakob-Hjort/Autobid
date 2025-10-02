@@ -1,4 +1,5 @@
 ﻿using autobid.Domain.Auctions;
+using autobid.Domain.Database;
 using autobid.Domain.Services;
 using autobid.Domain.Users;
 using autobid.Domain.Vehicles;
