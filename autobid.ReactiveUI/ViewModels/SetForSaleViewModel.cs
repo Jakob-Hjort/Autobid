@@ -17,6 +17,17 @@ public sealed class SetForSaleViewModel : ViewModelBase
     public enum HeavyKind { Truck, Bus }
     public enum PersonalKind { Private, Professional }
 
+    // Kilder til ComboBox'ene (enum-værdierne)
+    public VehicleCategory[] Categories { get; } =
+        Enum.GetValues(typeof(VehicleCategory)).Cast<VehicleCategory>().ToArray();
+
+    public HeavyKind[] HeavyKinds { get; } =
+        Enum.GetValues(typeof(HeavyKind)).Cast<HeavyKind>().ToArray();
+
+    public PersonalKind[] PersonalKinds { get; } =
+        Enum.GetValues(typeof(PersonalKind)).Cast<PersonalKind>().ToArray();
+
+
     private readonly User _seller;
     private readonly IAuctionHouse _house;
 
@@ -45,7 +56,12 @@ public sealed class SetForSaleViewModel : ViewModelBase
         _house = house;
         _seller = userID;
 
-        Years = new ObservableCollection<int>(Enumerable.Range(DateTime.Now.Year, -60).ToList());
+        var currentYear = DateTime.Now.Year;
+        Years = new ObservableCollection<int>(
+            Enumerable.Range(0, 60).Select(i => currentYear - i)
+        );
+
+        //Years = new ObservableCollection<int>(Enumerable.Range(DateTime.Now.Year, -60).ToList());
         CloseAuctionDate = DateTime.Today.AddDays(7);
 
         // Defaults
@@ -65,6 +81,12 @@ public sealed class SetForSaleViewModel : ViewModelBase
     int? _mileage; public int? Mileage { get => _mileage; set { this.RaiseAndSetIfChanged(ref _mileage, value); Recalc(); } }
     string? _reg; public string? RegNum { get => _reg; set { this.RaiseAndSetIfChanged(ref _reg, value); Recalc(); } }
     public ObservableCollection<int> Years { get; }
+
+    public DateTimeOffset? CloseAuctionDateOffset
+    {
+        get => new DateTimeOffset(CloseAuctionDate);
+        set { if (value != null) CloseAuctionDate = value.Value.Date; }
+    }
     int? _year; public int? Year { get => _year; set { this.RaiseAndSetIfChanged(ref _year, value); Recalc(); } }
     decimal _startingBid; public decimal StartingBid { get => _startingBid; set { this.RaiseAndSetIfChanged(ref _startingBid, value); Recalc(); } }
     DateTime _close; public DateTime CloseAuctionDate { get => _close; set { this.RaiseAndSetIfChanged(ref _close, value); Recalc(); } }

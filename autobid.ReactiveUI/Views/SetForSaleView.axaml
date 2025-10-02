@@ -3,6 +3,160 @@
   xmlns="https://github.com/avaloniaui"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:vm="using:autobid.ReactiveUI.ViewModels"
-  x:DataType="vm:SetForSaleViewModel">
-	<!-- ... dit indhold ... -->
+  x:DataType="vm:SetForSaleViewModel"
+  Margin="16">
+
+	<!-- Top (valg), Midt (venstre kolonne + højre panel), Bund (knapper) -->
+	<Grid RowDefinitions="Auto,*,Auto" RowSpacing="12">
+
+		<!-- TOP: Category + subtype som dropdowns -->
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+			<TextBlock Text="Category" VerticalAlignment="Center"/>
+
+			<ComboBox Width="160"
+					  ItemsSource="{Binding Categories}"
+					  SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />
+
+			<!-- Heavy subtype -->
+			<StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding ShowHeavy}">
+				<TextBlock Text="Type" Margin="16,0,0,0" VerticalAlignment="Center"/>
+				<ComboBox Width="160"
+						  ItemsSource="{Binding HeavyKinds}"
+						  SelectedItem="{Binding SelectedHeavy, Mode=TwoWay}" />
+			</StackPanel>
+
+			<!-- Personal subtype -->
+			<StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding ShowPersonal}">
+				<TextBlock Text="Type" Margin="16,0,0,0" VerticalAlignment="Center"/>
+				<ComboBox Width="180"
+						  ItemsSource="{Binding PersonalKinds}"
+						  SelectedItem="{Binding SelectedPersonal, Mode=TwoWay}" />
+			</StackPanel>
+		</StackPanel>
+
+		<!-- MIDT: venstre felter + højre detaljer-”kort” (overlay for Heavy/Personal) -->
+		<Grid Grid.Row="1" ColumnDefinitions="2*,24,3*" ColumnSpacing="16">
+
+			<!-- Venstre kolonne (fælles felter) -->
+			<Border Grid.Column="0" Padding="16" Background="{StaticResource Brush.Card}" CornerRadius="8">
+				<StackPanel Spacing="12">
+
+					<!-- øverste felter -->
+					<Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,8,*" RowSpacing="10">
+						<TextBlock Grid.Row="0" Grid.Column="0" Text="Name"/>
+						<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding Name, Mode=TwoWay}"/>
+
+						<TextBlock Grid.Row="1" Grid.Column="0" Text="Mileage"/>
+						<TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding Mileage, Mode=TwoWay}" Watermark="km"/>
+
+						<TextBlock Grid.Row="2" Grid.Column="0" Text="Reg. num"/>
+						<TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding RegNum, Mode=TwoWay}" Watermark="LL12345"/>
+
+						<TextBlock  Grid.Row="3" Grid.Column="0" Text="Year"/>
+						<ComboBox   Grid.Row="3" Grid.Column="2"
+									ItemsSource="{Binding Years}"
+									SelectedItem="{Binding Year, Mode=TwoWay}"
+									Width="140"/>
+					</Grid>
+
+					<!-- nederste venstre felter -->
+					<Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,Auto" RowSpacing="10">
+						<TextBlock Grid.Row="0" Grid.Column="0" Text="Starting bid"/>
+						<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding StartingBid, Mode=TwoWay}" Watermark="0.00"/>
+
+						<TextBlock Grid.Row="1" Grid.Column="0" Text="Close auction"/>
+						<!-- Hvis du vil have en rigtig DatePicker, se noten nedenfor -->
+						<TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding CloseAuctionDate, Mode=TwoWay}" />
+					</Grid>
+
+				</StackPanel>
+			</Border>
+
+			<!-- afstandskolonne -->
+			<Border Grid.Column="1" />
+
+			<!-- Højre: detaljer-kort (samme placering – Panel overlay) -->
+			<Border Grid.Column="2" Padding="16" Background="{StaticResource Brush.Card}" CornerRadius="8">
+				<Panel>
+					<!-- HEAVY -->
+					<StackPanel Spacing="10" IsVisible="{Binding ShowHeavy}">
+						<Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+							<TextBlock Grid.Row="0" Grid.Column="0" Text="Engine size (L)"/>
+							<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding EngineLiters, Mode=TwoWay}"/>
+
+							<TextBlock Grid.Row="1" Grid.Column="0" Text="Height (m)"/>
+							<TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding HeightMeter, Mode=TwoWay}"/>
+
+							<TextBlock Grid.Row="2" Grid.Column="0" Text="Length (m)"/>
+							<TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding Length, Mode=TwoWay}"/>
+
+							<TextBlock Grid.Row="3" Grid.Column="0" Text="Weight (kg)"/>
+							<TextBox   Grid.Row="3" Grid.Column="2" Text="{Binding WeightKg, Mode=TwoWay}"/>
+
+							<TextBlock Grid.Row="4" Grid.Column="0" Text="Tow bar"/>
+							<CheckBox  Grid.Row="4" Grid.Column="2" IsChecked="{Binding TowBar, Mode=TwoWay}" Content=" "/>
+
+							<!-- Truck-specifikt -->
+							<StackPanel Grid.Row="5" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="8" IsVisible="{Binding ShowTruck}">
+								<TextBlock Text="Payload (kg)"/>
+								<TextBox Width="120" Text="{Binding PayloadKg, Mode=TwoWay}"/>
+							</StackPanel>
+						</Grid>
+
+						<!-- Bus-specifikt -->
+						<StackPanel Spacing="8" IsVisible="{Binding ShowBus}">
+							<Grid ColumnDefinitions="Auto,8,*,16,Auto,8,*" RowSpacing="8">
+								<TextBlock Grid.Column="0" Text="Seats"/>
+								<TextBox   Grid.Column="2" Text="{Binding BusSeatsAmount, Mode=TwoWay}"/>
+
+								<TextBlock Grid.Column="4" Text="Beds"/>
+								<TextBox   Grid.Column="6" Text="{Binding BusBedsAmount, Mode=TwoWay}"/>
+							</Grid>
+							<CheckBox Content="Has toilet" IsChecked="{Binding BusHasToilet, Mode=TwoWay}"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- PERSONAL -->
+					<StackPanel Spacing="10" IsVisible="{Binding ShowPersonal}">
+						<Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+							<TextBlock Grid.Row="0" Grid.Column="0" Text="Engine size (L)"/>
+							<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding EngineLiters, Mode=TwoWay}"/>
+
+							<TextBlock Grid.Row="1" Grid.Column="0" Text="Seats"/>
+							<TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding SeatsAmount, Mode=TwoWay}"/>
+
+							<TextBlock Grid.Row="2" Grid.Column="0" Text="Trunk (L/W/H)"/>
+							<StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Spacing="6">
+								<TextBox Width="60" Text="{Binding TrunkL, Mode=TwoWay}" Watermark="L"/>
+								<TextBox Width="60" Text="{Binding TrunkW, Mode=TwoWay}" Watermark="W"/>
+								<TextBox Width="60" Text="{Binding TrunkH, Mode=TwoWay}" Watermark="H"/>
+							</StackPanel>
+
+							<TextBlock Grid.Row="3" Grid.Column="0" Text="Tow bar"/>
+							<CheckBox  Grid.Row="3" Grid.Column="2" IsChecked="{Binding TowBar, Mode=TwoWay}" Content=" "/>
+						</Grid>
+
+						<!-- Private -->
+						<CheckBox Content="ISOFIX" IsChecked="{Binding HasIsofix, Mode=TwoWay}" IsVisible="{Binding ShowPrivate}"/>
+
+						<!-- Professional -->
+						<StackPanel Orientation="Horizontal" Spacing="12" IsVisible="{Binding ShowProfessional}">
+							<CheckBox Content="Safety bar" IsChecked="{Binding HasSafetyBar, Mode=TwoWay}"/>
+							<TextBlock Text="Trailer (kg)"/>
+							<TextBox Width="120" Text="{Binding TrailerCapacityKg, Mode=TwoWay}"/>
+						</StackPanel>
+					</StackPanel>
+
+				</Panel>
+			</Border>
+
+		</Grid>
+
+		<!-- BUND: knapper -->
+		<StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+			<Button Content="Cancel" Command="{Binding CancelCommand}"/>
+			<Button Content="Create auction" Command="{Binding CreateAuctionCommand}" IsEnabled="{Binding CanCreate}"/>
+		</StackPanel>
+
+	</Grid>
 </UserControl>
