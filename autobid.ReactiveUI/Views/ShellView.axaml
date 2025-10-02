@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:autobid.ReactiveUI.ViewModels"
+             x:Class="autobid.ReactiveUI.Views.ShellView"
+             x:DataType="vm:ShellViewModel">
+
+	<DockPanel>
+		<!-- Header -->
+		<Border DockPanel.Dock="Top" Height="56" Background="#0f172a" Padding="16,0">
+			<Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
+				<TextBlock Text="autobid" Foreground="White" FontSize="18" FontWeight="SemiBold"/>
+				<TextBlock Grid.Column="1" Text="{Binding Greeting}" Foreground="#cbd5e1" HorizontalAlignment="Right"/>
+			</Grid>
+		</Border>
+
+		<!-- Venstremenu -->
+		<Border DockPanel.Dock="Left" Width="230" Background="#111827" BorderBrush="#1f2937" BorderThickness="0,0,1,0">
+			<StackPanel>
+				<Button  Name="GoToProfile" Content="Min Profil" Command="{Binding GoToProfileCommand}"/>
+				<Button  Name="SetForSale" Content="SetForSale" Command="{Binding GoToSetForSaleCommand}"/>
+				<Button Name="GoToHome" Content="Home" Command="{Binding GoToHomeCommand}"/>
+			</StackPanel>
+			
+			<!--<ListBox ItemsSource="{Binding Pages}"
+			 SelectedItem="{Binding SelectedPage, Mode=TwoWay}"
+			 BorderThickness="0">
+				<ListBox.ItemTemplate>
+					<DataTemplate x:DataType="vm:NavItem">
+						<Grid Margin="10,6" ColumnDefinitions="Auto,*">
+							<TextBlock Text="{Binding Icon}" Margin="4,0"/>
+							<TextBlock Grid.Column="1" Text="{Binding Title}" Foreground="#e5e7eb"/>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>-->
+			<!--</ListBox>-->
+		</Border>
+
+		<!-- Content -->
+		<Border Padding="16">
+			<ContentControl Content="{Binding CurrentPage}"/>
+		</Border>
+	</DockPanel>
+</UserControl>

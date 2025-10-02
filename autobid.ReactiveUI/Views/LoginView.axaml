@@ -4,9 +4,9 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:vm="using:autobid.ReactiveUI.ViewModels"
   x:DataType="vm:LoginViewModel">
-	<UserControl.DataContext>
+	<!--<UserControl.DataContext>
 		<vm:LoginViewModel/>
-	</UserControl.DataContext>
+	</UserControl.DataContext>-->
 	
 	<Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*"
 		  HorizontalAlignment="Center" VerticalAlignment="Center">

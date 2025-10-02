@@ -49,7 +49,7 @@ namespace autobid.ReactiveUI.ViewModels
 				return;
 			}
 
-			MainWindowViewModel.ChangeContent(new HomeViewModel(user));
+            MainWindowViewModel.ChangeContent(new ShellViewModel(user));
 		}
 	}
 }

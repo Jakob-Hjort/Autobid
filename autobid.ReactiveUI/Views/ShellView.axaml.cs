@@ -3,14 +3,14 @@ using Avalonia.Markup.Xaml;
 
 namespace autobid.ReactiveUI.Views
 {
-    public partial class SetForSaleView : UserControl
+    public partial class ShellView : UserControl
     {
-        public SetForSaleView()
+        public ShellView()
         {
             InitializeComponent();
         }
 
-        // Denne loader virker både med og uden generator
+        // Brug runtime loader – fungerer som InitializeComponent
         private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
     }
 }
