@@ -15,6 +15,23 @@ namespace autobid.Domain.Database
 {
 	public class CarRepository
 	{
+		public async Task<int> Add(Vehicle vehicle)
+		{
+			if (vehicle is Truck truck)
+				return await Add(truck);
+
+			if (vehicle is Bus bus)
+				return await Add(bus);
+
+			if (vehicle is PrivatePersonalCar privatePersonal)
+				return await Add(privatePersonal);
+
+			if (vehicle is ProfessionalPersonalCar professionalPersonalCar)
+				return await Add(professionalPersonalCar);
+
+			return -1;
+		}
+
 		public async Task<int> Add(Truck car)
 		{
 			string sql = @"INSERT INTO truck([payloadKg], [heavyVehicleId])
@@ -152,7 +169,7 @@ namespace autobid.Domain.Database
 			);
 
 			await cmd.ExecuteNonQueryAsync();
-			return Convert.ToInt32(pOut.SqlValue);
+			return Convert.ToInt32(pOut.Value);
 		}
 		public async Task<int> Add(ProfessionalPersonalCar car)
 		{
@@ -173,7 +190,7 @@ namespace autobid.Domain.Database
 
 			await cmd.ExecuteNonQueryAsync();
 
-			return Convert.ToInt32(pOut.SqlValue);
+			return Convert.ToInt32(pOut.Value);
 		}
 		public async Task<int> Add(PrivatePersonalCar car)
 		{
@@ -193,7 +210,7 @@ namespace autobid.Domain.Database
 
 			await cmd.ExecuteNonQueryAsync();
 
-			return Convert.ToInt32(pOut.SqlValue);
+			return Convert.ToInt32(pOut.Value);
 		}
 		public async Task<int> Add(Bus car)
 		{

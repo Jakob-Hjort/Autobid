@@ -17,24 +17,32 @@ public sealed class SqlAuctionRepository : IAuctionRepository
 
 	public async Task<uint> Add(Auction auction)
 	{
+		auction.Vehicle.Id = Convert.ToUInt32(await _carRepository.Add(auction.Vehicle));
+
 		string sql = @"
-			INSERT INTO auction(userId, minimumPrice, isClosed, vehicleId)
-			VALUES(@userId, @minimumPrice, @isClosed, @vehicleId);
-			SET @NewAuctionId = SCOPE_IDENTITY();
-		";
+        INSERT INTO auction(userId, minimumPrice, isClosed, vehicleId)
+        VALUES(@userId, @minimumPrice, @isClosed, @vehicleId);
+        SELECT @NewAuctionId = CAST(SCOPE_IDENTITY() AS INT);
+    ";
 		using SqlConnection conn = await Connection.OpenAsync();
 		using SqlCommand cmd = new(sql, conn);
 
-		cmd.Parameters.AddWithValue("@userId", auction.Seller.Id);
-		cmd.Parameters.AddWithValue("@minimumPrice", auction.MinimumPrice);
-		cmd.Parameters.AddWithValue("@isClosed", auction.IsClosed);
-		cmd.Parameters.AddWithValue("@vehicleId", auction.Vehicle.Id);
+		cmd.Parameters.Add(new SqlParameter("@userId", SqlDbType.Int) { Value = (int)auction.Seller.Id });
+		var minimumPriceParam = new SqlParameter("@minimumPrice", SqlDbType.Decimal) { Value = auction.MinimumPrice };
+		minimumPriceParam.Precision = 18;
+		minimumPriceParam.Scale = 2;
+		cmd.Parameters.Add(minimumPriceParam);
+		cmd.Parameters.Add(new SqlParameter("@isClosed", SqlDbType.Bit) { Value = auction.IsClosed });
+		cmd.Parameters.Add(new SqlParameter("@vehicleId", SqlDbType.Int) { Value = (int)auction.Vehicle.Id });
+
 		var pOut = new SqlParameter("@NewAuctionId", SqlDbType.Int) { Direction = ParameterDirection.Output };
+		cmd.Parameters.Add(pOut);
 
 		await cmd.ExecuteNonQueryAsync();
 
 		return Convert.ToUInt32(pOut.Value);
 	}
+
 
 	public async Task AddBid(uint auctionId, Bid bid)
 	{
@@ -86,13 +94,12 @@ public sealed class SqlAuctionRepository : IAuctionRepository
         string sql = @"
         SELECT v.[name],
 		au.auctionId,
-        ROW_NUMBER() OVER (PARTITION BY v.[name] ORDER BY Amount DESC, au.auctionId DESC) AS bid,
-        v.[year] ,u.username FROM auction as au
-        INNER JOIN [user] AS u ON u.userId = au.userId
-        INNER JOIN vehicle AS v ON v.vehicleId = au.vehicleId
-        INNER JOIN bid AS b ON b.auctionId = au.auctionId
+		(SELECT TOP(1) MAX(amount) FROM bid
+		WHERE auctionId = au.auctionId) as highestBid,
+		v.[year] ,u.username FROM auction as au
+		INNER JOIN [user] AS u ON u.userId = au.userId
+		INNER JOIN vehicle AS v ON v.vehicleId = au.vehicleId
 		WHERE au.isClosed = 0
-        ORDER BY b.amount DESC
 		";
 
         await using SqlConnection conn = await Connection.OpenAsync();
@@ -107,8 +114,8 @@ public sealed class SqlAuctionRepository : IAuctionRepository
                 new(
 					Convert.ToUInt32(reader.GetInt32(reader.GetOrdinal("auctionId"))),
 					reader.GetString(reader.GetOrdinal("name")),
-					reader.GetInt32(reader.GetOrdinal("year")),
-					reader.GetDecimal(reader.GetOrdinal("bid")),
+					reader.GetInt16(reader.GetOrdinal("year")),
+					reader.GetDecimal(reader.GetOrdinal("highestBid")),
 					reader.GetString(reader.GetOrdinal("username"))
 				)
 			);

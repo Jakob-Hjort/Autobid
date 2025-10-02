@@ -27,7 +27,7 @@
 		<StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="12">
 			<CheckBox Name="CorporateBox" IsChecked="{Binding IsCorporate}" Content="Corporate user"/>
 			<Button Name="CreateButton" Command="{Binding CreateUserCommand}" Content="Create" Classes="accent"/>
-			<Button Name="BackButton" Content="Back to login"/>
+			<Button Name="BackButton" Content="Back to login" Command="{Binding GoBackCommand}"/>
 		</StackPanel>
 		<TextBlock Name="ErrorText" Grid.Row="6" Grid.ColumnSpan="2" Foreground="#f87171"/>
 	</Grid>

@@ -7,6 +7,7 @@ using ReactiveUI;
 using autobid.Domain.Users;
 using autobid.Domain.Auctions;     // IAuctionHouse + AuctionHouse
 using autobid.Domain.Vehicles;
+using autobid.Domain.Database;
 
 namespace autobid.ReactiveUI.ViewModels;
 
@@ -33,7 +34,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
 
 
     public SetForSaleViewModel(User user)
-    : this(new autobid.Domain.Auctions.AuctionHouse(new InMemoryAuctionRepository()), user)
+    : this(new autobid.Domain.Auctions.AuctionHouse(new SqlAuctionRepository()), user)
     {
     }
 
@@ -71,8 +72,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
 
         UpdateVisibilityFlags();
         Recalc();
-
-        CreateAuctionCommand = ReactiveCommand.CreateFromTask(CreateAsync, this.WhenAnyValue(_ => _.CanCreate));
+        CreateAuctionCommand = ReactiveCommand.Create(CreateAsync);
         CancelCommand = ReactiveCommand.Create(NavBack);
     }
 
@@ -195,13 +195,13 @@ public sealed class SetForSaleViewModel : ViewModelBase
     }
 
     // ---------- commands ----------
-    public ReactiveCommand<Unit, Unit> CreateAuctionCommand { get; }
+    public ReactiveCommand<Unit, Task> CreateAuctionCommand { get; }
     public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 
     async Task CreateAsync()
     {
         var vehicle = BuildVehicle();
-        _ = _house.SætTilSalg(vehicle, _seller, StartingBid); // returnerer auctionId
+        await _house.SetForSale(vehicle, _seller, StartingBid); // returnerer auctionId
         MainWindowViewModel.ChangeContent(new HomeViewModel(_seller));
         await Task.CompletedTask;
     }

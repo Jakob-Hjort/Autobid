@@ -17,7 +17,9 @@ namespace autobid.ReactiveUI.Views
 		protected async override void OnLoaded(RoutedEventArgs e)
 		{
 			base.OnLoaded(e);
-            await ((HomeViewModel)DataContext).LoadAuctions();
+
+            if (DataContext is HomeViewModel viewModel)
+                await viewModel.LoadAuctions();
 		}
     }
 }

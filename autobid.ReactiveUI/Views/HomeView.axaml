@@ -23,7 +23,6 @@
 					<DataGridTextColumn Header="Name"   Binding="{Binding CarName}" />
 					<DataGridTextColumn Header="Årgang" Binding="{Binding Year}" />
 					<DataGridTextColumn Header="Bud"    Binding="{Binding Bid}" />
-					<DataGridTextColumn Header="Bruger Navn"    Binding="{Binding Username}" />
 				</DataGrid.Columns>
 			</DataGrid>
 
@@ -42,7 +41,7 @@
 					<DataGridTextColumn Header="Name"   Binding="{Binding CarName}" />
 					<DataGridTextColumn Header="Årgang" Binding="{Binding Year}" />
 					<DataGridTextColumn Header="Bud"    Binding="{Binding Bid}" />
-					<DataGridTextColumn Header="Bud"    Binding="{Binding Username}" />
+					<DataGridTextColumn Header="Bruger Navn"    Binding="{Binding Username}" />
 				</DataGrid.Columns>
 			</DataGrid>
 		</Grid>
