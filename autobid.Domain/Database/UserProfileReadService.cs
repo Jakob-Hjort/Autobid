@@ -38,7 +38,7 @@ public sealed class UserProfileReadService : IUserProfileReadService
                 WHERE b.auctionId = a.auctionId
                 ORDER BY b.amount DESC, b.sendTime ASC
             ) topBid
-            WHERE a.isClosed = 1
+            WHERE a.closeDate = GETDATE() OR a.isClosed = 1
               AND topBid.userId = @uid
               -- Hvis I kun vil tælle vundne når minimumsprisen er nået, så fjern kommentaren herunder:
               -- AND topBid.amount >= a.minimumPrice

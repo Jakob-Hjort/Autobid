@@ -29,13 +29,13 @@ public sealed class AuctionHouse : IAuctionHouse
     }
 
     // A3 – Overload uden notify: brug default
-    public async Task<uint> SetForSale(Vehicle køretøj, User sælger, decimal minimumPris)
-        => await SetForSale(køretøj, sælger, minimumPris, _defaultNotify);
+    public async Task<uint> SetForSale(Vehicle køretøj, User sælger, decimal minimumPris, DateTimeOffset closeDate)
+        => await SetForSale(køretøj, sælger, minimumPris, _defaultNotify, closeDate);
 
     // A3 – Overload med notify: gem notifikation pr. auktion
-    public async Task<uint> SetForSale(Vehicle køretøj, User sælger, decimal minimumPris, AuctionNotification notify)
+    public async Task<uint> SetForSale(Vehicle køretøj, User sælger, decimal minimumPris, AuctionNotification notify, DateTimeOffset closeDate)
     {
-        var a = new Auction(køretøj, sælger, minimumPris);   // Opret domæneobjekt
+        var a = new Auction(køretøj, sælger, minimumPris, closeDate);   // Opret domæneobjekt
         var id = await _repo.Add(a);                                // Persistér i DB (eller brug a.Id)
         if (id == 0) id = a.Id;                               // Fallback hvis repo ikke returnerer id
         _auctionNotifies[id] = notify;                        // Gem callback til senere

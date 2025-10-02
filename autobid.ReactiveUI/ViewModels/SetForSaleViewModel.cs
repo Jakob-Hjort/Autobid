@@ -202,7 +202,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
     async Task CreateAsync()
     {
         var vehicle = BuildVehicle();
-        await _house.SetForSale(vehicle, _seller, StartingBid); // returnerer auctionId
+        await _house.SetForSale(vehicle, _seller, StartingBid, (DateTimeOffset)this.CloseAuctionDateOffset); // returnerer auctionId
         MainWindowViewModel.ChangeContent(new HomeViewModel(_seller));
         await Task.CompletedTask;
     }
