@@ -1,5 +1,6 @@
 using autobid.ReactiveUI.ViewModels;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 
 namespace autobid.ReactiveUI.Views
@@ -8,9 +9,15 @@ namespace autobid.ReactiveUI.Views
     {
         public HomeView()
         {
-			InitializeComponent();
+			AvaloniaXamlLoader.Load(this);
         }
         public void SetUsername(string username)
             => this.FindControl<TextBlock>("WelcomeText")!.Text = $"Welcome, {username}";
+
+		protected async override void OnLoaded(RoutedEventArgs e)
+		{
+			base.OnLoaded(e);
+            await ((HomeViewModel)DataContext).LoadAuctions();
+		}
     }
 }

@@ -6,7 +6,7 @@
   x:DataType="vm:SetForSaleViewModel"
   Margin="16">
 
-	<!-- Top (valg), Midt (venstre kolonne + højre panel), Bund (knapper) -->
+	<!-- Top (valg), Midt (venstre kolonne + h�jre panel), Bund (knapper) -->
 	<Grid RowDefinitions="Auto,*,Auto" RowSpacing="12">
 
 		<!-- TOP: Category + subtype som dropdowns -->
@@ -34,14 +34,14 @@
 			</StackPanel>
 		</StackPanel>
 
-		<!-- MIDT: venstre felter + højre detaljer-”kort” (overlay for Heavy/Personal) -->
+		<!-- MIDT: venstre felter + h�jre detaljer-�kort� (overlay for Heavy/Personal) -->
 		<Grid Grid.Row="1" ColumnDefinitions="2*,24,3*" ColumnSpacing="16">
 
-			<!-- Venstre kolonne (fælles felter) -->
+			<!-- Venstre kolonne (f�lles felter) -->
 			<Border Grid.Column="0" Padding="16" Background="{StaticResource Brush.Card}" CornerRadius="8">
 				<StackPanel Spacing="12">
 
-					<!-- øverste felter -->
+					<!-- �verste felter -->
 					<Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,8,*" RowSpacing="10">
 						<TextBlock Grid.Row="0" Grid.Column="0" Text="Name"/>
 						<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding Name, Mode=TwoWay}"/>

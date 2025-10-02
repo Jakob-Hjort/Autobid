@@ -65,18 +65,73 @@ namespace autobid.Domain.Database
                 return -1;
             }
 
-            
-
             return Convert.ToInt32(pOut.Value);
         }
 
-
-
-
-        public User? FindById(uint id)
+        public async Task<User?> FindById(uint id)
         {
-            throw new NotImplementedException();
-        }
+			await using var conn = await Connection.OpenAsync();
+
+			// Hent én række for brugernavnet + om det er corporate, CPR/CVR og credit
+			using var cmd = new SqlCommand(@"
+                    SELECT TOP 1
+                    u.userId,
+                    u.username,
+                    u.passwordHash,
+                    u.balance,
+                    CASE WHEN cc.userId IS NOT NULL THEN 1 ELSE 0 END AS IsCorporate,
+                    pc.cpr,
+                    cc.cvr,
+                    cc.credit
+                    FROM dbo.[user] u
+                LEFT JOIN dbo.privateCustomer   pc ON pc.userId = u.userId
+                LEFT JOIN dbo.corporateCustomer cc ON cc.userId = u.userId
+                WHERE u.userId = @id;", conn);
+
+			cmd.Parameters.Add("@id", SqlDbType.NVarChar, 32).Value = id;
+
+			using var r = await cmd.ExecuteReaderAsync(CommandBehavior.SingleRow);
+			if (!await r.ReadAsync()) return null; // ukendt brugernavn
+
+			// læs felter
+			int userId = r.GetInt32(r.GetOrdinal("userId"));
+			string uname = r.GetString(r.GetOrdinal("username"));
+            string storedHash = r.GetString(r.GetOrdinal("passwordHash"));
+
+			decimal balance = r.GetDecimal(r.GetOrdinal("balance"));
+			bool isCorporate = r.GetInt32(r.GetOrdinal("IsCorporate")) == 1;
+
+			if (isCorporate)
+			{
+				int ordCvr = r.GetOrdinal("cvr");
+				int ordCredit = r.GetOrdinal("credit");
+
+				string cvr = r.IsDBNull(ordCvr) ? "" : r.GetString(ordCvr);
+				decimal credit = r.IsDBNull(ordCredit) ? 0m : r.GetDecimal(ordCredit);
+
+				return new CorporateCustomer(
+					id: (uint)userId,
+					username: uname,
+					passwordHash: storedHash,
+					cvr: cvr,
+					credit: credit,
+					balance: balance
+				);
+			}
+			else
+			{
+				int ordCpr = r.GetOrdinal("cpr");
+				string cpr = r.IsDBNull(ordCpr) ? "" : r.GetString(ordCpr);
+
+				return new PrivateCustomer(
+					id: (uint)userId,
+					username: uname,
+					passwordHash: storedHash,
+					cpr: cpr,
+					balance: balance
+				);
+			}
+		}
 
         public async Task<User?> LoginAsync(string username, string passwordPlain)
         {

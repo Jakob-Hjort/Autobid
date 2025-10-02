@@ -3,16 +3,19 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using autobid.Domain.Database;
+using autobid.Domain.Auctions;
+using System.Threading.Tasks;
+using System.Collections;
+using System.Linq;
 
 namespace autobid.ReactiveUI.ViewModels
 {
     public class HomeViewModel : ViewModelBase
     {
         private readonly User _user;
-        
-
-        public ObservableCollection<AuctionRow> YourAuctions { get; } = new();
-        public ObservableCollection<AuctionRow> CurrentAuctions { get; } = new();
+        readonly SqlAuctionRepository _repository = new();
+        public ObservableCollection<AuctionListItem> YourAuctions { get; } = new();
+        public ObservableCollection<AuctionListItem> CurrentAuctions { get; } = new();
 
         public ReactiveCommand<Unit, Unit> SetForSaleCommand { get; }
         public ReactiveCommand<Unit, Unit> ShowProfileCommand { get; }
@@ -22,25 +25,32 @@ namespace autobid.ReactiveUI.ViewModels
         {
             _user = user;
 
-            // demo-data – slet når I loader fra repo
-            YourAuctions.Add(new("Ford Escort", 1983, 3000m));
-            YourAuctions.Add(new("Tesla Model 3", 2016, null));
-            CurrentAuctions.Add(new("Ford Escort", 1983, 3000m));
-            CurrentAuctions.Add(new("Tesla Model 3", 2016, null));
-            CurrentAuctions.Add(new("Scania R 730 V8", 2019, null));
-            CurrentAuctions.Add(new("Skoda Octavia", 2008, null));
-
             SetForSaleCommand = ReactiveCommand.Create(OpenSetForSale);
             ShowProfileCommand = ReactiveCommand.Create(OpenProfile);    // ← hook metoden op her
             ShowBidHistoryCommand = ReactiveCommand.Create(() => { /* navigate bid history */ });
         }
 
-        private void OpenSetForSale()
+        public async Task LoadAuctions()
+        {
+            var auctionListItems = await _repository.GetAllAuctonOpenListItems();
+
+			foreach (var auction in auctionListItems)
+            {
+                CurrentAuctions.Add(auction);
+            }
+
+            foreach (var auction in auctionListItems.Where((auction) => auction.Username == _user.Username))
+            {
+                YourAuctions.Add(auction);
+            }
+
+		}
+
+		private void OpenSetForSale()
         {
             var vm = new SetForSaleViewModel(_user); // VM-first
             MainWindowViewModel.ChangeContent(vm);   // ViewLocator viser SetForSaleView
         }
-
 
         private void OpenProfile()
         {
@@ -49,6 +59,4 @@ namespace autobid.ReactiveUI.ViewModels
             MainWindowViewModel.ChangeContent(vm);          // VM-first → ViewLocator viser viewet
         }
     }
-
-    public record AuctionRow(string VehicleName, int Year, decimal? Bid);
 }
