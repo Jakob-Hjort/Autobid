@@ -24,7 +24,7 @@
 				<TextBox   Grid.Row="4" Grid.Column="2" Text="{Binding RegNum}"/>
 
 				<TextBlock Grid.Row="6" Grid.Column="0" Text="Year"/>
-				<ComboBox  Grid.Row="6" Grid.Column="2" Items="{Binding Years}" SelectedItem="{Binding Year}" PlaceholderText="Select"/>
+				<ComboBox  Grid.Row="6" Grid.Column="2" ItemsSource="{Binding Years}" SelectedItem="{Binding Year}" PlaceholderText="Select"/>
 
 				<TextBlock Grid.Row="8" Grid.Column="0" Text="Starting bid"/>
 				<TextBox   Grid.Row="8" Grid.Column="2" Text="{Binding StartingBid}"/>
@@ -38,7 +38,7 @@
 				<Grid RowDefinitions="Auto,12,Auto,8,Auto,8,Auto,8,Auto,8,Auto"
 					  ColumnDefinitions="Auto,12,*">
 					<TextBlock Grid.Row="0" Grid.Column="0" Text="Vehicle type"/>
-					<ComboBox  Grid.Row="0" Grid.Column="2" Items="{Binding VehicleTypes}" SelectedItem="{Binding SelectedVehicleType}"/>
+					<ComboBox  Grid.Row="0" Grid.Column="2" ItemsSource="{Binding VehicleTypes}" SelectedItem="{Binding SelectedVehicleType}"/>
 
 					<TextBlock Grid.Row="2" Grid.Column="0" Text="Height"/>
 					<TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding Height}"/>

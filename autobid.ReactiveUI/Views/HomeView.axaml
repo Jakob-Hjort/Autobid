@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:autobid.ReactiveUI.ViewModels"
              x:DataType="vm:HomeViewModel"
-             Margin="16">
+             Margin="16"
+			 xmlns:au="using:autobid.Domain.Auctions">
 	<Grid ColumnDefinitions="*,240">
 
 		<!-- Venstre kolonne -->
@@ -19,9 +20,10 @@
 					  MinHeight="220"
 					  RowHeight="32">
 				<DataGrid.Columns>
-					<DataGridTextColumn Header="Name"   Binding="{Binding VehicleName}" />
+					<DataGridTextColumn Header="Name"   Binding="{Binding CarName}" />
 					<DataGridTextColumn Header="Årgang" Binding="{Binding Year}" />
 					<DataGridTextColumn Header="Bud"    Binding="{Binding Bid}" />
+					<DataGridTextColumn Header="Bruger Navn"    Binding="{Binding Username}" />
 				</DataGrid.Columns>
 			</DataGrid>
 
@@ -35,10 +37,12 @@
 					  GridLinesVisibility="All"
 					  MinHeight="220"
 					  RowHeight="32">
+				
 				<DataGrid.Columns>
-					<DataGridTextColumn Header="Name"   Binding="{Binding VehicleName}" />
+					<DataGridTextColumn Header="Name"   Binding="{Binding CarName}" />
 					<DataGridTextColumn Header="Årgang" Binding="{Binding Year}" />
 					<DataGridTextColumn Header="Bud"    Binding="{Binding Bid}" />
+					<DataGridTextColumn Header="Bud"    Binding="{Binding Username}" />
 				</DataGrid.Columns>
 			</DataGrid>
 		</Grid>

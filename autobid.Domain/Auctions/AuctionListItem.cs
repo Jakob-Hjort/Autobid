@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace autobid.Domain.Auctions
 {
-	public record AuctionListItem(uint Id, string CarName, int Year, decimal LastBid, string Username);
+	public record AuctionListItem(uint Id, string CarName, int Year, decimal Bid, string Username);
 }

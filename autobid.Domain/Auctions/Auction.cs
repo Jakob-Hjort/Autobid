@@ -32,7 +32,7 @@ public sealed class Auction
     public Bid? HighestBid                      // Hjælper: hent højeste bud (eller null)
         => _bids.OrderByDescending(b => b.Amount).FirstOrDefault();
 
-    public Auction(Vehicle vehicle, User seller, decimal minPrice, uint auctionId) // Ctor
+    public Auction(Vehicle vehicle, User seller, decimal minPrice, uint auctionId = 0) // Ctor
 	{
 		Id = NextId();                          // Tildel nyt id fra statisk tæller
 		Vehicle = vehicle;                      // Gem reference til bilen
