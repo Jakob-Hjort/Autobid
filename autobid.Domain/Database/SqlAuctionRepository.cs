@@ -110,12 +110,15 @@ public sealed class SqlAuctionRepository : IAuctionRepository
         var items = new List<AuctionListItem>();
         while (reader.Read())
         {
-            items.Add(
+			int highestBidOrdinal = reader.GetOrdinal("highestBid");
+
+
+			items.Add(
                 new(
 					Convert.ToUInt32(reader.GetInt32(reader.GetOrdinal("auctionId"))),
 					reader.GetString(reader.GetOrdinal("name")),
 					reader.GetInt16(reader.GetOrdinal("year")),
-					reader.GetDecimal(reader.GetOrdinal("highestBid")),
+					await reader.IsDBNullAsync(highestBidOrdinal) ? 0 : reader.GetDecimal(highestBidOrdinal),
 					reader.GetString(reader.GetOrdinal("username"))
 				)
 			);

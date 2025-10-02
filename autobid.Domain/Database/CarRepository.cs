@@ -188,6 +188,8 @@ namespace autobid.Domain.Database
 				pOut
 			];
 
+			cmd.Parameters.AddRange(parameters);
+
 			await cmd.ExecuteNonQueryAsync();
 
 			return Convert.ToInt32(pOut.Value);
@@ -207,6 +209,8 @@ namespace autobid.Domain.Database
 				new("@personalCarId", vehicleId),
 				pOut
 			];
+
+			cmd.Parameters.AddRange(parameters);
 
 			await cmd.ExecuteNonQueryAsync();
 
