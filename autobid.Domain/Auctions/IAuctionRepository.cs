@@ -17,5 +17,6 @@ public interface IAuctionRepository
     uint Add(Auction auction);                  // Opret og returér id (kan ignoreres ved static id)
     void Update(Auction auction);               // Gem ændringer (fx lukket status)
     void AddBid(uint auctionId, Bid bid);       // Tilføj bud på en auktion
+    
 }
 

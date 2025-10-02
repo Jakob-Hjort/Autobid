@@ -15,16 +15,16 @@ namespace autobid.Domain.Auctions;
 public interface IAuctionHouse
 {
     // A3: Sæt køretøj til salg (overload uden/med notifikations-delegate)
-    uint SætTilSalg(Vehicle køretøj, User sælger, decimal minimumPris);
-    uint SætTilSalg(Vehicle køretøj, User sælger, decimal minimumPris, AuctionNotification notify);
+    Task<uint> SetForSale(Vehicle vehicle, User seller, decimal minimumPrice);
+    Task<uint> SetForSale(Vehicle vehicle, User seller, decimal minimumPrice, AuctionNotification notify);
 
     // A5: Modtag bud (evt. med specifik notifikation)
-    bool ModtagBud(User køber, uint auktionsNummer, decimal beløb, AuctionNotification? notify = null);
+    Task<bool> TakeBid(User buyer, uint auctionNumber, decimal cost, AuctionNotification? notify = null);
 
     // A6: Sælger accepterer højeste bud (overfører penge og lukker auktion)
-    bool AccepterBud(User sælger, uint auktionsNummer);
+    Task<bool> AcceptBid(User sælger, uint auktionsNummer);
 
     // A7: Find auktion med id – trådet (Task.Run)
-    Task<Auction?> FindAuktionMedIDAsync(uint id, CancellationToken ct = default);
+    Task<Auction?> FindAuctionById(uint id);
 }
 

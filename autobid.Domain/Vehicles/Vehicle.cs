@@ -13,7 +13,7 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public abstract class Vehicle
 {
-    public uint Id { get; init; }                      // Primærnøgle fra DB (init: sættes i ctor/object-init)
+    public uint Id { get; set; }                      // Primærnøgle fra DB (init: sættes i ctor/object-init)
 
     private string _name = string.Empty;               // Backing field til Name
     public string Name                                  // Køretøjets navn/beskrivelse
