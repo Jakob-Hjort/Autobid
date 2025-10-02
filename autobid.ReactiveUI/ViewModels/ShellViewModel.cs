@@ -28,37 +28,26 @@ namespace autobid.ReactiveUI.ViewModels
     {
         private readonly User _user;
 
-        // Vises i headeren
-        public string Greeting => $"Velkommen, {_user.Username}";
+       
 
-        // Venstremenuens punkter
-        public ObservableCollection<NavItem> Pages { get; }
 
-        // Det view der vises i content-området
         private ViewModelBase? _currentPage;
         public ViewModelBase? CurrentPage
         {
             get => _currentPage;
-            set => this.RaiseAndSetIfChanged(ref _currentPage, value);
-        }
-
-        // Selektion i venstremenuen
-        private NavItem? _selectedPage;
-        public NavItem? SelectedPage
-        {
-            get => _selectedPage;
             set
             {
-                this.RaiseAndSetIfChanged(ref _selectedPage, value);
-                if (value is not null) CurrentPage = value.ViewModel;
+                this.RaiseAndSetIfChanged(ref _currentPage, value);
             }
         }
+
+        
 
         public ReactiveCommand<Unit,Unit> GoToHomeCommand { get; }
         public ReactiveCommand<Unit,Unit> GoToProfileCommand { get; }
         public ReactiveCommand<Unit,Unit> GoToSetForSaleCommand { get; }
 
-        public ShellViewModel(User user)
+        public ShellViewModel(User user) : base("Shell view")
         {
             _user = user;
 
@@ -66,20 +55,14 @@ namespace autobid.ReactiveUI.ViewModels
             GoToProfileCommand = ReactiveCommand.Create(GoToProfile);
             GoToSetForSaleCommand = ReactiveCommand.Create(GoToSetForSale);
 
-            //var profileSvc = new UserProfileReadService(); // din eksisterende service
-
-            //Pages = new ObservableCollection<NavItem>
-            //{
-            //    new NavItem("Home",        new HomeViewModel(_user),                    "🏠"),
-            //    new NavItem("Set for sale",new SetForSaleViewModel(_user),             "🛒"),
-            //    new NavItem("Profile",     new ProfileViewModel(profileSvc, _user),    "👤"),
-            //};
-
-            //SelectedPage = Pages.FirstOrDefault(); // vælg første som default
+            GoToHome();
         }
 
-        void GoToSetForSale() =>
+        void GoToSetForSale()
+        {
             CurrentPage = new SetForSaleViewModel(_user);
+        }
+           
 
         void GoToProfile() =>
             CurrentPage = new ProfileViewModel(new UserProfileReadService(), _user);

@@ -17,13 +17,12 @@
 	<DockPanel>
 		<Border DockPanel.Dock="Top" Background="{StaticResource Brush.Card}" Padding="12"
 				BorderBrush="{StaticResource Brush.Border}" BorderThickness="0 0 0 1">
-			<TextBlock Name="HeaderText" Text="autobid — Login"
+			<TextBlock Name="HeaderText" Text="{Binding Title}"
 					   Foreground="{StaticResource Brush.Text}" FontSize="18" FontWeight="SemiBold"/>
 		</Border>
 
 		<Border DockPanel.Dock="Bottom" Margin="16" Background="{StaticResource Brush.Card}" CornerRadius="12" Padding="16">
 			<StackPanel>
-				<TextBlock Text="Her viser vi Login / CreateUser / Home"/>
 				<ContentControl Name="MainContent" Content="{Binding Content}"/>
 			</StackPanel>
 		</Border>

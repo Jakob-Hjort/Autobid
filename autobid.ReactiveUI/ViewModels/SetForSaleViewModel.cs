@@ -51,7 +51,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
         public void AddBid(uint auctionId, autobid.Domain.Auctions.Bid bid)
         { if (_store.TryGetValue(auctionId, out var a)) a.AddBid(bid); }
     }
-    public SetForSaleViewModel(IAuctionHouse house, User userID)
+    public SetForSaleViewModel(IAuctionHouse house, User userID) : base("Create auction")
     {
         _house = house;
         _seller = userID;
