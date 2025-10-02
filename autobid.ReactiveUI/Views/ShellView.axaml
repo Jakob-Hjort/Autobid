@@ -5,9 +5,6 @@
              x:DataType="vm:ShellViewModel">
 
 	<DockPanel>
-		<Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
-			<TextBlock Text="autobid" Foreground="White" FontSize="18" FontWeight="SemiBold"/>
-		</Grid>
 
 		<!-- Venstremenu -->
 		<Border DockPanel.Dock="Left" Width="100" >
@@ -15,6 +12,7 @@
 			<StackPanel>
 				<Button Name="GoToHome" Content="Home" Command="{Binding GoToHomeCommand}" Width="100"/>
 				<Button  Name="SetForSale" Content="SetForSale" Command="{Binding GoToSetForSaleCommand}" Width="100"/>
+				
 				<Button  Name="GoToProfile" Content="Min Profil" Command="{Binding GoToProfileCommand}" Width="100"/>
 			</StackPanel>
 		</Border>
