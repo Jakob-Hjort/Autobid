@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace autobid.Domain.Database;
 
 // Implementerer dit IAuctionRepository
-internal sealed class SqlAuctionRepository
+public sealed class SqlAuctionRepository
 {
 	CarRepository _carRepository = new();
 	UserRepository _userRepository = new();
