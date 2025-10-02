@@ -14,7 +14,7 @@ public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
 
     public ViewModelActivator Activator { get; } = new();
 
-    public ProfileViewModel(IUserProfileReadService read, User user)
+    public ProfileViewModel(IUserProfileReadService read, User user) : base("Profile")
     {
         _read = read;
         _user = user;

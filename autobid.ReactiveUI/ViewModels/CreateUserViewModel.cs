@@ -86,7 +86,7 @@ public class CreateUserViewModel : ViewModelBase
 	public ReactiveCommand<Unit, Task> CreateUserCommand { get;}
 	public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
 
-	public CreateUserViewModel()
+	public CreateUserViewModel() : base("Create user")
 	{
 		CreateUserCommand = ReactiveCommand.Create(CreateUser);
 		GoBackCommand = ReactiveCommand.Create(GoBack);

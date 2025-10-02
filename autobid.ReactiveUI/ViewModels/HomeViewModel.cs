@@ -21,7 +21,7 @@ namespace autobid.ReactiveUI.ViewModels
         public ReactiveCommand<Unit, Unit> ShowProfileCommand { get; }
         public ReactiveCommand<Unit, Unit> ShowBidHistoryCommand { get; }
 
-        public HomeViewModel(User user)
+        public HomeViewModel(User user) : base("Home view")
         {
             _user = user;
 

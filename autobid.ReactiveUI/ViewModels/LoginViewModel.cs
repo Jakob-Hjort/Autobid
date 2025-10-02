@@ -29,7 +29,7 @@ namespace autobid.ReactiveUI.ViewModels
 
 		public ReactiveCommand<Unit,Unit> GoToSignUpCommand { get; }
 		public ReactiveCommand<Unit, Task> LoginCommand { get; }
-		public LoginViewModel()
+		public LoginViewModel() : base("Login")
 		{
 			GoToSignUpCommand = ReactiveCommand.Create(GoToSignUpPage);
 			LoginCommand = ReactiveCommand.Create(Login);

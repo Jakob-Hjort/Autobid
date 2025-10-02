@@ -1,4 +1,5 @@
 ﻿using autobid.ReactiveUI.Views;
+using Avalonia.Controls.Chrome;
 using ReactiveUI;
 
 namespace autobid.ReactiveUI.ViewModels
@@ -7,9 +8,11 @@ namespace autobid.ReactiveUI.ViewModels
 	{
 		private static MainWindowViewModel _currentViewModel { get; set; } = null!;
 
-		public static void ChangeContent(object? content)
+		public static void ChangeContent(ViewModelBase? content)
 		{
+
 			_currentViewModel.Content = content;
+			_currentViewModel.Title = content.Title;
 		}
 
 		object? _content = new LoginViewModel();
@@ -19,9 +22,11 @@ namespace autobid.ReactiveUI.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _content, value, nameof(Content));
 		}
 
-		public MainWindowViewModel()
+		public MainWindowViewModel() : base("Main window")
 		{
 			_currentViewModel = this;
 		}
-	}
+
+       
+    }
 }
