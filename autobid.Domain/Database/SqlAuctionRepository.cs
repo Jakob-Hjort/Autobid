@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace autobid.Domain.Database;
 
-// Implementerer dit IAuctionRepository
 public sealed class SqlAuctionRepository : IAuctionRepository
 {
 	CarRepository _carRepository = new();
