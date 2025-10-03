@@ -57,7 +57,8 @@ public sealed class SetForSaleViewModel : ViewModelBase
 
         UpdateVisibilityFlags();
         Recalc();
-        CreateAuctionCommand = ReactiveCommand.Create(CreateAsync);
+
+        CreateAuctionCommand = ReactiveCommand.CreateFromTask(CreateAsync, this.WhenAnyValue(_ => _.CanCreate));
         CancelCommand = ReactiveCommand.Create(NavBack);
     }
 
@@ -180,13 +181,13 @@ public sealed class SetForSaleViewModel : ViewModelBase
     }
 
     // ---------- commands ----------
-    public ReactiveCommand<Unit, Task> CreateAuctionCommand { get; }
+    public ReactiveCommand<Unit, Unit> CreateAuctionCommand { get; }
     public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 
     async Task CreateAsync()
     {
         var vehicle = BuildVehicle();
-        await _house.SetForSale(vehicle, _seller, StartingBid); // returnerer auctionId
+        await _house.SetForSale(vehicle, _seller, StartingBid, (DateTimeOffset)this.CloseAuctionDateOffset); // returnerer auctionId
         MainWindowViewModel.ChangeContent(new HomeViewModel(_seller));
         await Task.CompletedTask;
     }

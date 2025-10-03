@@ -18,7 +18,7 @@ public sealed class Auction
 {
     private static uint _nextId = 1;            // Statisk tæller (krav: static member/metode)
     public static uint NextId() => _nextId++;   // Statisk metode: generér nyt id
-
+    public DateTimeOffset CloseDate { get; set; }
     public uint AuctionId { get; set; } = 0;
     public uint Id { get; }                     // Auktionsnummer
     public Vehicle Vehicle { get; }             // Køretøjet der sælges
@@ -32,14 +32,15 @@ public sealed class Auction
     public Bid? HighestBid                      // Hjælper: hent højeste bud (eller null)
         => _bids.OrderByDescending(b => b.Amount).FirstOrDefault();
 
-    public Auction(Vehicle vehicle, User seller, decimal minPrice, uint auctionId = 0) // Ctor
+    public Auction(Vehicle vehicle, User seller, decimal minPrice,DateTimeOffset closeDate, uint auctionId = 0) // Ctor
 	{
 		Id = NextId();                          // Tildel nyt id fra statisk tæller
 		Vehicle = vehicle;                      // Gem reference til bilen
 		Seller = seller;                        // Gem sælger
 		MinimumPrice = minPrice;                // Gem mindstepris
 		AuctionId=auctionId;
-	}
+        CloseDate = closeDate;
+    }
 
 	 public void AddBid(Bid bid)                 // Intern helper: læg bud på listen
     {

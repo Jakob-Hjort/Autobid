@@ -32,7 +32,7 @@ public sealed class SqlAuctionRepository : IAuctionRepository
 		minimumPriceParam.Scale = 2;
 		cmd.Parameters.Add(minimumPriceParam);
 		cmd.Parameters.Add(new SqlParameter("@isClosed", SqlDbType.Bit) { Value = auction.IsClosed });
-		cmd.Parameters.Add(new SqlParameter("@vehicleId", SqlDbType.Int) { Value = (int)auction.Vehicle.Id });
+        cmd.Parameters.Add(new SqlParameter("@vehicleId", SqlDbType.Int) { Value = (int)auction.Vehicle.Id });
 
 		var pOut = new SqlParameter("@NewAuctionId", SqlDbType.Int) { Direction = ParameterDirection.Output };
 		cmd.Parameters.Add(pOut);
@@ -62,11 +62,11 @@ public sealed class SqlAuctionRepository : IAuctionRepository
 
 	public async Task<Auction?> FindById(uint id)
 	{
-		string sql = @"";
+		string sql = @"SELECT * FROM auction WHERE auctionId = @auctionId";
 		await using SqlConnection conn = await Connection.OpenAsync();
 		await using SqlCommand cmd = new(sql, conn);
-
-		SqlDataReader reader = await cmd.ExecuteReaderAsync();
+		cmd.Parameters.AddWithValue("@auctionId", id);
+        SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
 		if (reader.Read())
 		{
@@ -81,7 +81,8 @@ public sealed class SqlAuctionRepository : IAuctionRepository
 				vehicle,
 				user,
 				reader.GetDecimal(reader.GetOrdinal("minimumPrice")),
-				Convert.ToUInt32(reader.GetInt32(reader.GetOrdinal("auctionId")))
+				reader.GetDateTimeOffset(reader.GetOrdinal("closeDate")),
+                Convert.ToUInt32(reader.GetInt32(reader.GetOrdinal("auctionId")))
 				);
 		}
 
@@ -98,7 +99,7 @@ public sealed class SqlAuctionRepository : IAuctionRepository
 		v.[year] ,u.username FROM auction as au
 		INNER JOIN [user] AS u ON u.userId = au.userId
 		INNER JOIN vehicle AS v ON v.vehicleId = au.vehicleId
-		WHERE au.isClosed = 0
+		WHERE GETDATE() < closeDate OR au.isClosed = 0
 		";
 
         await using SqlConnection conn = await Connection.OpenAsync();
@@ -109,12 +110,15 @@ public sealed class SqlAuctionRepository : IAuctionRepository
         var items = new List<AuctionListItem>();
         while (reader.Read())
         {
-            items.Add(
+			int highestBidOrdinal = reader.GetOrdinal("highestBid");
+
+
+			items.Add(
                 new(
 					Convert.ToUInt32(reader.GetInt32(reader.GetOrdinal("auctionId"))),
 					reader.GetString(reader.GetOrdinal("name")),
 					reader.GetInt16(reader.GetOrdinal("year")),
-					reader.GetDecimal(reader.GetOrdinal("highestBid")),
+					await reader.IsDBNullAsync(highestBidOrdinal) ? 0 : reader.GetDecimal(highestBidOrdinal),
 					reader.GetString(reader.GetOrdinal("username"))
 				)
 			);

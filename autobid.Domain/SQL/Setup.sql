@@ -124,6 +124,7 @@ CREATE TABLE auction(
 	isClosed BIT NOT NULL DEFAULT(0),
 	vehicleId INT NOT NULL,
 	userId INT NOT NULL,
+	closeDate DATETIME NOT NULL,
 	FOREIGN KEY (userId) REFERENCES [user](userId)
 	ON DELETE CASCADE,
 	FOREIGN KEY (vehicleId) REFERENCES vehicle(vehicleId)
