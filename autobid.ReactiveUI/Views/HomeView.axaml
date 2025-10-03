@@ -11,7 +11,7 @@
 		<Grid Grid.Column="0" RowDefinitions="Auto,*,Auto,*" Margin="0,0,16,0">
 			<TextBlock Grid.Row="0" Text="Your auctions" FontSize="28" FontWeight="SemiBold"/>
 
-			<DataGrid Grid.Row="1"
+			<DataGrid Grid.Row="1" SelectedItem="{Binding SelectedItemFromYourAuctions}"
 					  ItemsSource="{Binding YourAuctions}"
 					  AutoGenerateColumns="False"
 					  IsReadOnly="True"
@@ -19,6 +19,7 @@
 					  GridLinesVisibility="All"
 					  MinHeight="220"
 					  RowHeight="32">
+				
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Name"   Binding="{Binding CarName}" />
 					<DataGridTextColumn Header="Årgang" Binding="{Binding Year}" />
@@ -28,7 +29,7 @@
 
 			<TextBlock Grid.Row="2" Text="Current Auctions" FontSize="28" FontWeight="SemiBold" Margin="0,16,0,0"/>
 
-			<DataGrid Grid.Row="3"
+			<DataGrid Grid.Row="3" SelectedItem="{Binding SelectedItemFromCurrentAuctions}"
 					  ItemsSource="{Binding CurrentAuctions}"
 					  AutoGenerateColumns="False"
 					  IsReadOnly="True"

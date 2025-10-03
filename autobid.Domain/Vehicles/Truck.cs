@@ -17,8 +17,8 @@ public sealed class Truck : HeavyVehicle
 
     public Truck(
         uint id, string name, int km, string regNo, int year,
-        double engineLiters, bool towHitch)
-        : base(id, name, km, regNo, year)
+        double engineLiters, bool towHitch, double kmPerLiter)
+        : base(id, name, km, regNo, year, kmPerLiter)
     {
         HasTowHitch = towHitch;
         // Kørekort: C – med træk CE (krav V10)

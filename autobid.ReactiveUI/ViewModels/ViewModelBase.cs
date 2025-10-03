@@ -11,7 +11,7 @@ public class ViewModelBase : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _title, value);
 
     }
-    public ViewModelBase(string title)
+    public ViewModelBase(string title = "")
     {
         Title = title;
     }

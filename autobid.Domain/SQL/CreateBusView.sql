@@ -11,6 +11,7 @@ AS
 	v.energyClass,
 	f.kmPerLiter,
 	f.fuel,
+	f.engineLiters,
 	hv.heavyVehicleId,
 	hv.[length],
 	hv.[weight],

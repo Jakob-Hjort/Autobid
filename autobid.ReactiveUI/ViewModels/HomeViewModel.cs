@@ -12,10 +12,49 @@ namespace autobid.ReactiveUI.ViewModels
 {
     public class HomeViewModel : ViewModelBase
     {
-        private readonly User _user;
+        AuctionListItemViewModel _selectedItemFromYourAuctions;
+        public AuctionListItemViewModel SelectedItemFromYourAuctions
+        {
+            set
+            {
+                Task.Run(async () =>
+                {
+                    Auction? auction = await _repository.FindById(value.Id);
+                    if (auction != null)
+                        ShellViewModel.ChangeContent(new AuctionMakeBidViewModel(auction));
+
+				});
+            }
+        }
+
+		public AuctionListItemViewModel SelectedItemFromCurrentAuctions
+		{
+			set
+			{
+				Task.Run(async () =>
+				{
+					Auction? auction = await _repository.FindById(value.Id);
+					if (auction != null)
+                    {
+						if (_user.Username == value.Username)
+                        {
+							//ShellViewModel.ChangeContent(new AuctionAcceptBidViewModel()));
+						}
+                        else
+                        {
+							ShellViewModel.ChangeContent(new AuctionMakeBidViewModel(auction));
+						}
+					}
+
+				});
+			}
+		}
+
+
+		private readonly User _user;
         readonly SqlAuctionRepository _repository = new();
-        public ObservableCollection<AuctionListItem> YourAuctions { get; } = new();
-        public ObservableCollection<AuctionListItem> CurrentAuctions { get; } = new();
+        public ObservableCollection<AuctionListItemViewModel> YourAuctions { get; } = new();
+        public ObservableCollection<AuctionListItemViewModel> CurrentAuctions { get; } = new();
 
         public ReactiveCommand<Unit, Unit> SetForSaleCommand { get; }
         public ReactiveCommand<Unit, Unit> ShowProfileCommand { get; }
@@ -36,12 +75,12 @@ namespace autobid.ReactiveUI.ViewModels
 
 			foreach (var auction in auctionListItems)
             {
-                CurrentAuctions.Add(auction);
+                CurrentAuctions.Add(new(auction, _user));
             }
 
             foreach (var auction in auctionListItems.Where((auction) => auction.Username == _user.Username))
             {
-                YourAuctions.Add(auction);
+                YourAuctions.Add(new(auction, _user));
             }
 
 		}

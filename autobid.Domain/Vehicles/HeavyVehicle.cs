@@ -17,8 +17,8 @@ public abstract class HeavyVehicle : Vehicle
     public double Length { get; set; }                  // Længde i meter
 
     protected HeavyVehicle(                             // Ctor passerer fælles felter til base
-        uint id, string name, int km, string regNo, int year)
-        : base(id, name, km, regNo, year)               // Kald Vehicle-ctor
+        uint id, string name, int km, string regNo, int year, double kmPerLiter)
+        : base(id, name, km, regNo, year, kmPerLiter)               // Kald Vehicle-ctor
     { }
 
     public override string ToString() =>

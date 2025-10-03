@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS fuelTank
 CREATE TABLE fuelTank(
 	fuelTankId INT IDENTITY(1,1) PRIMARY KEY,
 	kmPerLiter FLOAT NOT NULL,
+	enginLiters Float NOT NULL,
 	fuel TINYINT NOT NULL
 )
 

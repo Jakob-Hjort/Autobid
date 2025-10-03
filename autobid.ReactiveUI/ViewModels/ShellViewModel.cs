@@ -26,10 +26,9 @@ namespace autobid.ReactiveUI.ViewModels
     // Selve shellens ViewModel (header + venstremenu + content)
     public sealed class ShellViewModel : ViewModelBase
     {
+        private static ShellViewModel? _currentShellViewModel;
+
         private readonly User _user;
-
-       
-
 
         private ViewModelBase? _currentPage;
         public ViewModelBase? CurrentPage
@@ -41,8 +40,6 @@ namespace autobid.ReactiveUI.ViewModels
             }
         }
 
-        
-
         public ReactiveCommand<Unit,Unit> GoToHomeCommand { get; }
         public ReactiveCommand<Unit,Unit> GoToProfileCommand { get; }
         public ReactiveCommand<Unit,Unit> GoToSetForSaleCommand { get; }
@@ -50,7 +47,7 @@ namespace autobid.ReactiveUI.ViewModels
         public ShellViewModel(User user) : base("Shell view")
         {
             _user = user;
-
+            _currentShellViewModel = this;
             GoToHomeCommand = ReactiveCommand.Create(GoToHome);
             GoToProfileCommand = ReactiveCommand.Create(GoToProfile);
             GoToSetForSaleCommand = ReactiveCommand.Create(GoToSetForSale);
@@ -69,5 +66,13 @@ namespace autobid.ReactiveUI.ViewModels
 
         void GoToHome() =>
             CurrentPage = new HomeViewModel(_user);
+
+        public static void ChangeContent(ViewModelBase Content)
+        {
+            if (_currentShellViewModel != null)
+            {
+				_currentShellViewModel.CurrentPage = Content;
+			}
+		}
     }
 }

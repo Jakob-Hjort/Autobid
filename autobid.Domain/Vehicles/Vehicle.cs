@@ -54,7 +54,7 @@ public abstract class Vehicle
 
     public License LicenseType { get; protected set; } = License.B; // Krævet kørekorttype
     public Fuel Fuel { get; set; }                      // Brændstof
-    public double KmPerLiter { get; set; }              // Brændstoføkonomi (km/l)
+    public double KmPerLiter { get; private set; }              // Brændstoføkonomi (km/l)
 
     // Motorstørrelse styres via protected setter (subtyper har egne regler for ranges)
     protected void SetEngineLiters(double v, double min, double max)
@@ -70,13 +70,14 @@ public abstract class Vehicle
     public EnergyClass Energy => EnergyClassCalculator.GetFor(this);
 
     protected Vehicle(                                  // Beskyttet ctor: kun subklasser konstruerer
-        uint id, string name, int km, string regNo, int year)
+        uint id, string name, int km, string regNo, int year, double kmPerLiter)
     {
         Id = id;                                        // Sæt Id
         Name = name;                                    // Valideret i set
         DistanceTraveledKm = km;                                        // Valideret i set
         RegistrationNumber = regNo;                     // Valideret i set (regex)
         Year = year;                                    // Ingen validering her (kan tilføjes)
+        KmPerLiter = kmPerLiter;
     }
 
     public override string ToString()                   // Pæn visning i lister/debug

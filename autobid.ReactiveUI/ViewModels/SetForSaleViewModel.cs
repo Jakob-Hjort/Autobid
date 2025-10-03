@@ -143,6 +143,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
     }
 
     // ---------- tekniske felter (bruges af flere typer) ----------
+    double? _kmPerLiter; public double? KmPerLiter { get => _kmPerLiter; set => this.RaiseAndSetIfChanged(ref _kmPerLiter, value, nameof(KmPerLiter)); }
     double? _engineLiters; public double? EngineLiters { get => _engineLiters; set { this.RaiseAndSetIfChanged(ref _engineLiters, value); Recalc(); } }
     bool _towBar = true; public bool TowBar { get => _towBar; set => this.RaiseAndSetIfChanged(ref _towBar, value); }
 
@@ -215,12 +216,12 @@ public sealed class SetForSaleViewModel : ViewModelBase
         var year = Year!.Value;
         // default afhænger af kategori (bare for UX – domæneklasserne tjekker selv ranges)
         var liters = EngineLiters ?? (SelectedCategory == VehicleCategory.Heavy ? 6.0 : 1.6);
-
+        double kmPerLiter = KmPerLiter != null ? (double)KmPerLiter : 0d;
         if (ShowHeavy)
         {
             if (ShowTruck)
             {
-                var t = new Truck(id: 0, name, km, reg, year, liters, TowBar);
+                var t = new Truck(id: 0, name, km, reg, year, liters, TowBar, kmPerLiter);
 
                 if (HeightMeter is double hm) t.HeightMeter = hm;
                 if (Length is double le) t.Length = le;
@@ -232,7 +233,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
             }
             else // Bus
             {
-                var b = new Bus(id: 0, name, km, reg, year, liters, TowBar);
+                var b = new Bus(id: 0, name, km, reg, year, liters, TowBar, kmPerLiter);
 
                 if (HeightMeter is double hm) b.HeightMeter = hm;
                 if (Length is double le) b.Length = le;
@@ -248,8 +249,8 @@ public sealed class SetForSaleViewModel : ViewModelBase
         else // Personal
         {
             PersonalCar car = ShowPrivate
-                ? new PrivatePersonalCar(id: 0, name, km, reg, year, liters, TowBar)
-                : new ProfessionalPersonalCar(id: 0, name, km, reg, year, liters, TowBar, TrailerCapacityKg ?? 0);
+                ? new PrivatePersonalCar(id: 0, name, km, reg, year, liters, TowBar, kmPerLiter)
+                : new ProfessionalPersonalCar(id: 0, name, km, reg, year, liters, TowBar, kmPerLiter, TrailerCapacityKg ?? 0);
 
             if (SeatsAmount is int seats) car.SeatsAmount = seats;
 

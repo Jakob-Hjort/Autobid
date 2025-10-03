@@ -61,11 +61,11 @@ namespace autobid.Domain.Database
 			return Convert.ToInt32(pOut.Value);
 		}
 
-		private async Task<int> Add(Fuel fuel, double kmPerLiter, SqlConnection conn)
+		private async Task<int> Add(Fuel fuel, double kmPerLiter, double engineLiters, SqlConnection conn)
 		{
 			string sql = @"
-			INSERT INTO fuelTank(fuel, [kmPerLiter])
-			VALUES(@fuel, @kmPerLiter);
+			INSERT INTO fuelTank(fuel, [kmPerLiter], engineLiters)
+			VALUES(@fuel, @kmPerLiter, @engineLiters);
 			SET @NewVehicleId = SCOPE_IDENTITY();
 			";
 
@@ -75,7 +75,8 @@ namespace autobid.Domain.Database
 
 			SqlParameter[] parameters = {
 				new SqlParameter("@fuel", SqlDbType.TinyInt) { Value = (int)fuel },
-				new SqlParameter("@kmPerLiter", SqlDbType.Float) { Value = (float)kmPerLiter },
+				new SqlParameter("@kmPerLiter", SqlDbType.Float) { Value = kmPerLiter },
+				new SqlParameter("@engineLiters", SqlDbType.Float) { Value = engineLiters },
 				pOut
 			};
 
@@ -87,7 +88,7 @@ namespace autobid.Domain.Database
 
 		private async Task<int> Add(Vehicle vehicle, SqlConnection conn)
 		{
-			int id = await Add(vehicle.Fuel, vehicle.KmPerLiter, conn);
+			int id = await Add(vehicle.Fuel, vehicle.KmPerLiter, vehicle.EngineLiters, conn);
 			string sql = @"
 			INSERT INTO vehicle([name], distanceTraveledKm, registrationNumber, [year], hasTowHitch, license, energyClass, fuelTankId)
 			VALUES(@carName, @DistanceTraveledKm, @RegistrationNumber, @Year, @HasTowHitch, @LicenseType, @Energy, 
@@ -248,7 +249,7 @@ namespace autobid.Domain.Database
 		}
 
 		async Task<bool> IsVehicleFound(SqlDataReader reader) =>
-			reader.Read() && await reader.IsDBNullAsync(reader.GetOrdinal("vehicleId"));
+			reader.Read() && !await reader.IsDBNullAsync(reader.GetOrdinal("vehicleId"));
 
 
 		public async Task<Vehicle?> GetSingle(int vehicleId)
@@ -269,9 +270,10 @@ namespace autobid.Domain.Database
 					truckReader.GetString(truckReader.GetOrdinal("name")),
 					truckReader.GetInt32(truckReader.GetOrdinal("distanceTraveledKm")),
 					truckReader.GetString(truckReader.GetOrdinal("registrationNumber")),
-					truckReader.GetInt32(truckReader.GetOrdinal("year")),
+					truckReader.GetInt16(truckReader.GetOrdinal("year")),
 					truckReader.GetDouble(truckReader.GetOrdinal("kmPerLiter")),
-					truckReader.GetBoolean(truckReader.GetOrdinal("hasTowHitch"))
+					truckReader.GetBoolean(truckReader.GetOrdinal("hasTowHitch")),
+					truckReader.GetDouble(truckReader.GetOrdinal("kmPerLiter"))
 				);
 			}
 			await using SqlCommand busCmd = new(busViewSql, conn);
@@ -288,8 +290,9 @@ namespace autobid.Domain.Database
 						busReader.GetString(busReader.GetOrdinal("registrationNumber")),
 						busReader.GetInt32(busReader.GetOrdinal("year")),
 						busReader.GetDouble(busReader.GetOrdinal("kmPerLiter")),
-						busReader.GetBoolean(busReader.GetOrdinal("hasTowHitch"))
-					)
+						busReader.GetBoolean(busReader.GetOrdinal("hasTowHitch")),
+						busReader.GetDouble(busReader.GetOrdinal("kmPerLiter")
+					))
 				{
 					SeatsAmount = busReader.GetInt32(busReader.GetOrdinal("seatsAmount")),
 					BedsAmount = busReader.GetInt32(busReader.GetOrdinal("bedsAmount")),
@@ -311,8 +314,9 @@ namespace autobid.Domain.Database
 						privatePersonalCarReader.GetString(privatePersonalCarReader.GetOrdinal("registrationNumber")),
 						privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("year")),
 						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("kmPerLiter")),
-						privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasTowHitch"))
-					)
+						privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasTowHitch")),
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("kmPerLiter")
+					))
 				{
 					SeatsAmount = privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("seatsAmount")),
 					Trunk = (
@@ -329,26 +333,27 @@ namespace autobid.Domain.Database
 			var professionalPersonalCarReader = await professionalPersonalCarCmd.ExecuteReaderAsync();
 			if (await IsVehicleFound(professionalPersonalCarReader))
 			{
-				uint truckId = Convert.ToUInt32(privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("privatePersonalCarId")));
+				uint truckId = Convert.ToUInt32(professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("privatePersonalCarId")));
 
 				return new ProfessionalPersonalCar(
 					truckId,
-					privatePersonalCarReader.GetString(privatePersonalCarReader.GetOrdinal("name")),
-						privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("distanceTraveledKm")),
-						privatePersonalCarReader.GetString(privatePersonalCarReader.GetOrdinal("registrationNumber")),
-						privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("year")),
-						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("kmPerLiter")),
-						privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasTowHitch"))
-					)
+					professionalPersonalCarReader.GetString(professionalPersonalCarReader.GetOrdinal("name")),
+						professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("distanceTraveledKm")),
+						professionalPersonalCarReader.GetString(professionalPersonalCarReader.GetOrdinal("registrationNumber")),
+						professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("year")),
+						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("kmPerLiter")),
+						professionalPersonalCarReader.GetBoolean(professionalPersonalCarReader.GetOrdinal("hasTowHitch")),
+						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("kmPerLiter")
+					))
 				{
-					SeatsAmount = privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("seatsAmount")),
+					SeatsAmount = professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("seatsAmount")),
 					Trunk = (
-						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkLength")),
-						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkWidth")),
-						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkHeight"))
+						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("trunkLength")),
+						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("trunkWidth")),
+						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("trunkHeight"))
 					),
-					HasSafetyBar = privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasSafetyBar")),
-					TrailerCapacityKg = privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("trailerCapacityKg"))
+					HasSafetyBar = professionalPersonalCarReader.GetBoolean(professionalPersonalCarReader.GetOrdinal("hasSafetyBar")),
+					TrailerCapacityKg = professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("trailerCapacityKg"))
 				};
 			}
 

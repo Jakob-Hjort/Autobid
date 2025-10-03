@@ -15,8 +15,8 @@ public sealed class PrivatePersonalCar : PersonalCar
 
     public PrivatePersonalCar(
         uint id, string name, int km, string regNo, int year,
-        double engineLiters, bool towHitch)
-        : base(id, name, km, regNo, year, engineLiters, towHitch)
+        double engineLiters, bool towHitch, double kmPerLiter)
+        : base(id, name, km, regNo, year, engineLiters, towHitch, kmPerLiter)
     {
         // Intet særligt ud over basis-reglerne i PersonalCar
     }

@@ -11,6 +11,7 @@ AS
 	v.energyClass,
 	f.kmPerLiter,
 	f.fuel,
+	f.engineLiters,
 	pc.personalCarId,
 	pc.seatsAmount,
 	pc.trunkHeight,

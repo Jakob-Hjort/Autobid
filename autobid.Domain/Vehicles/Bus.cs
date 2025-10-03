@@ -19,8 +19,8 @@ public sealed class Bus : HeavyVehicle                  // sealed: ingen videre 
 
     public Bus(
         uint id, string name, int km, string regNo, int year,
-        double engineLiters, bool towHitch)             // Motorstørrelse + træk-krog
-        : base(id, name, km, regNo, year)               // Kald HeavyVehicle-ctor
+        double engineLiters, bool towHitch, double kmPerLiter)             // Motorstørrelse + træk-krog
+        : base(id, name, km, regNo, year, kmPerLiter)               // Kald HeavyVehicle-ctor
     {
         HasTowHitch = towHitch;                            // Sæt træk
         // Kørekort: D (bus) – med træk bliver det DE (krav V7)

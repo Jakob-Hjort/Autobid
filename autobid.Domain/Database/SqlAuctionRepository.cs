@@ -19,20 +19,21 @@ public sealed class SqlAuctionRepository : IAuctionRepository
 		auction.Vehicle.Id = Convert.ToUInt32(await _carRepository.Add(auction.Vehicle));
 
 		string sql = @"
-        INSERT INTO auction(userId, minimumPrice, isClosed, vehicleId)
-        VALUES(@userId, @minimumPrice, @isClosed, @vehicleId);
+        INSERT INTO auction(userId, minimumPrice, isClosed, vehicleId, closeDate)
+        VALUES(@userId, @minimumPrice, @isClosed, @vehicleId, @closeDate);
         SELECT @NewAuctionId = CAST(SCOPE_IDENTITY() AS INT);
     ";
 		using SqlConnection conn = await Connection.OpenAsync();
 		using SqlCommand cmd = new(sql, conn);
 
-		cmd.Parameters.Add(new SqlParameter("@userId", SqlDbType.Int) { Value = (int)auction.Seller.Id });
+		cmd.Parameters.Add(new SqlParameter("@userId", SqlDbType.Int) { Value = Convert.ToInt32(auction.Seller.Id) });
 		var minimumPriceParam = new SqlParameter("@minimumPrice", SqlDbType.Decimal) { Value = auction.MinimumPrice };
 		minimumPriceParam.Precision = 18;
 		minimumPriceParam.Scale = 2;
 		cmd.Parameters.Add(minimumPriceParam);
-		cmd.Parameters.Add(new SqlParameter("@isClosed", SqlDbType.Bit) { Value = auction.IsClosed });
-        cmd.Parameters.Add(new SqlParameter("@vehicleId", SqlDbType.Int) { Value = (int)auction.Vehicle.Id });
+		cmd.Parameters.Add(new SqlParameter("@closeDate", SqlDbType.DateTime) { Value = auction.CloseDate.DateTime });
+		cmd.Parameters.Add(new SqlParameter("@isClosed", SqlDbType.Bit) { Value = Convert.ToInt32(auction.IsClosed) });
+        cmd.Parameters.Add(new SqlParameter("@vehicleId", SqlDbType.Int) { Value = Convert.ToInt32(auction.Vehicle.Id) });
 
 		var pOut = new SqlParameter("@NewAuctionId", SqlDbType.Int) { Direction = ParameterDirection.Output };
 		cmd.Parameters.Add(pOut);
@@ -65,7 +66,7 @@ public sealed class SqlAuctionRepository : IAuctionRepository
 		string sql = @"SELECT * FROM auction WHERE auctionId = @auctionId";
 		await using SqlConnection conn = await Connection.OpenAsync();
 		await using SqlCommand cmd = new(sql, conn);
-		cmd.Parameters.AddWithValue("@auctionId", id);
+		cmd.Parameters.AddWithValue("@auctionId", Convert.ToInt32(id));
         SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
 		if (reader.Read())

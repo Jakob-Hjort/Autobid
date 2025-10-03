@@ -17,8 +17,8 @@ public abstract class PersonalCar : Vehicle
 
     protected PersonalCar(                              // Base-ctor for personbiler
         uint id, string name, int km, string regNo, int year,
-        double engineLiters, bool towHitch)
-        : base(id, name, km, regNo, year)
+        double engineLiters, bool towHitch, double kmPerLiter)
+        : base(id, name, km, regNo, year, kmPerLiter)
     {
         HasTowHitch = towHitch;                            // Træk-krog gemmes
         LicenseType = License.B;                        // Udgangspunkt: B (krav V15)

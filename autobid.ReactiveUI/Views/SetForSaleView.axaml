@@ -80,21 +80,24 @@
 				<Panel>
 					<!-- HEAVY -->
 					<StackPanel Spacing="10" IsVisible="{Binding ShowHeavy}">
-						<Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+						<Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto, Auto" RowSpacing="8">
 							<TextBlock Grid.Row="0" Grid.Column="0" Text="Engine size (L)"/>
 							<TextBox   Grid.Row="0" Grid.Column="2" Text="{Binding EngineLiters, Mode=TwoWay}"/>
 
-							<TextBlock Grid.Row="1" Grid.Column="0" Text="Height (m)"/>
-							<TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding HeightMeter, Mode=TwoWay}"/>
+							<TextBlock Grid.Row="1" Grid.Column="0" Text="Km Per Liter"/>
+							<TextBox   Grid.Row="1" Grid.Column="2" Text="{Binding KmPerLiter, Mode=TwoWay}"/>
 
-							<TextBlock Grid.Row="2" Grid.Column="0" Text="Length (m)"/>
-							<TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding Length, Mode=TwoWay}"/>
+							<TextBlock Grid.Row="2" Grid.Column="0" Text="Height (m)"/>
+							<TextBox   Grid.Row="2" Grid.Column="2" Text="{Binding HeightMeter, Mode=TwoWay}"/>
 
-							<TextBlock Grid.Row="3" Grid.Column="0" Text="Weight (kg)"/>
-							<TextBox   Grid.Row="3" Grid.Column="2" Text="{Binding WeightKg, Mode=TwoWay}"/>
+							<TextBlock Grid.Row="3" Grid.Column="0" Text="Length (m)"/>
+							<TextBox   Grid.Row="3" Grid.Column="2" Text="{Binding Length, Mode=TwoWay}"/>
 
-							<TextBlock Grid.Row="4" Grid.Column="0" Text="Tow bar"/>
-							<CheckBox  Grid.Row="4" Grid.Column="2" IsChecked="{Binding TowBar, Mode=TwoWay}" Content=" "/>
+							<TextBlock Grid.Row="4" Grid.Column="0" Text="Weight (kg)"/>
+							<TextBox   Grid.Row="4" Grid.Column="2" Text="{Binding WeightKg, Mode=TwoWay}"/>
+
+							<TextBlock Grid.Row="5" Grid.Column="0" Text="Tow bar"/>
+							<CheckBox  Grid.Row="5" Grid.Column="2" IsChecked="{Binding TowBar, Mode=TwoWay}" Content=" "/>
 
 							<!-- Truck-specifikt -->
 							<StackPanel Grid.Row="5" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="8" IsVisible="{Binding ShowTruck}">
