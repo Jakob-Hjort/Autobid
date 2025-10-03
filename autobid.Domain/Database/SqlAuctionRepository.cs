@@ -82,8 +82,8 @@ public sealed class SqlAuctionRepository : IAuctionRepository
 				vehicle,
 				user,
 				reader.GetDecimal(reader.GetOrdinal("minimumPrice")),
-				reader.GetDateTimeOffset(reader.GetOrdinal("closeDate")),
-                Convert.ToUInt32(reader.GetInt32(reader.GetOrdinal("auctionId")))
+				reader.GetDateTime(reader.GetOrdinal("closeDate")),
+				Convert.ToUInt32(reader.GetInt32(reader.GetOrdinal("auctionId")))
 				);
 		}
 

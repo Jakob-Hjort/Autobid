@@ -2,11 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace autobid.ReactiveUI;
+namespace autobid.ReactiveUI.Views;
 
-public partial class AuctionMakeBidViewModel : UserControl
+public partial class AuctionMakeBidView : UserControl
 {
-    public AuctionMakeBidViewModel()
+    public AuctionMakeBidView()
     {
         InitializeComponent();
     }

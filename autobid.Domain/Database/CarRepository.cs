@@ -271,7 +271,7 @@ namespace autobid.Domain.Database
 					truckReader.GetInt32(truckReader.GetOrdinal("distanceTraveledKm")),
 					truckReader.GetString(truckReader.GetOrdinal("registrationNumber")),
 					truckReader.GetInt16(truckReader.GetOrdinal("year")),
-					truckReader.GetDouble(truckReader.GetOrdinal("kmPerLiter")),
+					truckReader.GetDouble(truckReader.GetOrdinal("engineLiters")),
 					truckReader.GetBoolean(truckReader.GetOrdinal("hasTowHitch")),
 					truckReader.GetDouble(truckReader.GetOrdinal("kmPerLiter"))
 				);

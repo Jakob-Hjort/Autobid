@@ -10,11 +10,9 @@ namespace autobid.ReactiveUI.ViewModels
 	public class AuctionMakeBidViewModel : ViewModelBase
 	{
 		Auction _auction;
-		readonly Bid bid;
+		Bid? bid;
 		public AuctionMakeBidViewModel(Auction auction): base("Make Bid")
 		{
-			ArgumentNullException.ThrowIfNull(auction.HighestBid);
-
 			_auction = auction;
 			bid = auction.HighestBid;
 		}
