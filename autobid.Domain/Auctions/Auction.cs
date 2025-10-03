@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using autobid.Domain.Users;                     // Sælger er en User
-using autobid.Domain.Vehicles;                  // Den vare der sælges er et Vehicle
+using autobid.Domain.Users;                     
+using autobid.Domain.Vehicles;                  
 
 namespace autobid.Domain.Auctions;
 
@@ -51,6 +50,6 @@ public sealed class Auction
 
     public void Close() => IsClosed = true;     // Marker auktionen som lukket (ved accept)
 
-    public override string ToString()           // Pæn tekst
+    public override string ToString()          
         => $"#{Id} – {Vehicle.Name} – Min: {MinimumPrice:n0} – Bud: {_bids.Count}";
 }

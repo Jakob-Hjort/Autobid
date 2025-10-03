@@ -1,0 +1,47 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:autobid.ReactiveUI.ViewModels"
+    xmlns:domain="using:autobid.Domain.Auctions"
+    x:Class="autobid.ReactiveUI.Views.BidHistoryView"
+    x:DataType="vm:BidHistoryViewModel">
+
+	<StackPanel Margin="20" Spacing="16">
+
+		<TextBlock Text="Your bid history" FontSize="22" FontWeight="Bold"/>
+
+		<DataGrid ItemsSource="{Binding Bids}"
+				  AutoGenerateColumns="False"
+				  IsReadOnly="True"
+				  HeadersVisibility="Column"
+				  GridLinesVisibility="All"
+				  RowHeight="36">
+
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Name"   Binding="{Binding VehicleName}" />
+				<DataGridTextColumn Header="Årgang" Binding="{Binding Year}" />
+				<DataGridTextColumn Header="Bud"    Binding="{Binding BidAmount, StringFormat={}{0:N0}}" />
+
+				<!-- Final: 'WON' hvis vundet, ellers final beløb -->
+				<DataGridTemplateColumn Header="Final">
+					<DataGridTemplateColumn.CellTemplate>
+						<!-- Fortæl kompilerede bindinger at hver række er BidHistoryEntry -->
+						<DataTemplate x:DataType="domain:BidHistoryEntry">
+							<Grid>
+								<TextBlock Text="WON"
+										   FontWeight="Bold"
+										   VerticalAlignment="Center"
+										   IsVisible="{Binding IsWinner}" />
+								<TextBlock Text="{Binding FinalAmount, StringFormat={}{0:N0}}"
+										   VerticalAlignment="Center"
+										   IsVisible="{Binding IsNotWinner}" />
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<!--<Button Content="Back" Width="120" Command="{Binding GoBackCommand}" />-->
+	</StackPanel>
+</UserControl>

@@ -10,7 +10,7 @@ namespace autobid.ReactiveUI.ViewModels;
 public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
 {
     private readonly IUserProfileReadService _read;
-    private readonly User _user;                               // gem hele brugeren
+    private readonly User _user;                               
 
     public ViewModelActivator Activator { get; } = new();
 
@@ -87,6 +87,6 @@ public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
 
     private void NavigateBack()
     {
-        MainWindowViewModel.ChangeContent(new HomeViewModel(_user));
+        MainWindowViewModel.ChangeContent(new ShellViewModel(_user));
     }
 }

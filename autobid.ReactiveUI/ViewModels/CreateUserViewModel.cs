@@ -123,6 +123,6 @@ public class CreateUserViewModel : ViewModelBase
         
 
 
-        MainWindowViewModel.ChangeContent(new HomeViewModel(created));
+        MainWindowViewModel.ChangeContent(new ShellViewModel(created));
     }
 }

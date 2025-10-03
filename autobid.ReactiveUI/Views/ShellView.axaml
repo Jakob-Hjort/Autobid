@@ -5,17 +5,15 @@
              x:DataType="vm:ShellViewModel">
 
 	<DockPanel>
-		<Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
-			<TextBlock Text="autobid" Foreground="White" FontSize="18" FontWeight="SemiBold"/>
-		</Grid>
 
 		<!-- Venstremenu -->
-		<Border DockPanel.Dock="Left" Width="100" >
+		<Border DockPanel.Dock="Left" Width="200" >
 			<!--Background="#111820" BorderBrush="#1f2937" BorderThickness="0,0,1,0"-->
 			<StackPanel>
-				<Button Name="GoToHome" Content="Home" Command="{Binding GoToHomeCommand}" Width="100"/>
-				<Button  Name="SetForSale" Content="SetForSale" Command="{Binding GoToSetForSaleCommand}" Width="100"/>
-				<Button  Name="GoToProfile" Content="Min Profil" Command="{Binding GoToProfileCommand}" Width="100"/>
+				<Button Name="GoToHome" Content="Home" Command="{Binding GoToHomeCommand}" Width="200"/>
+				<Button  Name="SetForSale" Content="Set Auction for Sale" Command="{Binding GoToSetForSaleCommand}" Width="200" />
+				<Button Name="BidHistory" Content="My Bid History" Command="{Binding GoToBidHistoryCommand}" Width="200" />
+				<Button  Name="GoToProfile" Content="My Profil" Command="{Binding GoToProfileCommand}" Width="200"/>
 			</StackPanel>
 		</Border>
 

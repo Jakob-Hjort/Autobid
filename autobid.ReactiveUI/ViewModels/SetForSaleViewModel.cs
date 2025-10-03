@@ -5,7 +5,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
 using autobid.Domain.Users;
-using autobid.Domain.Auctions;     // IAuctionHouse + AuctionHouse
+using autobid.Domain.Auctions;   
 using autobid.Domain.Vehicles;
 using autobid.Domain.Database;
 
@@ -36,21 +36,6 @@ public sealed class SetForSaleViewModel : ViewModelBase
     public SetForSaleViewModel(User user)
     : this(new autobid.Domain.Auctions.AuctionHouse(new SqlAuctionRepository()), user)
     {
-    }
-
-    // Minimal in-memory repo der opfylder IAuctionRepository
-    private sealed class InMemoryAuctionRepository : autobid.Domain.Auctions.IAuctionRepository
-    {
-        private readonly System.Collections.Generic.Dictionary<uint, autobid.Domain.Auctions.Auction> _store = new();
-        private uint _next = 1;
-
-        public autobid.Domain.Auctions.Auction? FindById(uint id) => _store.TryGetValue(id, out var a) ? a : null;
-        public System.Collections.Generic.IEnumerable<autobid.Domain.Auctions.Auction> GetAllOpen()
-            => _store.Values.Where(a => !a.IsClosed);
-        public uint Add(autobid.Domain.Auctions.Auction auction) { var id = _next++; _store[id] = auction; return id; }
-        public void Update(autobid.Domain.Auctions.Auction auction) { /* no-op */ }
-        public void AddBid(uint auctionId, autobid.Domain.Auctions.Bid bid)
-        { if (_store.TryGetValue(auctionId, out var a)) a.AddBid(bid); }
     }
     public SetForSaleViewModel(IAuctionHouse house, User userID) : base("Create auction")
     {
