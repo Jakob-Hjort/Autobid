@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using autobid.ReactiveUI.Services;
 using autobid.ReactiveUI.ViewModels;
 
 namespace autobid.ReactiveUI.Views

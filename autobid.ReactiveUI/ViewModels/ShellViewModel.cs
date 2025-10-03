@@ -46,6 +46,7 @@ namespace autobid.ReactiveUI.ViewModels
         public ReactiveCommand<Unit,Unit> GoToHomeCommand { get; }
         public ReactiveCommand<Unit,Unit> GoToProfileCommand { get; }
         public ReactiveCommand<Unit,Unit> GoToSetForSaleCommand { get; }
+        public ReactiveCommand<Unit, Unit> GoToBidHistoryCommand { get; }
 
         public ShellViewModel(User user) : base("Shell view")
         {
@@ -54,6 +55,8 @@ namespace autobid.ReactiveUI.ViewModels
             GoToHomeCommand = ReactiveCommand.Create(GoToHome);
             GoToProfileCommand = ReactiveCommand.Create(GoToProfile);
             GoToSetForSaleCommand = ReactiveCommand.Create(GoToSetForSale);
+            GoToBidHistoryCommand = ReactiveCommand.Create(GoToBidHistory);
+
 
             GoToHome();
         }
@@ -66,6 +69,9 @@ namespace autobid.ReactiveUI.ViewModels
 
         void GoToProfile() =>
             CurrentPage = new ProfileViewModel(new UserProfileReadService(), _user);
+
+        void GoToBidHistory() =>
+          CurrentPage = new BidHistoryViewModel( _user);
 
         void GoToHome() =>
             CurrentPage = new HomeViewModel(_user);

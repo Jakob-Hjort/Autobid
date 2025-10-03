@@ -46,12 +46,12 @@
 			</DataGrid>
 		</Grid>
 
-		<!-- Højre kolonne -->
+		<!-- Højre kolonne --><!--
 		<StackPanel Grid.Column="1" Spacing="12" HorizontalAlignment="Stretch">
 			<Button Content="+ Set for sale" Command="{Binding SetForSaleCommand}" Classes="accent"/>
 			<Button Content="My profile" Command="{Binding ShowProfileCommand}" />
 			<Button Content="Bid history"    Command="{Binding ShowBidHistoryCommand}"/>
-		</StackPanel>
+		</StackPanel>-->
 
 	</Grid>
 </UserControl>

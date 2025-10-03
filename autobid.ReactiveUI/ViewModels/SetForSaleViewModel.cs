@@ -5,7 +5,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
 using autobid.Domain.Users;
-using autobid.Domain.Auctions;     // IAuctionHouse + AuctionHouse
+using autobid.Domain.Auctions;   
 using autobid.Domain.Vehicles;
 using autobid.Domain.Database;
 

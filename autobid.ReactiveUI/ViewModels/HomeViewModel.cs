@@ -21,13 +21,14 @@ namespace autobid.ReactiveUI.ViewModels
         public ReactiveCommand<Unit, Unit> ShowProfileCommand { get; }
         public ReactiveCommand<Unit, Unit> ShowBidHistoryCommand { get; }
 
+
         public HomeViewModel(User user) : base("Home view")
         {
             _user = user;
 
             SetForSaleCommand = ReactiveCommand.Create(OpenSetForSale);
-            ShowProfileCommand = ReactiveCommand.Create(OpenProfile);    // ← hook metoden op her
-            ShowBidHistoryCommand = ReactiveCommand.Create(() => { /* navigate bid history */ });
+            ShowProfileCommand = ReactiveCommand.Create(OpenProfile);
+            ShowBidHistoryCommand = ReactiveCommand.Create(OpenBidHistory);
         }
 
         public async Task LoadAuctions()
@@ -57,6 +58,12 @@ namespace autobid.ReactiveUI.ViewModels
             var svc = new autobid.Domain.Database.UserProfileReadService();
             var vm = new ProfileViewModel(svc, _user);     // giv User, ikke kun Id
             MainWindowViewModel.ChangeContent(vm);          // VM-first → ViewLocator viser viewet
+        }
+
+        private void OpenBidHistory()
+        {
+            var vm = new BidHistoryViewModel(_user);     
+            MainWindowViewModel.ChangeContent(vm);          
         }
     }
 }
