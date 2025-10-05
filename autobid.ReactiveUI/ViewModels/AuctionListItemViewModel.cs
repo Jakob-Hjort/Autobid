@@ -34,17 +34,20 @@ public class AuctionListItemViewModel : ViewModelBase
 
 	async Task GoToBidPage()
 	{
-		if (IsUsersAuction())
+        SqlAuctionRepository repo = new();
+        Auction? auction = await repo.FindById(_auctionListItem.Id);
+
+		if (auction == null)
+			return;
+
+        if (IsUsersAuction())
 		{
-			ShellViewModel.ChangeContent(new AuctionAcceptBidViewModel(new Bid(_currentUser, Bid)));
+			ShellViewModel.ChangeContent(new AuctionAcceptBidViewModel(auction));
 		}
 		else
 		{
-			SqlAuctionRepository repo = new();
-			Auction? auction = await repo.FindById(_auctionListItem.Id);
-
 			if (auction != null)
-				ShellViewModel.ChangeContent(new AuctionMakeBidViewModel(auction));
+				ShellViewModel.ChangeContent(new AuctionMakeBidViewModel(auction, _currentUser));
 		}
 	}
 }

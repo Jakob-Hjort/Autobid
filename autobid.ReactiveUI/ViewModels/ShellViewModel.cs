@@ -80,5 +80,11 @@ namespace autobid.ReactiveUI.ViewModels
 				_currentShellViewModel.CurrentPage = Content;
 			}
 		}
+
+        public static void GoToHomePage()
+        {
+            if (_currentShellViewModel != null)
+                _currentShellViewModel.CurrentPage = new HomeViewModel(_currentShellViewModel._user);
+        }
     }
 }

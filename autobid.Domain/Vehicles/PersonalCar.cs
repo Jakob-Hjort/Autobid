@@ -26,4 +26,7 @@ public abstract class PersonalCar : Vehicle
         SetEngineLiters(engineLiters, 0.7, 10.0);
         // Brændstof sættes i specifikke subtyper eller ved oprettelse
     }
+
+    public override string ToString() =>
+        $"{base.ToString()}, Seats Amount: {SeatsAmount}, Trunk Width: {Trunk.W}, Trunk Height: {Trunk.H}, Trunk Length: {Trunk.L}";
 }

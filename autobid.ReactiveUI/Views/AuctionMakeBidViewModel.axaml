@@ -3,6 +3,62 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="autobid.ReactiveUI.Views.AuctionMakeBidView">
-  Welcome to Avalonia!
+             x:Class="autobid.ReactiveUI.Views.AuctionMakeBidView"
+			 xmlns:vm="using:autobid.ReactiveUI.ViewModels"
+			 x:DataType="vm:AuctionMakeBidViewModel"
+			 >
+	
+	<Grid Margin="20">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="2*" />
+			<ColumnDefinition Width="3*" />
+		</Grid.ColumnDefinitions>
+
+		<!-- Left Side -->
+		<StackPanel Grid.Column="0" HorizontalAlignment="Left">
+			<TextBlock Text="Buyer of Auction" FontSize="20" FontWeight="Bold" />
+			<TextBlock Text="Auction info" Margin="0,10,0,5"/>
+			<Border BorderBrush="Gray" BorderThickness="1" Width="200" Height="200">
+				<StackPanel>
+					<TextBlock Text="{Binding SellerUsername, StringFormat='Seller Username: {0}'}"/>
+					<TextBlock Text="{Binding VehicleName, StringFormat='Vehicle Name: {0}'}"/>
+					<TextBlock Text="{Binding VehicleYear, StringFormat='Vehicle Year: {0}'}"/>
+					<TextBlock Text="{Binding VehicleEnergy, StringFormat='Vehicle Energy: {0}'}"/>
+					<TextBlock Text="{Binding VehicleFuel, StringFormat='Vehicle Fuel: {0}'}"/>
+					<TextBlock Text="{Binding KmPerLiter, StringFormat='Vehicle Km Per Liter: {0}'}"/>
+				</StackPanel>
+			</Border>
+			<Button Content="Back" Width="80" Margin="0,20,0,0"/>
+		</StackPanel>
+
+		<!-- Right Side -->
+		<StackPanel  Grid.Column="1">
+			<StackPanel HorizontalAlignment="Right" Margin="40,0,0,0">
+				<TextBlock Text="{Binding CloseDate, StringFormat=d}" FontSize="16" HorizontalAlignment="Left" />
+				<TextBlock Text="{Binding HighestBid, StringFormat='Highest Bid {0} kr.'}" IsVisible="{Binding IsBidOn}"/>
+				<TextBlock Text="{Binding MinimumValue}" IsVisible="{Binding !IsBidOn}"/>
+
+
+				<!-- Make a bid Button -->
+				<Button Content="Make a bid" Width="120" Margin="0,20,0,10" Command="{Binding StartBidCommand}"/>
+
+
+			</StackPanel>
+			<!-- Bid Form Box -->
+			<Border HorizontalAlignment="Right" Margin="0,20,0,0" BorderBrush="Black" BorderThickness="1" Padding="10" Width="250" IsVisible="{Binding IsMakingBid}">
+				<StackPanel>
+					<TextBlock Text="Make a bid" FontWeight="Bold" Margin="0,0,0,10"/>
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<TextBlock Text="Your bid" Width="80" VerticalAlignment="Center"/>
+						<TextBox Width="120" Text="{Binding BidAmount}" />
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+						<Button Content="Cancel" Width="70" Command="{Binding CancelBidCommand}"/>
+						<Button Content="Bid" Width="70" Command="{Binding MakeBidCommand}" IsEnabled="{Binding CanMakeBid}"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>	
+		</StackPanel>
+		
+	</Grid>
 </UserControl>

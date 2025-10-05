@@ -10,7 +10,6 @@ namespace autobid.ReactiveUI.Views
         public LoginView()
         {
             InitializeComponent();
-            DataContext = new LoginViewModel();
         }
     }
 }

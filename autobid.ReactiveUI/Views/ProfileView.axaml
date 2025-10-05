@@ -7,35 +7,57 @@
     x:DataType="vm:ProfileViewModel">
 
 	<Border Padding="24">
-		<Grid RowDefinitions="Auto,*,Auto">
-			<TextBlock Text="Your profile" FontSize="28" FontWeight="SemiBold"/>
+		<StackPanel Orientation="Horizontal">
+			<Grid RowDefinitions="Auto,*,Auto" HorizontalAlignment="Left">
+				<TextBlock Text="Your profile" FontSize="28" FontWeight="SemiBold"/>
 
-			<Grid Grid.Row="1" Margin="0,16,0,0"
-				  ColumnDefinitions="Auto,12,*"
-				  RowDefinitions="Auto,8,Auto,8,Auto,24,Auto,8,Auto">
-				<TextBlock Grid.Row="0" Grid.Column="0" Text="Username:"/>
-				<TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Username}"/>
+				<Grid Grid.Row="1" Margin="0,16,0,0"
+					  ColumnDefinitions="Auto,12,*"
+					  RowDefinitions="Auto,8,Auto,8,Auto,24,Auto,8,Auto,8,Auto">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="Username:"/>
+					<TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Username}"/>
 
-				<TextBlock Grid.Row="2" Grid.Column="0" Text="Password:"/>
-				<Button Grid.Row="2" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="0"
-					Command="{Binding ChangePasswordCommand}" HorizontalAlignment="Left">
-					<TextBlock Text="Change password" TextDecorations="Underline"/>
-				</Button>
+					<TextBlock Grid.Row="2" Grid.Column="0" Text="Password:"/>
+					<Button Grid.Row="2" Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="0"
+						Command="{Binding ToggleChangePasswordCommand}" HorizontalAlignment="Left">
+						<TextBlock Text="Change password" TextDecorations="Underline"/>
+					</Button>
 
-				<TextBlock Grid.Row="4" Grid.Column="0" Text="Balance:"/>
-				<TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding BalanceText}"/>
+					<TextBlock Grid.Row="4" Grid.Column="0" Text="Balance:"/>
+					<TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding BalanceText}"/>
+					
+					<TextBlock Grid.Row="6" Grid.Column="0" Text="Your auctions:"/>
+					<TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding AuctionCount}"/>
 
-				<TextBlock Grid.Row="6" Grid.Column="0" Text="Your auctions:"/>
-				<TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding AuctionCount}"/>
+					<TextBlock Grid.Row="8" Grid.Column="0" Text="Auctions won:"/>
+					<TextBlock Grid.Row="8" Grid.Column="2" Text="{Binding AuctionsWon}"/>
+				</Grid>
 
-				<TextBlock Grid.Row="8" Grid.Column="0" Text="Auctions won:"/>
-				<TextBlock Grid.Row="8" Grid.Column="2" Text="{Binding AuctionsWon}"/>
+				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,16,0,0">
+					<Button Content="Back" Width="140" Height="40" Command="{Binding BackCommand}"/>
+					<Button Content="Refresh" Margin="12,0,0,0" Command="{Binding RefreshCommand}"/>
+					<Button Content="Change Balance" IsVisible="{Binding IsCorporate}" Command="{Binding ChangeBalanceCommand}"/>
+					<Button Content="Log out" BorderBrush="Red" Command="{Binding LogOutCommand}"/>
+				</StackPanel>
 			</Grid>
-
-			<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,16,0,0">
-				<Button Content="Back" Width="140" Height="40" Command="{Binding BackCommand}"/>
-				<Button Content="Refresh" Margin="12,0,0,0" Command="{Binding RefreshCommand}"/>
-			</StackPanel>
-		</Grid>
+			<Border IsVisible="{Binding IsChangingPassword}">
+				<Grid ColumnDefinitions="auto, auto" RowDefinitions="auto, auto, auto">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="Password"/>
+					<TextBlock Grid.Row="1" Grid.Column="0" Text="Repeat Password"/>
+					<TextBox Grid.Row="0" PasswordChar="*" Grid.Column="1" Text="{Binding NewPassword}"/>
+					<TextBox Grid.Row="1" PasswordChar="*" Width="200" Grid.Column="1" Text="{Binding NewPasswordReapeat}"/>
+					<Button HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Accept Change" Command="{Binding ChangePasswordCommand}"/>
+				</Grid>	
+			</Border>
+			<Border IsVisible="{Binding IsChangingPassword}">
+				<Grid ColumnDefinitions="auto, auto" RowDefinitions="auto, auto">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="Password"/>
+					<TextBox Grid.Row="0" PasswordChar="*"  Width="200" Grid.Column="1" Text="{Binding NewBalance}"/>
+					<Button HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="Accept Change" Command="{Binding ChangeBalanceCommand}"/>
+				</Grid>
+			</Border>
+			
+		</StackPanel>
+		
 	</Border>
 </rxui:ReactiveUserControl>

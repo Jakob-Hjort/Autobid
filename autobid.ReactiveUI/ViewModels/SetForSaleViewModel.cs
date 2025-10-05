@@ -34,7 +34,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
 
 
     public SetForSaleViewModel(User user)
-    : this(new autobid.Domain.Auctions.AuctionHouse(new SqlAuctionRepository()), user)
+    : this(new AuctionHouse(new SqlAuctionRepository()), user)
     {
     }
     public SetForSaleViewModel(IAuctionHouse house, User userID) : base("Create auction")
@@ -181,7 +181,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
     {
         var vehicle = BuildVehicle();
         await _house.SetForSale(vehicle, _seller, StartingBid, (DateTimeOffset)this.CloseAuctionDateOffset); // returnerer auctionId
-        MainWindowViewModel.ChangeContent(new HomeViewModel(_seller));
+        ShellViewModel.ChangeContent(new HomeViewModel(_seller));
         await Task.CompletedTask;
     }
 
@@ -243,5 +243,5 @@ public sealed class SetForSaleViewModel : ViewModelBase
     }
 
 
-    void NavBack() => MainWindowViewModel.ChangeContent(new ShellViewModel(_seller));
+    void NavBack() => ShellViewModel.ChangeContent(new HomeViewModel(_seller));
 }

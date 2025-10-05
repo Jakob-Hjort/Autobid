@@ -10,7 +10,7 @@ namespace autobid.Domain.Users;                   // Namespace for brugertyper
 /// Basisklasse for bruger: fælles felter, simpel validering og ToString().
 /// Arves af PrivateCustomer og CorporateCustomer.
 /// </summary>
-public abstract class User                         // Abstrakt: man laver ikke "User" direkte
+public abstract class User : IUser
 {
     public uint Id { get; set; }                   // Primærnøgle (fra DB Identity/Sequence)
 

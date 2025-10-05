@@ -20,4 +20,7 @@ public sealed class PrivatePersonalCar : PersonalCar
     {
         // Intet særligt ud over basis-reglerne i PersonalCar
     }
+
+    public override string ToString() =>
+        $"{base.ToString()}, Has Isofix: {HasIsofix}";
 }

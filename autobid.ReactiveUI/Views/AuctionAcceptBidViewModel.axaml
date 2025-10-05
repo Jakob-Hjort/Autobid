@@ -3,6 +3,40 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="autobid.ReactiveUI.Views.AuctionAcceptBidView">
-  Welcome to Avalonia!
+             x:Class="autobid.ReactiveUI.Views.AuctionAcceptBidView"
+			 xmlns:vm="using:autobid.ReactiveUI.ViewModels"
+			 x:DataType="vm:AuctionAcceptBidViewModel">
+	<Grid Margin="20">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="2*" />
+			<ColumnDefinition Width="3*" />
+		</Grid.ColumnDefinitions>
+
+		<!-- Left Side -->
+		<StackPanel Grid.Column="0" HorizontalAlignment="Left">
+			<TextBlock Text="Buyer of Auction" FontSize="20" FontWeight="Bold" />
+			<TextBlock Text="Auction info" Margin="0,10,0,5"/>
+			<Border BorderBrush="Gray" BorderThickness="1" Width="200" Height="200">
+				<StackPanel>
+					<TextBlock Text="{Binding SellerUsername, StringFormat='Seller Username: {0}'}"/>
+					<TextBlock Text="{Binding VehicleName, StringFormat='Vehicle Name: {0}'}"/>
+					<TextBlock Text="{Binding VehicleYear, StringFormat='Vehicle Year: {0}'}"/>
+					<TextBlock Text="{Binding VehicleEnergy, StringFormat='Vehicle Energy: {0}'}"/>
+					<TextBlock Text="{Binding VehicleFuel, StringFormat='Vehicle Fuel: {0}'}"/>
+					<TextBlock Text="{Binding KmPerLiter, StringFormat='Vehicle Km Per Liter: {0}'}"/>
+				</StackPanel>
+			</Border>
+			<Button Content="Back" Width="80" Margin="0,20,0,0"/>
+		</StackPanel>
+
+		<!-- Right Side -->
+			<StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="40,0,0,0">
+				<TextBlock Text="{Binding CloseDate, StringFormat=d}" FontSize="16" HorizontalAlignment="Left" />
+				<TextBlock Text="{Binding CurrentHighestBid, StringFormat='Highest Bid {0} kr.'}" IsVisible="{Binding HasBids}"/>
+				<TextBlock Text="{Binding MinimumPrice, StringFormat='Minimum Value {0} kr.'}" IsVisible="{Binding !HasBids}"/>
+
+				<!-- Make a bid Button -->
+				<Button Content="Accept Bid" Width="120" Margin="0,20,0,10" Command="{Binding CloseAuctionCommand}" IsEnabled="{Binding HasBids}"/>
+			</StackPanel>
+	</Grid>
 </UserControl>
