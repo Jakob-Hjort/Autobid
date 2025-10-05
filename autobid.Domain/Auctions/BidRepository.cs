@@ -41,7 +41,7 @@ public class BidRepository
             list.Add(new BidHistoryEntry
             {
                 VehicleName = reader.GetString(0),
-                Year = reader.GetInt32(1),
+                Year = reader.GetInt16(1),
                 BidAmount = reader.GetDecimal(2),
                 FinalAmount = reader.IsDBNull(3) ? null : reader.GetDecimal(3),
                 IsWinner = reader.GetInt32(4) == 1

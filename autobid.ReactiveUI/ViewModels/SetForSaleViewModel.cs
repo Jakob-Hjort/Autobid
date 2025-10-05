@@ -99,14 +99,6 @@ public sealed class SetForSaleViewModel : ViewModelBase
         set { this.RaiseAndSetIfChanged(ref _personal, value); UpdateVisibilityFlags(); Recalc(); }
     }
 
-    // RadioButton-binds (med setter = ændrer enum)
-    public bool IsHeavy { get => SelectedCategory == VehicleCategory.Heavy; set { if (value) SelectedCategory = VehicleCategory.Heavy; } }
-    public bool IsPersonal { get => SelectedCategory == VehicleCategory.Personal; set { if (value) SelectedCategory = VehicleCategory.Personal; } }
-    public bool IsTruck { get => SelectedHeavy == HeavyKind.Truck; set { if (value) SelectedHeavy = HeavyKind.Truck; } }
-    public bool IsBus { get => SelectedHeavy == HeavyKind.Bus; set { if (value) SelectedHeavy = HeavyKind.Bus; } }
-    public bool IsPrivate { get => SelectedPersonal == PersonalKind.Private; set { if (value) SelectedPersonal = PersonalKind.Private; } }
-    public bool IsProfessional { get => SelectedPersonal == PersonalKind.Professional; set { if (value) SelectedPersonal = PersonalKind.Professional; } }
-
     // Synligheds-bools til XAML
     bool _showHeavy; public bool ShowHeavy { get => _showHeavy; private set => this.RaiseAndSetIfChanged(ref _showHeavy, value); }
     bool _showTruck; public bool ShowTruck { get => _showTruck; private set => this.RaiseAndSetIfChanged(ref _showTruck, value); }
@@ -251,5 +243,5 @@ public sealed class SetForSaleViewModel : ViewModelBase
     }
 
 
-    void NavBack() => MainWindowViewModel.ChangeContent(new HomeViewModel(_seller));
+    void NavBack() => MainWindowViewModel.ChangeContent(new ShellViewModel(_seller));
 }

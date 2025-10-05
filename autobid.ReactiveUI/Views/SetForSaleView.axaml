@@ -100,7 +100,7 @@
 							<CheckBox  Grid.Row="5" Grid.Column="2" IsChecked="{Binding TowBar, Mode=TwoWay}" Content=" "/>
 
 							<!-- Truck-specifikt -->
-							<StackPanel Grid.Row="5" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="8" IsVisible="{Binding ShowTruck}">
+							<StackPanel Grid.Row="6" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="8" IsVisible="{Binding ShowTruck}">
 								<TextBlock Text="Payload (kg)"/>
 								<TextBox Width="120" Text="{Binding PayloadKg, Mode=TwoWay}"/>
 							</StackPanel>
