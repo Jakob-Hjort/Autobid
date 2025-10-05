@@ -12,11 +12,9 @@ namespace autobid.Domain.Auctions;              // Repo-kontrakt – implementer
 /// </summary>
 public interface IAuctionRepository
 {
-    Auction? FindById(uint id);                 // Hent én auktion (kan være null)
-    IEnumerable<Auction> GetAllOpen();          // Hent alle åbne auktioner
-    uint Add(Auction auction);                  // Opret og returér id (kan ignoreres ved static id)
-    void Update(Auction auction);               // Gem ændringer (fx lukket status)
-    void AddBid(uint auctionId, Bid bid);       // Tilføj bud på en auktion
+    Task<Auction?> FindById(uint id);                 // Hent én auktion (kan være null)
+    Task<uint> Add(Auction auction);                  // Opret og returér id (kan ignoreres ved static id)
+    Task AddBid(uint auctionId, Bid bid);       // Tilføj bud på en auktion
     
 }
 

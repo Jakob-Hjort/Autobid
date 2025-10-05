@@ -12,7 +12,6 @@ namespace autobid.ReactiveUI.ViewModels
 {
     public class HomeViewModel : ViewModelBase
     {
-        AuctionListItemViewModel _selectedItemFromYourAuctions;
         public AuctionListItemViewModel SelectedItemFromYourAuctions
         {
             set
@@ -21,7 +20,7 @@ namespace autobid.ReactiveUI.ViewModels
                 {
                     Auction? auction = await _repository.FindById(value.Id);
                     if (auction != null)
-                        ShellViewModel.ChangeContent(new AuctionMakeBidViewModel(auction));
+                        ShellViewModel.ChangeContent(new AuctionAcceptBidViewModel(auction));
 
 				});
             }
@@ -38,11 +37,11 @@ namespace autobid.ReactiveUI.ViewModels
                     {
 						if (_user.Username == value.Username)
                         {
-							//ShellViewModel.ChangeContent(new AuctionAcceptBidViewModel()));
+							ShellViewModel.ChangeContent(new AuctionAcceptBidViewModel(auction));
 						}
                         else
                         {
-							ShellViewModel.ChangeContent(new AuctionMakeBidViewModel(auction));
+							ShellViewModel.ChangeContent(new AuctionMakeBidViewModel(auction, _user));
 						}
 					}
 
@@ -68,9 +67,10 @@ namespace autobid.ReactiveUI.ViewModels
             SetForSaleCommand = ReactiveCommand.Create(OpenSetForSale);
             ShowProfileCommand = ReactiveCommand.Create(OpenProfile);
             ShowBidHistoryCommand = ReactiveCommand.Create(OpenBidHistory);
+            _=LoadAuctions();
         }
 
-        public async Task LoadAuctions()
+        private async Task LoadAuctions()
         {
             var auctionListItems = await _repository.GetAllAuctonOpenListItems();
 
@@ -94,15 +94,15 @@ namespace autobid.ReactiveUI.ViewModels
 
         private void OpenProfile()
         {
-            var svc = new autobid.Domain.Database.UserProfileReadService();
+            var svc = new UserProfileReadService();
             var vm = new ProfileViewModel(svc, _user);     // giv User, ikke kun Id
-            MainWindowViewModel.ChangeContent(vm);          // VM-first → ViewLocator viser viewet
+            ShellViewModel.ChangeContent(vm);          // VM-first → ViewLocator viser viewet
         }
 
         private void OpenBidHistory()
         {
             var vm = new BidHistoryViewModel(_user);     
-            MainWindowViewModel.ChangeContent(vm);          
+            ShellViewModel.ChangeContent(vm);          
         }
     }
 }

@@ -30,4 +30,7 @@ public sealed class Truck : HeavyVehicle
         // Brændstof: diesel (krav V12)
         Fuel = Fuel.Diesel;
     }
+
+    public override string ToString() =>
+        $"{base.ToString()} (PayLoad: {PayloadKg})";
 }

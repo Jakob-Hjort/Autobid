@@ -1,4 +1,6 @@
-﻿using autobid.Domain.Users;
+﻿using autobid.Domain.Database;
+using autobid.Domain.Security;
+using autobid.Domain.Users;
 using ReactiveUI;
 using System;
 using System.Reactive;
@@ -10,7 +12,7 @@ namespace autobid.ReactiveUI.ViewModels;
 public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
 {
     private readonly IUserProfileReadService _read;
-    private readonly User _user;                               
+    private readonly User _user;
 
     public ViewModelActivator Activator { get; } = new();
 
@@ -18,10 +20,14 @@ public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
     {
         _read = read;
         _user = user;
-
+        ToggleChangePasswordCommand = ReactiveCommand.Create(() => { IsChangingPassword = true; });
         RefreshCommand = ReactiveCommand.CreateFromTask(LoadAsync);
-        ChangePasswordCommand = ReactiveCommand.Create(ChangePassword);
+        ChangePasswordCommand = ReactiveCommand.CreateFromTask(ChangePassword);
         BackCommand = ReactiveCommand.Create(NavigateBack);
+        LogOutCommand = ReactiveCommand.Create(LogOut);
+        ChangeBalanceCommand = ReactiveCommand.CreateFromTask(ChangeBalance);
+
+        ToggleChangeBalance = ReactiveCommand.Create(() => { IsChangingBalance = true; });
 
         // Autoload når view aktiveres (kræver ReactiveUserControl i viewet)
         this.WhenActivated(d =>
@@ -30,12 +36,31 @@ public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
         });
     }
 
+    public ReactiveCommand<Unit, Unit> ToggleChangeBalance {get;}
+    public ReactiveCommand<Unit, Unit> ChangeBalanceCommand { get; }
+
+    public bool IsCorporate => _user is CorporateCustomer;
+
     // -------- Bindable properties --------
     private string? _username;
     public string? Username
     {
         get => _username;
         set => this.RaiseAndSetIfChanged(ref _username, value);
+    }
+
+    bool _isChangingBalance;
+    public bool IsChangingBalance
+    {
+        get => _isChangingBalance;
+        private set => this.RaiseAndSetIfChanged(ref _isChangingBalance, value, nameof(IsChangingBalance));
+    }
+
+    bool _isChangingPassword;
+    public bool IsChangingPassword
+    {
+        get => _isChangingPassword;
+        private set => this.RaiseAndSetIfChanged(ref _isChangingPassword, value, nameof(IsChangingPassword));
     }
 
     private decimal _balance;
@@ -64,10 +89,33 @@ public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
         set => this.RaiseAndSetIfChanged(ref _auctionsWon, value);
     }
 
+    string _newPassword = string.Empty;
+    public string NewPassword
+    {
+        get => _newPassword;
+        set => this.RaiseAndSetIfChanged(ref _newPassword, value, nameof(NewPassword));
+    }
+
+    string _newPasswordRepeat = string.Empty;
+    public string NewPasswordReapeat
+    {
+        get => _newPasswordRepeat;
+        set => this.RaiseAndSetIfChanged(ref _newPasswordRepeat, value, nameof(NewPasswordReapeat));
+    }
+
+    decimal? _newBalance;
+    public decimal? NewBalance
+    {
+        get => _newBalance;
+        set => this.RaiseAndSetIfChanged(ref _newBalance, value, nameof(NewBalance));
+    }
+
     // -------- Commands (som XAML’en binder til) --------
     public ReactiveCommand<Unit, Unit> RefreshCommand { get; }
+    public ReactiveCommand<Unit, Unit> ToggleChangePasswordCommand { get; }
     public ReactiveCommand<Unit, Unit> ChangePasswordCommand { get; }
     public ReactiveCommand<Unit, Unit> BackCommand { get; }
+    public ReactiveCommand<Unit, Unit> LogOutCommand { get; }
 
     // -------- Handlers --------
     private async Task LoadAsync()
@@ -79,14 +127,33 @@ public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
         AuctionsWon = p.AuctionsWon;
     }
 
-    private void ChangePassword()
+    private async Task ChangePassword()
     {
-        // TODO: Navigér til ChangePasswordViewModel eller åbn dialog
-        // MainWindowViewModel.ChangeContent(new ChangePasswordViewModel(_user));
+        if (NewPassword != NewPasswordReapeat)
+            return;
+        Hasher hasher = new();
+        string hashed = hasher.Hash(NewPassword);
+
+        UserRepository userRepository = new();
+        await userRepository.UpdatePassword(hashed, _user.Id);
     }
 
     private void NavigateBack()
     {
         MainWindowViewModel.ChangeContent(new ShellViewModel(_user));
+    }
+
+    void LogOut()
+    {
+        MainWindowViewModel.ChangeContent(new LoginViewModel());
+    }
+
+    async Task ChangeBalance()
+    {
+        UserRepository userRepository = new();
+        _user.Balance = NewBalance ?? 0;
+        Balance = NewBalance ?? 0;
+
+        await userRepository.UpdateBalance(_user.Id, NewBalance ?? 0);
     }
 }

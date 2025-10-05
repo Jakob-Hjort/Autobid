@@ -27,4 +27,7 @@ public sealed class ProfessionalPersonalCar : PersonalCar
         if (TrailerCapacityKg > 750)
             LicenseType = License.BE;
     }
+
+    override public string ToString()
+        => $"{base.ToString()}, Trailer Capacity: {TrailerCapacityKg}kg, Has SafetyBar: {HasSafetyBar}";
 }

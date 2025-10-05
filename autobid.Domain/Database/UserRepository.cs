@@ -215,6 +215,24 @@ namespace autobid.Domain.Database
             var res = await cmd.ExecuteScalarAsync();
             return res is not null;
         }
+
+        public async Task UpdateBalance(uint userId, decimal newBalance)
+        {
+            await using var conn = await Connection.OpenAsync();
+            using var cmd = new SqlCommand("UPDATE [user] SET balance=@balance WHERE userId=@id;", conn);
+            cmd.Parameters.Add("@balance", SqlDbType.Decimal).Value = newBalance;
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = (int)userId;
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        public async Task UpdatePassword(string passwordHash, uint userId)
+        {
+            await using var conn = await Connection.OpenAsync();
+            using var cmd = new SqlCommand("UPDATE [user] SET passwordHash=@passwordHash WHERE userId=@id;", conn);
+            cmd.Parameters.Add("@passwordHash", SqlDbType.NVarChar).Value = passwordHash;
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = (int)userId;
+            await cmd.ExecuteNonQueryAsync();
+        }
     }
 }
 

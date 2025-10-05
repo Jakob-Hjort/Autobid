@@ -22,7 +22,8 @@ public class BidRepository
             v.[year]      AS [Year],
             ub.UserMax    AS BidAmount,
             am.AuctionMax AS FinalAmount,
-            CASE WHEN ub.UserMax = am.AuctionMax THEN 1 ELSE 0 END AS IsWinner
+            CASE WHEN ub.UserMax = am.AuctionMax AND au.isClosed = 1 THEN 1 ELSE 0 END AS IsWinner,
+            au.isClosed
         FROM (SELECT DISTINCT auctionId FROM bid WHERE userId = @userId) a
         JOIN auction au ON au.auctionId = a.auctionId
         JOIN vehicle v  ON v.vehicleId  = au.vehicleId
@@ -38,13 +39,15 @@ public class BidRepository
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
+            bool isWinner = reader.GetInt32(4) == 1;
             list.Add(new BidHistoryEntry
             {
                 VehicleName = reader.GetString(0),
-                Year = reader.GetInt32(1),
+                Year = reader.GetInt16(1),
                 BidAmount = reader.GetDecimal(2),
                 FinalAmount = reader.IsDBNull(3) ? null : reader.GetDecimal(3),
-                IsWinner = reader.GetInt32(4) == 1
+                IsWinner = isWinner,
+                IsNotWinner = reader.GetBoolean(5) && !isWinner
             });
         }
 

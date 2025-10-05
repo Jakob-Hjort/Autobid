@@ -18,7 +18,6 @@ public sealed class Auction
     private static uint _nextId = 1;            // Statisk tæller (krav: static member/metode)
     public static uint NextId() => _nextId++;   // Statisk metode: generér nyt id
     public DateTimeOffset CloseDate { get; set; }
-    public uint AuctionId { get; set; } = 0;
     public uint Id { get; }                     // Auktionsnummer
     public Vehicle Vehicle { get; }             // Køretøjet der sælges
     public User Seller { get; }                 // Sælgeren
@@ -37,7 +36,7 @@ public sealed class Auction
 		Vehicle = vehicle;                      // Gem reference til bilen
 		Seller = seller;                        // Gem sælger
 		MinimumPrice = minPrice;                // Gem mindstepris
-		AuctionId=auctionId;
+		Id=auctionId;
         CloseDate = closeDate;
     }
 

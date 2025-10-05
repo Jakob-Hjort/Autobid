@@ -18,21 +18,21 @@ namespace autobid.Domain.Database
 		public async Task<int> Add(Vehicle vehicle)
 		{
 			if (vehicle is Truck truck)
-				return await Add(truck);
+				return (await Add(truck)).VehicleId;
 
 			if (vehicle is Bus bus)
-				return await Add(bus);
+				return (await Add(bus)).VehicleId;
 
 			if (vehicle is PrivatePersonalCar privatePersonal)
-				return await Add(privatePersonal);
+				return (await Add(privatePersonal)).VehicleId;
 
 			if (vehicle is ProfessionalPersonalCar professionalPersonalCar)
-				return await Add(professionalPersonalCar);
+				return (await Add(professionalPersonalCar)).VehicleId;
 
 			return -1;
 		}
 
-		public async Task<int> Add(Truck car)
+		public async Task<(int TruckId, int HeavyVehicleId, int VehicleId)> Add(Truck car)
 		{
 			string sql = @"INSERT INTO truck([payloadKg], [heavyVehicleId])
 				VALUES(@payLoad, @heavyVehicleId);
@@ -40,7 +40,7 @@ namespace autobid.Domain.Database
 				";
 
 			await using var conn = await Connection.OpenAsync(); // returns SqlConnection
-			int id = await Add(car as HeavyVehicle, conn);
+			var ids = await Add(car as HeavyVehicle, conn);
 
 			await using SqlCommand cmd = new(sql, conn);
 
@@ -48,7 +48,7 @@ namespace autobid.Domain.Database
 
 			SqlParameter[] parameters = [
 				new("@payLoad" , car.PayloadKg),
-				new("@heavyVehicleId", id),
+				new("@heavyVehicleId", ids.HeavyVehicleId),
 				pOut
 			];
 
@@ -58,7 +58,7 @@ namespace autobid.Domain.Database
 
 			await cmd.ExecuteNonQueryAsync();
 
-			return Convert.ToInt32(pOut.Value);
+			return (Convert.ToInt32(pOut.Value), ids.HeavyVehicleId, ids.VehicleId);
 		}
 
 		private async Task<int> Add(Fuel fuel, double kmPerLiter, double engineLiters, SqlConnection conn)
@@ -118,7 +118,7 @@ namespace autobid.Domain.Database
 			return Convert.ToInt32(pOut.Value);
 		}
 
-		private async Task<int> Add(HeavyVehicle vehicle, SqlConnection conn)
+		private async Task<(int VehicleId, int HeavyVehicleId)> Add(HeavyVehicle vehicle, SqlConnection conn)
 		{
 			int vehicleId = await Add(vehicle as Vehicle, conn);
 			var pOut = new SqlParameter("@NewHeavyVehicleId", SqlDbType.Int) { Direction = ParameterDirection.Output };
@@ -142,10 +142,10 @@ namespace autobid.Domain.Database
 			);
 
 			await cmd.ExecuteNonQueryAsync();
-			return Convert.ToInt32(pOut.Value);
+			return (vehicleId, Convert.ToInt32(pOut.Value));
 		}
 
-		private async Task<int> Add(PersonalCar vehicle, SqlConnection conn)
+		private async Task<(int PersonalCarId, int VehicleId)> Add(PersonalCar vehicle, SqlConnection conn)
 		{
 			int vehicleId = await Add(vehicle as Vehicle, conn);
 			var pOut = new SqlParameter("@NewPersonalCarId", SqlDbType.Int) { Direction = ParameterDirection.Output };
@@ -170,22 +170,22 @@ namespace autobid.Domain.Database
 			);
 
 			await cmd.ExecuteNonQueryAsync();
-			return Convert.ToInt32(pOut.Value);
+			return (Convert.ToInt32(pOut.Value), vehicleId);
 		}
-		public async Task<int> Add(ProfessionalPersonalCar car)
+		public async Task<(int ProfessionalPersonalCar, int PersonalCarId, int VehicleId)> Add(ProfessionalPersonalCar car)
 		{
 			string sql = @"INSERT INTO professionalPersonalCar([hasSafetyBar], [trailerCapacityKg], [personalCarId])
 				VALUES(@hasSafetyBar, @trailerCapacity, @personalCarId);
 				SET @NewCarId = SCOPE_IDENTITY();";
 			await using SqlConnection conn = await Connection.OpenAsync();
-			int vehicleId = await Add(car as PersonalCar, conn);
+			var ids = await Add(car as PersonalCar, conn);
 			await using SqlCommand cmd = new(sql, conn);
 			var pOut = new SqlParameter("@NewCarId", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
 			SqlParameter[] parameters = [
 				new("@hasSafetyBar", car.HasSafetyBar),
 				new("@trailerCapacity", car.TrailerCapacityKg),
-				new("@personalCarId", vehicleId),
+				new("@personalCarId", ids.PersonalCarId),
 				pOut
 			];
 
@@ -193,21 +193,21 @@ namespace autobid.Domain.Database
 
 			await cmd.ExecuteNonQueryAsync();
 
-			return Convert.ToInt32(pOut.Value);
+			return (Convert.ToInt32(pOut.Value), ids.PersonalCarId, ids.VehicleId);
 		}
-		public async Task<int> Add(PrivatePersonalCar car)
+		public async Task<(int PrivatePersonalCarPersonalCar, int PersonalCarId, int VehicleId)> Add(PrivatePersonalCar car)
 		{
 			string sql = @"INSERT INTO privatePersonalCar(hasIsofix, [personalCarId])
 				VALUES(@hasIsofix, @personalCarId);
 				SET @NewCarId = SCOPE_IDENTITY();";
 			await using SqlConnection conn = await Connection.OpenAsync();
-			int vehicleId = await Add(car as PersonalCar, conn);
+			var ids = await Add(car as PersonalCar, conn);
 			await using SqlCommand cmd = new(sql, conn);
 			var pOut = new SqlParameter("@NewCarId", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
 			SqlParameter[] parameters = [
 				new("@hasIsofix", car.HasIsofix),
-				new("@personalCarId", vehicleId),
+				new("@personalCarId", ids.PersonalCarId),
 				pOut
 			];
 
@@ -215,9 +215,9 @@ namespace autobid.Domain.Database
 
 			await cmd.ExecuteNonQueryAsync();
 
-			return Convert.ToInt32(pOut.Value);
+			return (Convert.ToInt32(pOut.Value), ids.PersonalCarId, ids.VehicleId);
 		}
-		public async Task<int> Add(Bus car)
+		public async Task<(int BusId, int HeavyVehicleId, int VehicleId)> Add(Bus car)
 		{
 			string sql = @"INSERT INTO bus([seatsAmount], bedsAmount, [hasToilet], [heavyVehicleId])
 				VALUES(@seatsAmount, @bedsAmount, @hasToilet, @heavyVehicleId);
@@ -225,7 +225,7 @@ namespace autobid.Domain.Database
 ";
 
 			await using var conn = await Connection.OpenAsync(); // returns SqlConnection
-			int id = await Add(car as HeavyVehicle, conn);
+			var ids = await Add(car as HeavyVehicle, conn);
 
 			await using SqlCommand cmd = new(sql, conn);
 
@@ -235,7 +235,7 @@ namespace autobid.Domain.Database
 				new("@bedsAmount" , car.BedsAmount),
 				new("@seatsAmount" , car.SeatsAmount),
 				new("@hasToilet" , car.HasToilet),
-				new("@heavyVehicleId", id),
+				new("@heavyVehicleId", ids.HeavyVehicleId),
 				pOut
 			];
 
@@ -245,7 +245,7 @@ namespace autobid.Domain.Database
 
 			await cmd.ExecuteNonQueryAsync();
 
-			return Convert.ToInt32(pOut.Value);
+			return (Convert.ToInt32(pOut.Value), ids.HeavyVehicleId, ids.VehicleId);
 		}
 
 		async Task<bool> IsVehicleFound(SqlDataReader reader) =>
@@ -254,13 +254,13 @@ namespace autobid.Domain.Database
 
 		public async Task<Vehicle?> GetSingle(int vehicleId)
 		{
-			await using var conn = await Connection.OpenAsync();
+			await using var truckConn = await Connection.OpenAsync();
 			const string truckViewSql = "SELECT TOP(1) * FROM truckView WHERE vehicleId = @vehicleId";
 			const string busViewSql = "SELECT TOP(1) * FROM busView WHERE vehicleId = @vehicleId";
 			const string privatePersonalCarViewSql = "SELECT TOP(1) * FROM privatePersonalCarView WHERE vehicleId = @vehicleId";
 			const string professionalPersonalCarViewSql = "SELECT TOP(1) * FROM professionalPersonalCarView WHERE vehicleId = @vehicleId";
-			await using SqlCommand truckCmd = new(truckViewSql, conn);
-			truckCmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+			await using SqlCommand truckCmd = new(truckViewSql, truckConn);
+			truckCmd.Parameters.AddWithValue("@vehicleId", (int)vehicleId);
 			var truckReader = await truckCmd.ExecuteReaderAsync();
 			if (await IsVehicleFound(truckReader))
 			{
@@ -276,8 +276,9 @@ namespace autobid.Domain.Database
 					truckReader.GetDouble(truckReader.GetOrdinal("kmPerLiter"))
 				);
 			}
-			await using SqlCommand busCmd = new(busViewSql, conn);
-			busCmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+            await using var busConn = await Connection.OpenAsync();
+            await using SqlCommand busCmd = new(busViewSql, busConn);
+			busCmd.Parameters.AddWithValue("@vehicleId", (int)vehicleId);
 
 			var busReader = await busCmd.ExecuteReaderAsync();
 			if (await IsVehicleFound(busReader))
@@ -288,8 +289,8 @@ namespace autobid.Domain.Database
 						busReader.GetString(busReader.GetOrdinal("name")),
 						busReader.GetInt32(busReader.GetOrdinal("distanceTraveledKm")),
 						busReader.GetString(busReader.GetOrdinal("registrationNumber")),
-						busReader.GetInt32(busReader.GetOrdinal("year")),
-						busReader.GetDouble(busReader.GetOrdinal("kmPerLiter")),
+						busReader.GetInt16(busReader.GetOrdinal("year")),
+						busReader.GetDouble(busReader.GetOrdinal("engineLiters")),
 						busReader.GetBoolean(busReader.GetOrdinal("hasTowHitch")),
 						busReader.GetDouble(busReader.GetOrdinal("kmPerLiter")
 					))
@@ -299,8 +300,10 @@ namespace autobid.Domain.Database
 					HasToilet = busReader.GetBoolean(busReader.GetOrdinal("hasToilet"))
 				};
 			}
-			await using SqlCommand privatePersonalCarCmd = new(privatePersonalCarViewSql, conn);
-			privatePersonalCarCmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+
+			await using SqlConnection privatePersonalCarConn = await Connection.OpenAsync();
+            await using SqlCommand privatePersonalCarCmd = new(privatePersonalCarViewSql, privatePersonalCarConn);
+			privatePersonalCarCmd.Parameters.AddWithValue("@vehicleId", (int)vehicleId);
 
 			var privatePersonalCarReader = await privatePersonalCarCmd.ExecuteReaderAsync();
 			if (await IsVehicleFound(privatePersonalCarReader))
@@ -312,23 +315,25 @@ namespace autobid.Domain.Database
 					privatePersonalCarReader.GetString(privatePersonalCarReader.GetOrdinal("name")),
 						privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("distanceTraveledKm")),
 						privatePersonalCarReader.GetString(privatePersonalCarReader.GetOrdinal("registrationNumber")),
-						privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("year")),
-						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("kmPerLiter")),
+						privatePersonalCarReader.GetInt16(privatePersonalCarReader.GetOrdinal("year")),
+						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("engineLiters")),
 						privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasTowHitch")),
 						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("kmPerLiter")
 					))
 				{
 					SeatsAmount = privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("seatsAmount")),
 					Trunk = (
-						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkLength")),
-						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkWidth")),
-						privatePersonalCarReader.GetDouble(privatePersonalCarReader.GetOrdinal("trunkHeight"))
+						privatePersonalCarReader.GetFloat(privatePersonalCarReader.GetOrdinal("trunkLength")),
+						privatePersonalCarReader.GetFloat(privatePersonalCarReader.GetOrdinal("trunkWidth")),
+						privatePersonalCarReader.GetFloat(privatePersonalCarReader.GetOrdinal("trunkHeight"))
 					),
 					HasIsofix = privatePersonalCarReader.GetBoolean(privatePersonalCarReader.GetOrdinal("hasIsofix"))
 				};
 			}
-			await using SqlCommand professionalPersonalCarCmd = new(professionalPersonalCarViewSql, conn);
-			professionalPersonalCarCmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+            await using SqlConnection professionalPersonalCarConn = await Connection.OpenAsync();
+
+            await using SqlCommand professionalPersonalCarCmd = new(professionalPersonalCarViewSql, professionalPersonalCarConn);
+			professionalPersonalCarCmd.Parameters.AddWithValue("@vehicleId", (int)vehicleId);
 
 			var professionalPersonalCarReader = await professionalPersonalCarCmd.ExecuteReaderAsync();
 			if (await IsVehicleFound(professionalPersonalCarReader))
@@ -340,17 +345,17 @@ namespace autobid.Domain.Database
 					professionalPersonalCarReader.GetString(professionalPersonalCarReader.GetOrdinal("name")),
 						professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("distanceTraveledKm")),
 						professionalPersonalCarReader.GetString(professionalPersonalCarReader.GetOrdinal("registrationNumber")),
-						professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("year")),
-						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("kmPerLiter")),
+						professionalPersonalCarReader.GetInt16(professionalPersonalCarReader.GetOrdinal("year")),
+						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("engineLiters")),
 						professionalPersonalCarReader.GetBoolean(professionalPersonalCarReader.GetOrdinal("hasTowHitch")),
 						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("kmPerLiter")
 					))
 				{
 					SeatsAmount = professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("seatsAmount")),
 					Trunk = (
-						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("trunkLength")),
-						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("trunkWidth")),
-						professionalPersonalCarReader.GetDouble(professionalPersonalCarReader.GetOrdinal("trunkHeight"))
+						professionalPersonalCarReader.GetFloat(professionalPersonalCarReader.GetOrdinal("trunkLength")),
+						professionalPersonalCarReader.GetFloat(professionalPersonalCarReader.GetOrdinal("trunkWidth")),
+						professionalPersonalCarReader.GetFloat(professionalPersonalCarReader.GetOrdinal("trunkHeight"))
 					),
 					HasSafetyBar = professionalPersonalCarReader.GetBoolean(professionalPersonalCarReader.GetOrdinal("hasSafetyBar")),
 					TrailerCapacityKg = professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("trailerCapacityKg"))

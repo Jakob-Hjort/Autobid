@@ -10,11 +10,6 @@ namespace autobid.ReactiveUI.Views
         public BidHistoryView()
         {
             InitializeComponent(); // <-- generatorens metode, ingen manuel AvaloniaXamlLoader her
-
-            this.WhenActivated(d =>
-            {
-                 //await VM.LoadAsync(); //hvis du gør LoadAsync public
-            });
         }
     }
 }

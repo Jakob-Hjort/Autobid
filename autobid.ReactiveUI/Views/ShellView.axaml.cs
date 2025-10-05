@@ -9,8 +9,5 @@ namespace autobid.ReactiveUI.Views
         {
             InitializeComponent();
         }
-
-        // Brug runtime loader – fungerer som InitializeComponent
-        private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
     }
 }

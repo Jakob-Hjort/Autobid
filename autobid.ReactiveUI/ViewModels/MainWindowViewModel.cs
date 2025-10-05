@@ -8,9 +8,8 @@ namespace autobid.ReactiveUI.ViewModels
 	{
 		private static MainWindowViewModel _currentViewModel { get; set; } = null!;
 
-		public static void ChangeContent(ViewModelBase? content)
+		public static void ChangeContent(ViewModelBase content)
 		{
-
 			_currentViewModel.Content = content;
 			_currentViewModel.Title = content.Title;
 		}
@@ -26,7 +25,5 @@ namespace autobid.ReactiveUI.ViewModels
 		{
 			_currentViewModel = this;
 		}
-
-       
     }
 }
