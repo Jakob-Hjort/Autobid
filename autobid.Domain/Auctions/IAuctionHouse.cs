@@ -16,10 +16,6 @@ public interface IAuctionHouse
 {
     // A3: Sæt køretøj til salg (overload uden/med notifikations-delegate)
     Task<uint> SetForSale(Vehicle vehicle, User seller, decimal minimumPrice, DateTimeOffset closeDate);
-    Task<uint> SetForSale(Vehicle vehicle, User seller, decimal minimumPrice, AuctionNotification notify, DateTimeOffset closeDate);
-
-    // A5: Modtag bud (evt. med specifik notifikation)
-    Task<bool> TakeBid(User buyer, uint auctionNumber, decimal cost, AuctionNotification? notify = null);
 
     // A6: Sælger accepterer højeste bud (overfører penge og lukker auktion)
     Task<bool> AcceptBid(User sælger, uint auktionsNummer);

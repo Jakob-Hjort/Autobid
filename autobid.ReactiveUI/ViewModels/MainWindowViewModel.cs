@@ -1,4 +1,5 @@
-﻿using autobid.ReactiveUI.Views;
+﻿using autobid.Domain.Database;
+using autobid.ReactiveUI.Views;
 using Avalonia.Controls.Chrome;
 using ReactiveUI;
 
@@ -14,6 +15,11 @@ namespace autobid.ReactiveUI.ViewModels
 			_currentViewModel.Title = content.Title;
 		}
 
+		public static void ChangeTitle(string title)
+		{
+			_currentViewModel.Title = title;
+		}
+
 		object? _content = new LoginViewModel();
 		public object? Content
 		{
@@ -24,6 +30,9 @@ namespace autobid.ReactiveUI.ViewModels
 		public MainWindowViewModel() : base("Main window")
 		{
 			_currentViewModel = this;
+			SqlAuctionRepository repository = new SqlAuctionRepository();
+			_=repository.EndAllAutionWhereCloseTimeOver();
+
 		}
     }
 }

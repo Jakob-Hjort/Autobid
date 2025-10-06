@@ -34,7 +34,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
 
 
     public SetForSaleViewModel(User user)
-    : this(new AuctionHouse(new SqlAuctionRepository()), user)
+    : this(new AuctionHouse(), user)
     {
     }
     public SetForSaleViewModel(IAuctionHouse house, User userID) : base("Create auction")

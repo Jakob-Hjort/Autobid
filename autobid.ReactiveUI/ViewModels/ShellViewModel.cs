@@ -37,6 +37,8 @@ namespace autobid.ReactiveUI.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref _currentPage, value);
+                if (value != null)
+                    MainWindowViewModel.ChangeTitle(value.Title);
             }
         }
 

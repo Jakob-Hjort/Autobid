@@ -17,28 +17,19 @@ namespace autobid.Domain.Auctions;
 public sealed class AuctionHouse : IAuctionHouse
 {
     private readonly SqlAuctionRepository _repo = new();          // Repo-injektion (Data-lag)
-    private readonly AuctionNotification _defaultNotify;// Default notifikation (kan være no-op)
 
     // Vi kan gemme en specifik notifikation pr. auktion (hvis sat ved oprettelse).
-    private readonly ConcurrentDictionary<uint, AuctionNotification> _auctionNotifies
-        = new();
 
-    public AuctionHouse(IAuctionRepository repo, AuctionNotification? defaultNotify = null)
+    public AuctionHouse()
     {
-        _defaultNotify = defaultNotify ?? ((a, b) => { });// No-op hvis ikke angivet
     }
 
-    // A3 – Overload uden notify: brug default
-    public async Task<uint> SetForSale(Vehicle køretøj, User sælger, decimal minimumPris, DateTimeOffset closeDate)
-        => await SetForSale(køretøj, sælger, minimumPris, _defaultNotify, closeDate);
-
     // A3 – Overload med notify: gem notifikation pr. auktion
-    public async Task<uint> SetForSale(Vehicle køretøj, User sælger, decimal minimumPris, AuctionNotification notify, DateTimeOffset closeDate)
+    public async Task<uint> SetForSale(Vehicle køretøj, User sælger, decimal minimumPris, DateTimeOffset closeDate)
     {
         var a = new Auction(køretøj, sælger, minimumPris, closeDate);   // Opret domæneobjekt
         var id = await _repo.Add(a);                                // Persistér i DB (eller brug a.Id)
         if (id == 0) id = a.Id;                               // Fallback hvis repo ikke returnerer id
-        _auctionNotifies[id] = notify;                        // Gem callback til senere
         return id;                                            // Returnér auktionsnummer
     }
 
@@ -65,10 +56,6 @@ public sealed class AuctionHouse : IAuctionHouse
 
         await _repo.AddBid(a.Id, bid);                              // Persistér bud i DB
 
-        // Hvis buddet rammer/overstiger mindsteprisen → send notifikation
-        var cb = notify ??                                    // Brug specifik notify hvis angivet
-                 (_auctionNotifies.TryGetValue(a.Id, out var n) ? n : _defaultNotify);
-        if (beløb >= a.MinimumPrice) cb(a, bid);              // Kald callback
 
         return true;                                          // Bud accepteret
     }
@@ -103,10 +90,6 @@ public sealed class AuctionHouse : IAuctionHouse
 
         a.Close();                                            // Marker auktion som lukket
         _repo.Update(a);                                      // Persistér lukket status
-
-        // Send notifikation om endeligt salg (winning bid)
-        var cb = _auctionNotifies.TryGetValue(a.Id, out var n) ? n : _defaultNotify;
-        cb(a, win);
 
         return true;                                          // Accept gennemført
     }

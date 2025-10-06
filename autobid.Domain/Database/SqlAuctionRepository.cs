@@ -96,6 +96,85 @@ public sealed class SqlAuctionRepository : IAuctionRepository
         return null;
     }
 
+    public async Task EndAllAutionWhereCloseTimeOver()
+    {
+        string sql = @"SET XACT_ABORT ON;
+            DECLARE
+                @AuctionId INT,
+                @SellerId INT,
+                @BidId INT,
+                @BuyerId INT,
+                @Amount DECIMAL;
+
+            DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+            SELECT auctionId FROM auction WHERE isClosed = 0 AND closeDate < GETDATE();
+
+            OPEN cur;
+            FETCH NEXT FROM cur INTO @AuctionId;
+
+            WHILE @@FETCH_STATUS = 0
+            BEGIN
+                BEGIN TRY
+                    BEGIN TRAN;
+
+                    -- seller for this auction
+                    SELECT @SellerId = userId
+                    FROM auction
+                    WHERE auctionId = @AuctionId;
+
+                    -- highest bid: make sure to use the correct bidder column (userId)
+                    SELECT TOP (1)
+			            @BidId = b.bidId,
+                        @BuyerId = b.userId,
+                        @Amount = b.amount
+                    FROM bid b
+                    WHERE b.auctionId = @AuctionId AND b.amount = (SELECT TOP(1) MAX(amount) FROM bid WHERE auctionId = @AuctionId)
+		
+                    IF @BidId IS NULL
+                    BEGIN
+                        -- no bids: close auction and continue
+                        UPDATE auction SET isClosed = 1 WHERE auctionId = @AuctionId;
+                        COMMIT TRAN;
+                        FETCH NEXT FROM cur INTO @AuctionId;
+                        CONTINUE;
+                    END
+
+
+
+                    -- perform debit and credit within same transaction
+                    UPDATE [user]
+                    SET balance = balance - @Amount
+                    WHERE userId = @BuyerId;
+
+                    UPDATE [user]
+                    SET balance = balance + @Amount
+                    WHERE userId = @SellerId;
+
+                    -- close auction
+                    UPDATE auction
+                    SET isClosed = 1
+                    WHERE auctionId = @AuctionId;
+
+                    COMMIT TRAN;
+                END TRY
+                BEGIN CATCH
+                    IF XACT_STATE() <> 0
+                        ROLLBACK TRAN;
+                    -- optional: log error
+                END CATCH;
+
+                FETCH NEXT FROM cur INTO @AuctionId;
+            END
+
+            CLOSE cur;
+            DEALLOCATE cur;
+";
+        using SqlConnection conn = await Connection.OpenAsync();
+        using SqlCommand cmd = new(sql, conn);
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
     async Task<IEnumerable<Bid>> GetAllBidsForAuction(Auction auction)
     {
         string sql = @"
