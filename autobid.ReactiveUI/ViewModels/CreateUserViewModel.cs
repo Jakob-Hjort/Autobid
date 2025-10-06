@@ -120,8 +120,6 @@ public class CreateUserViewModel : ViewModelBase
             created = new PrivateCustomer(0, Username, hash, CPR, Balance);
             created.Id = Convert.ToUInt32(await repository.Add((PrivateCustomer)created));
         }
-        
-
 
         MainWindowViewModel.ChangeContent(new ShellViewModel(created));
     }

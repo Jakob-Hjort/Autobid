@@ -36,7 +36,7 @@
 				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,16,0,0">
 					<Button Content="Back" Width="140" Height="40" Command="{Binding BackCommand}"/>
 					<Button Content="Refresh" Margin="12,0,0,0" Command="{Binding RefreshCommand}"/>
-					<Button Content="Change Balance" IsVisible="{Binding IsCorporate}" Command="{Binding ChangeBalanceCommand}"/>
+					<Button Content="Change Balance" IsVisible="{Binding IsCorporate}" Command="{Binding ToggleChangeBalance}"/>
 					<Button Content="Log out" BorderBrush="Red" Command="{Binding LogOutCommand}"/>
 				</StackPanel>
 			</Grid>
@@ -49,10 +49,10 @@
 					<Button HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Accept Change" Command="{Binding ChangePasswordCommand}"/>
 				</Grid>	
 			</Border>
-			<Border IsVisible="{Binding IsChangingPassword}">
+			<Border IsVisible="{Binding IsChangingBalance}">
 				<Grid ColumnDefinitions="auto, auto" RowDefinitions="auto, auto">
-					<TextBlock Grid.Row="0" Grid.Column="0" Text="Password"/>
-					<TextBox Grid.Row="0" PasswordChar="*"  Width="200" Grid.Column="1" Text="{Binding NewBalance}"/>
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="Balance"/>
+					<TextBox Grid.Row="0" Width="200" Grid.Column="1" Text="{Binding NewBalance}"/>
 					<Button HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="Accept Change" Command="{Binding ChangeBalanceCommand}"/>
 				</Grid>
 			</Border>

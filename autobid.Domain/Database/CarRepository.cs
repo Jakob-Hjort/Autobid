@@ -64,9 +64,10 @@ namespace autobid.Domain.Database
 		private async Task<int> Add(Fuel fuel, double kmPerLiter, double engineLiters, SqlConnection conn)
 		{
 			string sql = @"
-			INSERT INTO fuelTank(fuel, [kmPerLiter], engineLiters)
-			VALUES(@fuel, @kmPerLiter, @engineLiters);
-			SET @NewVehicleId = SCOPE_IDENTITY();
+			 INSERT INTO fuelTank(fuel, [kmPerLiter], engineLiters)
+			 VALUES(@fuel, @kmPerLiter, @engineLiters);
+
+			SET @NewVehicleId = CAST(SCOPE_IDENTITY() AS INT);
 			";
 
 			await using var cmd = new SqlCommand(sql, conn);
@@ -74,7 +75,7 @@ namespace autobid.Domain.Database
 			var pOut = new SqlParameter("@NewVehicleId", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
 			SqlParameter[] parameters = {
-				new SqlParameter("@fuel", SqlDbType.TinyInt) { Value = (int)fuel },
+				new SqlParameter("@fuel", SqlDbType.TinyInt) { Value = (byte)fuel },
 				new SqlParameter("@kmPerLiter", SqlDbType.Float) { Value = kmPerLiter },
 				new SqlParameter("@engineLiters", SqlDbType.Float) { Value = engineLiters },
 				pOut
@@ -250,6 +251,7 @@ namespace autobid.Domain.Database
 
 		async Task<bool> IsVehicleFound(SqlDataReader reader) =>
 			reader.Read() && !await reader.IsDBNullAsync(reader.GetOrdinal("vehicleId"));
+		
 
 
 		public async Task<Vehicle?> GetSingle(int vehicleId)
