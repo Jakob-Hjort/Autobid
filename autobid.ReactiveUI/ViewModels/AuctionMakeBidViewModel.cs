@@ -88,6 +88,7 @@ namespace autobid.ReactiveUI.ViewModels
 			this.RaisePropertyChanged(nameof(HighestBid));
             await _auctionRepository.AddBid(_auction.Id, new(_user, BidAmount));
 			isMakingBid = false;
+			ShellViewModel.ChangeContent(new BidHistoryViewModel(_user));
         }
     }
 }
