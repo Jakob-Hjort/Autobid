@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using autobid.Domain.Common;
+using autobid.Domain.Common.Enums;
 
 namespace autobid.Domain.Vehicles;
 

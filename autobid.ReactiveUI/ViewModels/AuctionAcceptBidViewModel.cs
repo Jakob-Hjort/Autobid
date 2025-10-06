@@ -1,5 +1,5 @@
 ﻿using autobid.Domain.Auctions;
-using autobid.Domain.Common;
+using autobid.Domain.Common.Enums;
 using autobid.Domain.Database;
 using ReactiveUI;
 using System;

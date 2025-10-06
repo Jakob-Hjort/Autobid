@@ -1,4 +1,4 @@
-﻿using autobid.Domain.Common;
+﻿using autobid.Domain.Common.Enums;
 using autobid.Domain.Services;
 using autobid.Domain.Vehicles;
 using Microsoft.Data.SqlClient;

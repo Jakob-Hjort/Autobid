@@ -14,7 +14,7 @@ public interface IAuctionRepository
 {
     Task<Auction?> FindById(uint id);                 // Hent én auktion (kan være null)
     Task<uint> Add(Auction auction);                  // Opret og returér id (kan ignoreres ved static id)
-    Task AddBid(uint auctionId, Bid bid);       // Tilføj bud på en auktion
+    Task AddBid(uint auctionId, Bid bid);             // Tilføj bud på en auktion
     
 }
 

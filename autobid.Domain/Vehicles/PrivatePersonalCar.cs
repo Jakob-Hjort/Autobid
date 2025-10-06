@@ -18,7 +18,6 @@ public sealed class PrivatePersonalCar : PersonalCar
         double engineLiters, bool towHitch, double kmPerLiter)
         : base(id, name, km, regNo, year, engineLiters, towHitch, kmPerLiter)
     {
-        // Intet særligt ud over basis-reglerne i PersonalCar
     }
 
     public override string ToString() =>

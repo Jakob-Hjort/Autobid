@@ -13,7 +13,7 @@ namespace autobid.ReactiveUI.ViewModels
 	public class LoginViewModel : ViewModelBase
 	{
 		string _passWord = string.Empty;
-		UserRepository repository = new();
+		
 		public string PassWord
 		{
 			get => _passWord; 
@@ -27,7 +27,9 @@ namespace autobid.ReactiveUI.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _username, value, nameof(Username));
 		}
 
-		public ReactiveCommand<Unit,Unit> GoToSignUpCommand { get; }
+        UserRepository repository = new();
+
+        public ReactiveCommand<Unit,Unit> GoToSignUpCommand { get; }
 		public ReactiveCommand<Unit, Task> LoginCommand { get; }
 		public LoginViewModel() : base("Login")
 		{

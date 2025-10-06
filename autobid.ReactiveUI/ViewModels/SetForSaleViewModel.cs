@@ -198,29 +198,29 @@ public sealed class SetForSaleViewModel : ViewModelBase
         {
             if (ShowTruck)
             {
-                var t = new Truck(id: 0, name, km, reg, year, liters, TowBar, kmPerLiter);
+                var truck = new Truck(id: 0, name, km, reg, year, liters, TowBar, kmPerLiter);
 
-                if (HeightMeter is double hm) t.HeightMeter = hm;
-                if (Length is double le) t.Length = le;
-                if (WeightKg is double wg) t.WeightKg = wg;
+                if (HeightMeter is double hm) truck.HeightMeter = hm;
+                if (Length is double le) truck.Length = le;
+                if (WeightKg is double wg) truck.WeightKg = wg;
 
-                if (PayloadKg is int pl) t.PayloadKg = pl;
+                if (PayloadKg is int pl) truck.PayloadKg = pl;
 
-                return t;
+                return truck;
             }
             else // Bus
             {
-                var b = new Bus(id: 0, name, km, reg, year, liters, TowBar, kmPerLiter);
+                var bus = new Bus(id: 0, name, km, reg, year, liters, TowBar, kmPerLiter);
 
-                if (HeightMeter is double hm) b.HeightMeter = hm;
-                if (Length is double le) b.Length = le;
-                if (WeightKg is double wg) b.WeightKg = wg;
+                if (HeightMeter is double hm) bus.HeightMeter = hm;
+                if (Length is double le) bus.Length = le;
+                if (WeightKg is double wg) bus.WeightKg = wg;
 
-                if (BusSeatsAmount is int s) b.SeatsAmount = s;
-                if (BusBedsAmount is int bd) b.BedsAmount = bd;
-                b.HasToilet = BusHasToilet;
+                if (BusSeatsAmount is int s) bus.SeatsAmount = s;
+                if (BusBedsAmount is int bd) bus.BedsAmount = bd;
+                bus.HasToilet = BusHasToilet;
 
-                return b;
+                return bus;
             }
         }
         else // Personal

@@ -94,14 +94,14 @@ CREATE TABLE professionalPersonalCar(
 
 CREATE TABLE [user](
 	userId INT IDENTITY(1,1) PRIMARY KEY,
-	username NVARCHAR(32) NOT NULL,
+	username NVARCHAR(32) NOT NULL UNIQUE,
 	passwordHash NVARCHAR(32) NOT NULL,
 	balance DECIMAL NOT NULL,
 )
 
 CREATE TABLE privateCustomer(
 	privateCustomerId INT IDENTITY(1,1) PRIMARY KEY,
-	cpr VARCHAR(16) NOT NULL,
+	cpr  VARCHAR(16) NOT NULL UNIQUE,
 	userId INT NOT NULL,
 	FOREIGN KEY (userId) REFERENCES [user](userId)
 	ON DELETE CASCADE
@@ -109,7 +109,7 @@ CREATE TABLE privateCustomer(
 
 CREATE TABLE corporateCustomer(
 	corporateCustomerId INT IDENTITY(1,1) PRIMARY KEY,
-	cvr VARCHAR(8) NOT NULL,
+	cvr VARCHAR(8)  NOT NULL UNIQUE,
 	credit DECIMAL NOT NULL,
 	userId INT NOT NULL,
 	FOREIGN KEY (userId) REFERENCES [user](userId)

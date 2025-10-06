@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using autobid.Domain.Common;                           // Fuel, License
+using autobid.Domain.Common.Enums;                           // Fuel, License
 
 namespace autobid.Domain.Vehicles;
 

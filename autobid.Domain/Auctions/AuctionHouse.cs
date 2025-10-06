@@ -33,33 +33,6 @@ public sealed class AuctionHouse : IAuctionHouse
         return id;                                            // Returnér auktionsnummer
     }
 
-    // A5 – Modtag bud fra køber
-    public async Task<bool> TakeBid(User køber, uint auktionsNummer, decimal beløb, AuctionNotification? notify = null)
-    {
-        var a = await _repo.FindById(auktionsNummer);               // Find auktionen
-        if (a is null || a.IsClosed) return false;            // Hvis ikke fundet/allerede lukket → afvis
-
-        var highest = a.HighestBid?.Amount ?? 0m;             // Hent nuværende højeste bud (eller 0)
-        if (beløb <= highest) return false;                   // Bud skal være højere end højeste
-
-        // Udregn hvor meget køber må byde for:
-        // Privat: må ikke overstige Balance. Erhverv: Balance + Credit.
-        decimal maxAllowed = køber switch
-        {
-            CorporateCustomer c => c.Balance + c.Credit,      // Erhverv: kredit tæller med
-            _ => køber.Balance                                // Privat: kun balance
-        };
-        if (beløb > maxAllowed) return false;                 // Afvis hvis bud overstiger tilladte midler
-
-        var bid = new Bid(køber, beløb);                      // Opret bud-objekt
-        a.AddBid(bid);                                        // Læg bud på auktionen (validerer lukket)
-
-        await _repo.AddBid(a.Id, bid);                              // Persistér bud i DB
-
-
-        return true;                                          // Bud accepteret
-    }
-
     // A6 – Sælger accepterer højeste bud
     public async Task<bool> AcceptBid(User sælger, uint auktionsNummer)
     {

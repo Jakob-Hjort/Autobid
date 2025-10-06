@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;                  // Til regex-validering af registreringsnr.
-using autobid.Domain.Common;                           // Fuel, License, EnergyClass
+using autobid.Domain.Common;
+using autobid.Domain.Common.Enums;                           // Fuel, License, EnergyClass
 
 namespace autobid.Domain.Vehicles;
 
@@ -59,12 +60,12 @@ public abstract class Vehicle
     // Motorstørrelse styres via protected setter (subtyper har egne regler for ranges)
     protected void SetEngineLiters(double v, double min, double max)
     {
-        if (v < min || v > max)                         // Grænse-check
+        if (v < min || v > max)                         
             throw new ArgumentOutOfRangeException(
                 nameof(v), $"Motorstørrelse skal være mellem {min} og {max} L");
-        EngineLiters = v;                              // Gem værdi
+        EngineLiters = v;                              
     }
-    public double EngineLiters { get; private set; }        // Offentlig read-only property
+    public double EngineLiters { get; private set; }      
 
     /// <summary>Udregnet energiklasse via helper – opfylder krav V4.</summary>
     public EnergyClass Energy => EnergyClassCalculator.GetFor(this);
@@ -80,7 +81,7 @@ public abstract class Vehicle
         KmPerLiter = kmPerLiter;
     }
 
-    public override string ToString()                   // Pæn visning i lister/debug
+    public override string ToString()                  
         => $"{nameof(Name)}:{Name} {nameof(Year)}:({Year}) {nameof(RegistrationNumber)}:[{RegistrationNumber}]";
 }
 

@@ -11,5 +11,5 @@ namespace autobid.Domain.Common;
 /// Delegate til notifikationer fra auktionshuset (krav: delegates/callbacks).
 /// Kaldes fx når mindstepris nås eller når en auktion accepteres.
 /// </summary>
-public delegate void AuctionNotification(Auction auction, Bid? winningBid);
+//public delegate void AuctionNotification(Auction auction, Bid? winningBid);
 

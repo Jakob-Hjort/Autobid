@@ -14,7 +14,6 @@ namespace autobid.Domain.Auctions;
 /// </summary>
 public interface IAuctionHouse
 {
-    // A3: Sæt køretøj til salg (overload uden/med notifikations-delegate)
     Task<uint> SetForSale(Vehicle vehicle, User seller, decimal minimumPrice, DateTimeOffset closeDate);
 
     // A6: Sælger accepterer højeste bud (overfører penge og lukker auktion)
