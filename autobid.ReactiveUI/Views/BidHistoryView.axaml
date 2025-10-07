@@ -19,8 +19,8 @@
 
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Name"   Binding="{Binding VehicleName}" />
-				<DataGridTextColumn Header="Årgang" Binding="{Binding Year}" />
-				<DataGridTextColumn Header="Bud"    Binding="{Binding BidAmount, StringFormat={}{0:N0}}" />
+				<DataGridTextColumn Header="Year" Binding="{Binding Year}" />
+				<DataGridTextColumn Header="Bid"    Binding="{Binding BidAmount, StringFormat={}{0:N0}}" />
 
 				<!-- Final: 'WON' hvis vundet, ellers final beløb -->
 				<DataGridTemplateColumn Header="Final">
