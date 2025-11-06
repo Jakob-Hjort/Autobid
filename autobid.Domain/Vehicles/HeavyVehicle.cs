@@ -21,6 +21,11 @@ public abstract class HeavyVehicle : Vehicle
         : base(id, name, km, regNo, year, kmPerLiter)               // Kald Vehicle-ctor
     { }
 
+    protected HeavyVehicle()
+    {
+        
+    }
+
     public override string ToString() =>
        $"{base.ToString()} {nameof(WeightKg)}:{WeightKg} {nameof(HeightMeter)}:{HeightMeter} {nameof(Length)}:{Length}";
 }

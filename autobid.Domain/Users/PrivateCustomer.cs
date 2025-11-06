@@ -26,5 +26,10 @@ public sealed class PrivateCustomer : User         // sealed: kan ikke arves vid
                 "CPR mangler", nameof(cpr));
         CPR = cpr;                                 // Sæt property
     }
+
+    public PrivateCustomer()
+    {
+        
+    }
 }
 

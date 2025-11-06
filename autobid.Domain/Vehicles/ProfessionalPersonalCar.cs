@@ -28,6 +28,11 @@ public sealed class ProfessionalPersonalCar : PersonalCar
             LicenseType = License.BE;
     }
 
+    public ProfessionalPersonalCar()
+    {
+        
+    }
+
     override public string ToString()
         => $"{base.ToString()}, Trailer Capacity: {TrailerCapacityKg}kg, Has SafetyBar: {HasSafetyBar}";
 }

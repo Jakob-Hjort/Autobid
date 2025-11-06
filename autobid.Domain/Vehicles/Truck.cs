@@ -31,6 +31,11 @@ public sealed class Truck : HeavyVehicle
         Fuel = Fuel.Diesel;
     }
 
+    public Truck()
+    {
+        
+    }
+
     public override string ToString() =>
         $"{base.ToString()} (PayLoad: {PayloadKg})";
 }

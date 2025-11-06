@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "dotnet",
+			"task": "watch autobid.API",
+			"file": "/home/jon/Desktop/Programming/C#/GUI/Avalonia/Autobid/API/autobid.API.csproj",
+			"problemMatcher": [],
+			"label": "dotnet: watch autobid.API"
+		}
+	]
+}

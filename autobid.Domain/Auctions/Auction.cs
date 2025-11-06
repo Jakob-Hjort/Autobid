@@ -30,14 +30,19 @@ public sealed class Auction
     public Bid? HighestBid                      // Hjælper: hent højeste bud (eller null)
         => _bids.OrderByDescending(b => b.Amount).FirstOrDefault();
 
-    public Auction(Vehicle vehicle, User seller, decimal minPrice,DateTimeOffset closeDate, uint auctionId = 0) // Ctor
-	{
-		Id = NextId();                          // Tildel nyt id fra statisk tæller
-		Vehicle = vehicle;                      // Gem reference til bilen
-		Seller = seller;                        // Gem sælger
-		MinimumPrice = minPrice;                // Gem mindstepris
-		Id=auctionId;
+    public Auction(Vehicle vehicle, User seller, decimal minPrice, DateTimeOffset closeDate, uint auctionId = 0) // Ctor
+    {
+        Id = NextId();                          // Tildel nyt id fra statisk tæller
+        Vehicle = vehicle;                      // Gem reference til bilen
+        Seller = seller;                        // Gem sælger
+        MinimumPrice = minPrice;                // Gem mindstepris
+        Id = auctionId;
         CloseDate = closeDate;
+    }
+    
+    public Auction()
+    {
+        
     }
 
 	 public void AddBid(Bid bid)                 // Intern helper: læg bud på listen

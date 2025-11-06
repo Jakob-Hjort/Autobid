@@ -33,6 +33,11 @@ public sealed class Bus : HeavyVehicle                  // sealed: ingen videre 
         Fuel = Fuel.Diesel;
     }
 
+    public Bus()
+    {
+        
+    }
+
     public override string ToString() =>
         $"{base.ToString()}, Amount Of Seats:{SeatsAmount}, Amount Of Beds: {BedsAmount}, Has Toilet: {HasToilet}";
 }

@@ -81,7 +81,12 @@ public abstract class Vehicle
         KmPerLiter = kmPerLiter;
     }
 
-    public override string ToString()                  
+    public override string ToString()
         => $"{nameof(Name)}:{Name} {nameof(Year)}:({Year}) {nameof(RegistrationNumber)}:[{RegistrationNumber}]";
+    
+    public Vehicle()
+    {
+        
+    }
 }
 

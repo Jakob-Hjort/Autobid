@@ -20,6 +20,11 @@ public sealed class PrivatePersonalCar : PersonalCar
     {
     }
 
+    public PrivatePersonalCar()
+    {
+        
+    }
+
     public override string ToString() =>
         $"{base.ToString()}, Has Isofix: {HasIsofix}";
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace autobid.Domain.Users;                   // Namespace for brugertyper
 
@@ -12,6 +13,7 @@ namespace autobid.Domain.Users;                   // Namespace for brugertyper
 /// </summary>
 public abstract class User : IUser
 {
+    [Column("UserId")]
     public uint Id { get; set; }                   // Primærnøgle (fra DB Identity/Sequence)
 
     public const int MinPasswordLength = 8;
@@ -30,7 +32,7 @@ public abstract class User : IUser
         }
     }
 
-    public string PasswordHash { get; private set; } // Hash af password (aldrig klartekst)
+    public string PasswordHash { get; set; } // Hash af password (aldrig klartekst)
 
     public decimal Balance { get; set; }            // Konto/balance – bruges når man byder/køber
 
@@ -40,6 +42,11 @@ public abstract class User : IUser
         Username = username;                        // Sæt brugernavn (rammer init-setter med validering)
         PasswordHash = passwordHash;                // Sæt hash (kommer typisk fra DB eller via SetPassword)
         Balance = balance;
+    }
+
+    protected User()
+    {
+        
     }
 
     public void SetPassword(string raw, IPasswordHasher hasher)   // Metode til at opdatere hash
