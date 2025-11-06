@@ -324,7 +324,7 @@ namespace autobid.Domain.Database
 					))
 				{
 					SeatsAmount = privatePersonalCarReader.GetInt32(privatePersonalCarReader.GetOrdinal("seatsAmount")),
-					Trunk = (
+					Trunk = new(
 						privatePersonalCarReader.GetFloat(privatePersonalCarReader.GetOrdinal("trunkLength")),
 						privatePersonalCarReader.GetFloat(privatePersonalCarReader.GetOrdinal("trunkWidth")),
 						privatePersonalCarReader.GetFloat(privatePersonalCarReader.GetOrdinal("trunkHeight"))
@@ -354,7 +354,7 @@ namespace autobid.Domain.Database
 					))
 				{
 					SeatsAmount = professionalPersonalCarReader.GetInt32(professionalPersonalCarReader.GetOrdinal("seatsAmount")),
-					Trunk = (
+					Trunk = new(
 						professionalPersonalCarReader.GetFloat(professionalPersonalCarReader.GetOrdinal("trunkLength")),
 						professionalPersonalCarReader.GetFloat(professionalPersonalCarReader.GetOrdinal("trunkWidth")),
 						professionalPersonalCarReader.GetFloat(professionalPersonalCarReader.GetOrdinal("trunkHeight"))

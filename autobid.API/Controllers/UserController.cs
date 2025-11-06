@@ -1,5 +1,6 @@
 using autobid.Domain.Database.EF;
 using autobid.Domain.Users;
+using autobid.Domain.Vehicles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
@@ -61,6 +62,83 @@ public class UserController : ControllerBase
         {
             return NotFound();
         }
-        
+
     }
+
+    [HttpGet("Vehicles")]
+    public IEnumerable<Vehicle> GetAllVehicles()
+    {
+        try
+        {
+            AppDbContext dbContext = new();
+            List<Vehicle> vehicles = new(dbContext.Vehicles.Count());
+            vehicles.AddRange(dbContext.PrivatePersonalCars);
+            vehicles.AddRange(dbContext.ProfessionalPersonalCars);
+            vehicles.AddRange(dbContext.Trucks);
+            vehicles.AddRange(dbContext.Busses);
+
+            return vehicles.ToArray();
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    [HttpGet("PrivatePersonalCars")]
+    public IEnumerable<PrivatePersonalCar> GetAllPrivatePersonalCars()
+    {
+        try
+        {
+            AppDbContext dbContext = new();
+            return dbContext.PrivatePersonalCars.ToArray();
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    [HttpGet("ProfessionalPersonalCars")]
+    public IEnumerable<ProfessionalPersonalCar> GetAllProfessionalPersonalCars()
+    {
+        try
+        {
+            AppDbContext dbContext = new();
+            return dbContext.ProfessionalPersonalCars.ToArray();
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    [HttpGet("Trucks")]
+    public IEnumerable<Truck> GetAllTrucks()
+    {
+        try
+        {
+            AppDbContext dbContext = new();
+            return dbContext.Trucks.ToArray();
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    [HttpGet("Busses")]
+    public IEnumerable<Bus> GetAllBusses()
+    {
+        try
+        {
+            AppDbContext dbContext = new();
+            return dbContext.Busses.ToArray();
+        }
+        catch
+        {
+            return [];
+        }
+    }
+    
 }

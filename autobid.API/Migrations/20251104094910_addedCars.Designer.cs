@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using autobid.Domain.Database.EF;
 
@@ -10,9 +11,11 @@ using autobid.Domain.Database.EF;
 namespace autobid.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251104094910_addedCars")]
+    partial class addedCars
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
@@ -237,7 +240,7 @@ namespace autobid.API.Migrations
 
                     b.HasIndex("TrunkId");
 
-                    b.ToTable("PrivatePersonalCars");
+                    b.ToTable("PrivateVehicles");
                 });
 
             modelBuilder.Entity("autobid.Domain.Vehicles.ProfessionalPersonalCar", b =>
@@ -258,7 +261,7 @@ namespace autobid.API.Migrations
 
                     b.HasIndex("TrunkId");
 
-                    b.ToTable("ProfessionalPersonalCars");
+                    b.ToTable("CommercialVehicles");
                 });
 
             modelBuilder.Entity("autobid.Domain.Vehicles.Truck", b =>

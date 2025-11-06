@@ -14,11 +14,11 @@ public class AppDbContext : DbContext
     public DbSet<Auction> Auctions { get; set; }
     public DbSet<PrivateCustomer> PrivateCustomers { get; set; }
     public DbSet<CorporateCustomer> CorporateUsers { get; set; }
-    public DbSet<ProfessionalPersonalCar> CommercialVehicles { get; set; }
-    public DbSet<PrivatePersonalCar> PrivateVehicles { get; set; }
+    public DbSet<ProfessionalPersonalCar> ProfessionalPersonalCars { get; set; }
+    public DbSet<PrivatePersonalCar> PrivatePersonalCars { get; set; }
     public DbSet<Truck> Trucks { get; set; }
     public DbSet<Bus> Busses { get; set; }
-
+    public DbSet<Vehicle> Vehicles { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().UseTptMappingStrategy()
@@ -73,5 +73,6 @@ public class AppDbContext : DbContext
     {
         optionsBuilder.UseSqlite("Data Source=autobid.db");
     }
+    
     
 }

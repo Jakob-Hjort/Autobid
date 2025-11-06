@@ -13,7 +13,7 @@ namespace autobid.Domain.Vehicles;
 public abstract class PersonalCar : Vehicle
 {
     public int SeatsAmount { get; set; }                      // Antal sæder
-    public (double L, double W, double H) Trunk { get; set; } // Bagagerum: længde/bredde/højde i cm/m
+    public Size Trunk { get; set; } = new();
 
     protected PersonalCar(                              // Base-ctor for personbiler
         uint id, string name, int km, string regNo, int year,
@@ -29,7 +29,6 @@ public abstract class PersonalCar : Vehicle
 
     public PersonalCar()
     {
-        
     }
 
     public override string ToString() =>
