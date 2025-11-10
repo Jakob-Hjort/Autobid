@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<Auction> Auctions { get; set; }
     public DbSet<PrivateCustomer> PrivateCustomers { get; set; }
     public DbSet<CorporateCustomer> CorporateUsers { get; set; }
+    public DbSet<User> Users { get; set; }
     public DbSet<ProfessionalPersonalCar> ProfessionalPersonalCars { get; set; }
     public DbSet<PrivatePersonalCar> PrivatePersonalCars { get; set; }
     public DbSet<Truck> Trucks { get; set; }
@@ -25,7 +26,7 @@ public class AppDbContext : DbContext
             .HasIndex(user => user.Username)
             .IsUnique();
 
-        modelBuilder.Entity<Vehicle>().UseTptMappingStrategy();
+        modelBuilder.Entity<Vehicle>().UseTptMappingStrategy().ToTable("Vehicles");
 
         modelBuilder.Entity<PrivateCustomer>()
         .Property(p => p.CPR)
