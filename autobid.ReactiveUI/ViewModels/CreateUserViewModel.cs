@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Database;
+﻿using autobid.Domain.API;
+using autobid.Domain.Database;
 using autobid.Domain.Security;
 using autobid.Domain.Users;
 using autobid.Domain.Vehicles;
@@ -82,7 +83,7 @@ public class CreateUserViewModel : ViewModelBase
 		set => this.RaiseAndSetIfChanged(ref _balance, value, nameof(Balance));
 	}
 
-	UserRepository repository = new();
+	UserAPICommunicator repository = new();
 	public ReactiveCommand<Unit, Task> CreateUserCommand { get;}
 	public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
 
@@ -113,7 +114,7 @@ public class CreateUserViewModel : ViewModelBase
         if (IsCorporate)
 		{
             created  = new CorporateCustomer(0, Username, hash, CVR, Credit, Balance);
-            created.Id = Convert.ToUInt32(await repository.Add((CorporateCustomer)created));
+            created.Id = Convert.ToUInt32(await repository.((CorporateCustomer)created));
         }
 		else
 		{

@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Auctions;
+﻿using autobid.Domain.API;
+using autobid.Domain.Auctions;
 using autobid.Domain.Common.Enums;
 using autobid.Domain.Database;
 using ReactiveUI;
@@ -35,7 +36,7 @@ namespace autobid.ReactiveUI.ViewModels
 		private async Task AcceptBid()
 		{
 			SqlAuctionRepository repo = new();
-			UserRepository userRepository = new();
+			UserAPICommunicator userRepository = new();
             await repo.CloseAuction(_auction.Id);
 			Bid bid = _auction.HighestBid!;
 			bid.Buyer.Balance -= bid.Amount;

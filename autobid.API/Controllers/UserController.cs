@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using autobid.Domain.Database.EF;
 using autobid.Domain.Security;
 using autobid.Domain.Users;
@@ -70,13 +71,13 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+
     [HttpPut("CorporateCustomer/UpdateBalance")]
-    public ActionResult UpdateCorporateCustomerBalance([FromQuery] int id, [FromQuery] decimal newBalance)
+    public ActionResult UpdateCorporateCustomerBalance([FromBody] CorporateCustomer user, [FromQuery] decimal newBalance)
     {
         try
         {
             AppDbContext appDbContext = new();
-            CorporateCustomer? user = appDbContext.CorporateUsers.Find(id);
             if (user == null)
             {
                 return NotFound();
@@ -131,13 +132,13 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("PrivateCustomer")]
-    public ActionResult CreatePrivateCustomer([FromBody] PrivateCustomer user)
+    public async Task<ActionResult> CreatePrivateCustomer([FromBody] PrivateCustomer user)
     {
         try
         {
             AppDbContext appContext = new();
             appContext.PrivateCustomers.Add(user);
-            appContext.SaveChanges();
+            await appContext.SaveChangesAsync();
             return Ok();
         }
         catch

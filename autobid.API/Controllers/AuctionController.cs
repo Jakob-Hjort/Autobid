@@ -2,6 +2,7 @@ using autobid.Domain.Auctions;
 using autobid.Domain.Database.EF;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SQLitePCL;
 
 namespace autobid.API.Controllers
 {
@@ -54,8 +55,6 @@ namespace autobid.API.Controllers
                     appContext.Users.Update(auction.Seller);
                 }
 
-
-                
                 appContext.Auctions.Update(auction);
                 await appContext.SaveChangesAsync();
                 return Ok(auction);
@@ -63,6 +62,36 @@ namespace autobid.API.Controllers
             catch
             {
                 return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Auction>> CreateAuction([FromBody] Auction auction)
+        {
+            try
+            {
+                AppDbContext appContext = new();
+                appContext.Auctions.Add(auction);
+                await appContext.SaveChangesAsync();
+                return Ok(auction);
+            }
+            catch 
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("GetFromUserId/{id}")]
+        public IEnumerable<Auction> GetAuctionsFromUserId(int id)
+        {
+            try
+            {
+                AppDbContext dbContext = new();
+                return dbContext.Auctions.Where(a => a.Seller.Id == id).ToArray();
+            }
+            catch
+            {
+                return [];
             }
         }
     }

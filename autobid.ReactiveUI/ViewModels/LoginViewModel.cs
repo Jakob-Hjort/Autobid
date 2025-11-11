@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Database;
+﻿using autobid.Domain.API;
+using autobid.Domain.Database;
 using autobid.Domain.Users;
 using ReactiveUI;
 using System;
@@ -27,7 +28,7 @@ namespace autobid.ReactiveUI.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _username, value, nameof(Username));
 		}
 
-        UserRepository repository = new();
+        UserAPICommunicator repository = new();
 
         public ReactiveCommand<Unit,Unit> GoToSignUpCommand { get; }
 		public ReactiveCommand<Unit, Task> LoginCommand { get; }
@@ -44,7 +45,7 @@ namespace autobid.ReactiveUI.ViewModels
 
 		async Task Login()
 		{
-			User? user = await repository.LoginAsync(Username, PassWord);
+			User? user = await repository.Login(Username, PassWord);
 
 			if (user == null)
 			{

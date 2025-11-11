@@ -16,7 +16,7 @@ public sealed class Bid                         // sealed: kan ikke arves (simpe
     public DateTimeOffset Time { get; init; }   // Hvornår buddet blev afgivet
     public User Buyer { get; init; }            // Hvem der bød (brugerobjekt)
     public decimal Amount { get; init; }        // Budbeløb
-    public Auction? Auction { get; set; }    // Auktionen buddet tilhører
+    public Auction Auction { get; set; }    // Auktionen buddet tilhører
     public Bid(User buyer, decimal amount, uint id = 0)      // Konstruktør med de nødvendige felter
     {
         Buyer = buyer;                          // Sæt køberen

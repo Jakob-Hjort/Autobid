@@ -34,7 +34,7 @@ public abstract class Vehicle
             : value;
     }
 
-    private string _regNo = string.Empty;              // Backing field for RegistrationNumber
+    private string _regNo = "aa12345";              // Backing field for RegistrationNumber
     /// <summary>Reg.nr: 2 bogstaver + 5 cifre (fx AB12345).</summary>
     public string RegistrationNumber
     {

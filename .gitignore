@@ -9,6 +9,10 @@
 *.user
 *.userosscache
 *.sln.docstates
+.vscode
+autobid.Api/autobid.db
+autobid.Api/autobid.db-shm
+autobid.Api/autobid.db-wal
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
