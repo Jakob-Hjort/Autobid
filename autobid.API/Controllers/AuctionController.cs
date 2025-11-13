@@ -73,7 +73,8 @@ namespace autobid.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Auction>> CreateAuction([FromBody] Auction auction)
+        public async Task<ActionResult<Auction>> CreateAuction(
+            [ModelBinder(BinderType = typeof(AuctionRequestBinder))][FromBody] Auction auction)
         {
             try
             {
