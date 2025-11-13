@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Common;                   // AuctionNotification delegate
+﻿using autobid.Domain.API;
+using autobid.Domain.Common;                   // AuctionNotification delegate
 using autobid.Domain.Database;
 using autobid.Domain.Users;                    // User, CorporateCustomer/PrivateCustomer
 using autobid.Domain.Vehicles;                 // Vehicle
@@ -16,7 +17,7 @@ namespace autobid.Domain.Auctions;
 /// </summary>
 public sealed class AuctionHouse : IAuctionHouse
 {
-    private readonly SqlAuctionRepository _repo = new();          // Repo-injektion (Data-lag)
+    private readonly AuctionAPICommunicator _repo = new();          // Repo-injektion (Data-lag)
 
     // Vi kan gemme en specifik notifikation pr. auktion (hvis sat ved oprettelse).
 
@@ -28,15 +29,15 @@ public sealed class AuctionHouse : IAuctionHouse
     public async Task<uint> SetForSale(Vehicle køretøj, User sælger, decimal minimumPris, DateTimeOffset closeDate)
     {
         var a = new Auction(køretøj, sælger, minimumPris, closeDate);   // Opret domæneobjekt
-        var id = await _repo.Add(a);                                // Persistér i DB (eller brug a.Id)
-        if (id == 0) id = a.Id;                               // Fallback hvis repo ikke returnerer id
-        return id;                                            // Returnér auktionsnummer
+        Auction? auction = await _repo.CreateAuction(a);                                // Persistér i DB (eller brug a.Id)
+        if (auction == null) return 0;                               // Fallback hvis repo ikke returnerer id
+        return auction.Id;                                            // Returnér auktionsnummer
     }
 
     // A6 – Sælger accepterer højeste bud
     public async Task<bool> AcceptBid(User sælger, uint auktionsNummer)
     {
-        var a = await _repo.FindById(auktionsNummer);               // Find auktionen
+        var a = await _repo.GetAuctionById(auktionsNummer);               // Find auktionen
         if (a is null || a.IsClosed) return false;            // Afvis hvis ikke fundet/allerede lukket
         if (a.Seller != sælger) return false;                 // Kun sælgeren må acceptere
 
@@ -62,12 +63,12 @@ public sealed class AuctionHouse : IAuctionHouse
         sælger.Balance += win.Amount;                         // Læg beløb til sælgers balance
 
         a.Close();                                            // Marker auktion som lukket
-        _repo.Update(a);                                      // Persistér lukket status
+        await _repo.CloseAuction(a);                                      // Persistér lukket status
 
         return true;                                          // Accept gennemført
     }
 
     // A7 – Find auktion asynkront (kører på baggrundstråd via Task.Run)
     public async Task<Auction?> FindAuctionById(uint id)
-        => await _repo.FindById(id);      // Deleger til repo inde i Task.Run
+        => await _repo.GetAuctionById(id);      // Deleger til repo inde i Task.Run
 }

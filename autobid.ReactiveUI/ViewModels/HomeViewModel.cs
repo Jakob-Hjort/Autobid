@@ -7,6 +7,7 @@ using autobid.Domain.Auctions;
 using System.Threading.Tasks;
 using System.Collections;
 using System.Linq;
+using autobid.Domain.API;
 
 namespace autobid.ReactiveUI.ViewModels
 {
@@ -18,7 +19,7 @@ namespace autobid.ReactiveUI.ViewModels
             {
                 Task.Run(async () =>
                 {
-                    Auction? auction = await _repository.FindById(value.Id);
+                    Auction? auction = await _repository.GetAuctionById(value.Id);
                     if (auction != null)
                         ShellViewModel.ChangeContent(new AuctionAcceptBidViewModel(auction));
 
@@ -32,7 +33,7 @@ namespace autobid.ReactiveUI.ViewModels
 			{
 				Task.Run(async () =>
 				{
-					Auction? auction = await _repository.FindById(value.Id);
+					Auction? auction = await _repository.GetAuctionById(value.Id);
 					if (auction != null)
                     {
 						if (_user.Username == value.Username)
@@ -51,7 +52,7 @@ namespace autobid.ReactiveUI.ViewModels
 
 
 		private readonly User _user;
-        readonly SqlAuctionRepository _repository = new();
+        readonly AuctionAPICommunicator _repository = new();
         public ObservableCollection<AuctionListItemViewModel> YourAuctions { get; } = new();
         public ObservableCollection<AuctionListItemViewModel> CurrentAuctions { get; } = new();
 

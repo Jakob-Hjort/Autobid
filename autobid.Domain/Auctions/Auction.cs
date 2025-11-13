@@ -54,6 +54,12 @@ public sealed class Auction
 
     public void Close() => IsClosed = true;     // Marker auktionen som lukket (ved accept)
 
-    public override string ToString()          
+    public override string ToString()
         => $"#{Id} – {Vehicle.Name} – Min: {MinimumPrice:n0} – Bud: {_bids.Count}";
+        
+    public static bool isHighestBidder(Auction auction, User user)
+    {
+        Bid? highestBid = auction.HighestBid;
+        return highestBid != null && highestBid.Buyer.Id == user.Id;
+    }
 }

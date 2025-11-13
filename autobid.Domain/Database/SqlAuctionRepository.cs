@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Auctions;
+﻿using autobid.Domain.API;
+using autobid.Domain.Auctions;
 using autobid.Domain.Services;
 using autobid.Domain.Users;
 using autobid.Domain.Vehicles;
@@ -12,7 +13,7 @@ namespace autobid.Domain.Database;
 public sealed class SqlAuctionRepository : IAuctionRepository
 {
     CarRepository _carRepository = new();
-    UserRepository _userRepository = new();
+    UserAPICommunicator _userRepository = new();
 
     public async Task<uint> Add(Auction auction)
     {
@@ -73,7 +74,7 @@ public sealed class SqlAuctionRepository : IAuctionRepository
             int vehicleId = reader.GetInt32(reader.GetOrdinal("vehicleId"));
             uint userId = Convert.ToUInt32(reader.GetInt32(reader.GetOrdinal("userId")));
             Vehicle? vehicle = await _carRepository.GetSingle(vehicleId);
-            User? user = await _userRepository.FindById(userId);
+            User? user = await _userRepository.GetUserById(userId);
             if (vehicle == null || user == null)
                 return null;
 
@@ -191,7 +192,7 @@ public sealed class SqlAuctionRepository : IAuctionRepository
         while (reader.Read())
         {
             uint userId = Convert.ToUInt32(reader.GetInt32(reader.GetOrdinal("userId")));
-            User? user = await _userRepository.FindById(userId);
+            User? user = await _userRepository.GetUserById(userId);
             if (user == null)
                 continue;
             bids.Add(new Bid(

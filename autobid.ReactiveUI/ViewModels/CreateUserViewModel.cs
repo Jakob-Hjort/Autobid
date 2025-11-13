@@ -102,7 +102,7 @@ public class CreateUserViewModel : ViewModelBase
 	private async Task CreateUser()
 	{
 		if ((Password != PasswordRepeat && Password.Length < User.MinPasswordLength && 
-			Password.Length > User.MaxPasswordLength) || await repository.UsernameExistsAsync(Username))
+			Password.Length > User.MaxPasswordLength) || await repository.DoesUsernameExist(Username))
 		{
 			return;
 		}
@@ -114,12 +114,14 @@ public class CreateUserViewModel : ViewModelBase
         if (IsCorporate)
 		{
             created  = new CorporateCustomer(0, Username, hash, CVR, Credit, Balance);
-            created.Id = Convert.ToUInt32(await repository.((CorporateCustomer)created));
+            created.Id = Convert.ToUInt32(await repository.
+				CreateCorporateCustomer((CorporateCustomer)created));
         }
 		else
 		{
             created = new PrivateCustomer(0, Username, hash, CPR, Balance);
-            created.Id = Convert.ToUInt32(await repository.Add((PrivateCustomer)created));
+            created.Id = Convert.ToUInt32(await repository.
+				CreatePrivateCustomer((PrivateCustomer)created));
         }
 
         MainWindowViewModel.ChangeContent(new ShellViewModel(created));

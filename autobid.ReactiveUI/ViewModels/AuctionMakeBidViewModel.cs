@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Auctions;
+﻿using autobid.Domain.API;
+using autobid.Domain.Auctions;
 using autobid.Domain.Common.Enums;
 using autobid.Domain.Database;
 using autobid.Domain.Users;
@@ -17,7 +18,7 @@ namespace autobid.ReactiveUI.ViewModels
 		User _user;
 		Auction _auction;
 		Bid? bid;
-		SqlAuctionRepository _auctionRepository = new();
+		AuctionAPICommunicator _auctionRepository = new();
         public decimal MinimumValue
 		{
 			get
@@ -86,7 +87,7 @@ namespace autobid.ReactiveUI.ViewModels
             Bid bid = new(_user, BidAmount);
 			_auction.AddBid(bid);
 			this.RaisePropertyChanged(nameof(HighestBid));
-            await _auctionRepository.AddBid(_auction.Id, new(_user, BidAmount));
+            await _auctionRepository.AddBid(new Bid(_user, BidAmount), _auction.Id);
 			isMakingBid = false;
 			ShellViewModel.ChangeContent(new BidHistoryViewModel(_user));
         }

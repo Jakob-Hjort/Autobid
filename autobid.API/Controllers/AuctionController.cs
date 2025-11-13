@@ -47,13 +47,7 @@ namespace autobid.API.Controllers
                 Bid? highestBid = auction.HighestBid;
                 auction.Close();
 
-                if (highestBid != null)
-                {
-                    highestBid.Buyer.Balance -= highestBid.Amount;
-                    auction.Seller.Balance += highestBid.Amount;
-                    appContext.Users.Update(highestBid.Buyer);
-                    appContext.Users.Update(auction.Seller);
-                }
+                OnAuctionClosedTransferMoney(auction);
 
                 appContext.Auctions.Update(auction);
                 await appContext.SaveChangesAsync();
@@ -62,6 +56,19 @@ namespace autobid.API.Controllers
             catch
             {
                 return BadRequest();
+            }
+        }
+
+        void OnAuctionClosedTransferMoney(Auction auction)
+        {
+            AppDbContext appContext = new();
+            Bid? highestBid = auction.HighestBid;
+            if (highestBid != null)
+            {
+                highestBid.Buyer.Balance -= highestBid.Amount;
+                auction.Seller.Balance += highestBid.Amount;
+                appContext.Users.Update(highestBid.Buyer);
+                appContext.Users.Update(auction.Seller);
             }
         }
 
@@ -75,7 +82,7 @@ namespace autobid.API.Controllers
                 await appContext.SaveChangesAsync();
                 return Ok(auction);
             }
-            catch 
+            catch
             {
                 return BadRequest();
             }
@@ -92,6 +99,48 @@ namespace autobid.API.Controllers
             catch
             {
                 return [];
+            }
+        }
+
+        [HttpGet("OpenListItems")]
+        public IEnumerable<AuctionListItem> GetAllAuctonOpenListItems()
+        {
+            try
+            {
+                AppDbContext dbContext = new();
+                return dbContext.Auctions
+                    .Where(a => !a.IsClosed)
+                    .Select(a => new AuctionListItem(a.Id, a.Vehicle.Name, a.Vehicle.Year,
+                    a.MinimumPrice, a.Seller.Username)).ToArray();
+            }
+            catch
+            {
+                return [];
+            }
+        }
+
+        [HttpPut("CloseEndedAuctions")]
+        public async Task<ActionResult> CloseEndedAuctions()
+        {
+            try
+            {
+                AppDbContext appContext = new();
+                var endedAuctions = appContext.Auctions
+                    .Where(a => !a.IsClosed && a.CloseDate <= DateTime.Now).ToList();
+
+                foreach (var auction in endedAuctions)
+                {
+                    auction.Close();
+                    this.OnAuctionClosedTransferMoney(auction);
+                    appContext.Auctions.Update(auction);
+                }
+
+                await appContext.SaveChangesAsync();
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
             }
         }
     }

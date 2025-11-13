@@ -35,9 +35,9 @@ namespace autobid.ReactiveUI.ViewModels
 
 		private async Task AcceptBid()
 		{
-			SqlAuctionRepository repo = new();
+			AuctionAPICommunicator repo = new();
 			UserAPICommunicator userRepository = new();
-            await repo.CloseAuction(_auction.Id);
+            await repo.CloseAuction(_auction);
 			Bid bid = _auction.HighestBid!;
 			bid.Buyer.Balance -= bid.Amount;
             await userRepository.UpdateBalance(bid.Buyer.Id, bid.Buyer.Balance);

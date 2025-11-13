@@ -6,7 +6,7 @@ namespace autobid.Domain.API;
 
 public class CommonApiCommunicatorModules
 {
-    public async Task<T?> ReadIfSucces<T>(HttpResponseMessage response, T? defaultReturn = default)
+    public async Task<T?> ReadJsonIfSucces<T>(HttpResponseMessage response, T? defaultReturn = default)
     {
         if (response.IsSuccessStatusCode)
         {

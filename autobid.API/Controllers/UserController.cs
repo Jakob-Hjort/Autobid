@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
+using autobid.Domain.Auctions;
 using autobid.Domain.Database.EF;
 using autobid.Domain.Security;
 using autobid.Domain.Users;
 using autobid.Domain.Vehicles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 
 namespace autobid.API.Controllers;
@@ -119,7 +121,7 @@ public class UserController : ControllerBase
     public async Task<ActionResult> DeleteUser(int id)
     {
         AppDbContext appContext = new();
-        
+
         User? user = appContext.CorporateUsers.Find(id);
         user ??= appContext.PrivateCustomers.Find(id);
         if (user == null)
@@ -189,6 +191,77 @@ public class UserController : ControllerBase
         catch
         {
             return NotFound();
+        }
+    }
+
+    [HttpGet("UserProfileSummary/{userId}")]
+    public async Task<ActionResult<UserProfileSummary>> GetUserProfileSummary(uint userId)
+    {
+        try
+        {
+            AppDbContext appDbContext = new();
+            User? user = await appDbContext.CorporateUsers.FindAsync(userId);
+            user ??= await appDbContext.PrivateCustomers.FindAsync(userId);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            int wonAuctionsCount = appDbContext.Auctions.Count(
+                (au) => Auction.isHighestBidder(au, user));
+            int auctionCount = appDbContext.Auctions.Count(au => au.Seller.Id == user.Id);
+            UserProfileSummary userProfile = new UserProfileSummary
+                (user.Id, user.Username, user.Balance, auctionCount, wonAuctionsCount);
+            return Ok(userProfile);
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpGet("DoesUsernameExist/{username}")]
+    public async Task<ActionResult<bool>> DoesUsernameExist(string username)
+    {
+        try
+        {
+            AppDbContext appDbContext = new();
+            User? user = await appDbContext.PrivateCustomers.
+                FirstOrDefaultAsync(u => u.Username == username);
+            user ??= await appDbContext.CorporateUsers.
+                FirstOrDefaultAsync(u => u.Username == username);
+            return Ok(user != null);
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
+
+
+    [HttpGet("GetuserProfileSummary/{userId}")]
+    public async Task<ActionResult<UserProfileSummary>> GetuserProfileSummary(int userId)
+    {
+        try
+        {
+            AppDbContext appDbContext = new();
+            User? user = await appDbContext.CorporateUsers.FindAsync(userId);
+            user ??= await appDbContext.PrivateCustomers.FindAsync(userId);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            int wonAuctionsCount = appDbContext.Auctions.Count(
+                (au) => Auction.isHighestBidder(au, user));
+            int auctionCount = appDbContext.Auctions.Count(au => au.Seller.Id == user.Id);
+            UserProfileSummary userProfile = new UserProfileSummary
+                (user.Id, user.Username, user.Balance, auctionCount, wonAuctionsCount);
+            return Ok(userProfile);
+        }
+        catch
+        {
+            return BadRequest();
         }
     }
 

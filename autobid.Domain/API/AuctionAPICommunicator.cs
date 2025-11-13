@@ -8,7 +8,7 @@ public class AuctionAPICommunicator
 {
     const string baseUrl = "localhost:5240/api/Auction";
 
-    public async Task<Auction?> GetAuctionById(int id)
+    public async Task<Auction?> GetAuctionById(uint id)
     {
         using HttpClient client = new();
         var response = await client.GetAsync($"{baseUrl}/{id}");
@@ -52,4 +52,30 @@ public class AuctionAPICommunicator
         return null;
     }
 
+    public async Task<bool> AddBid(Bid bid, uint auctionId)
+    {
+        using HttpClient client = new();
+        var response = await client.PutAsJsonAsync($"{baseUrl}/AddBid?auctionId={auctionId}", bid);
+        return response.IsSuccessStatusCode;
+    }
+
+
+    public async Task<IEnumerable<AuctionListItem>> GetAllAuctonOpenListItems()
+    {
+        using HttpClient client = new();
+        var response = await client.GetAsync($"{baseUrl}/OpenListItems");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<IEnumerable<AuctionListItem>>() ?? [];
+        }
+
+        return [];
+    }
+
+    public async Task<bool> CloseEndedAuctions()
+    {
+        using HttpClient client = new();
+        var response = await client.PutAsync($"{baseUrl}/CloseEndedAuctions", null);
+        return response.IsSuccessStatusCode; 
+    }
 }

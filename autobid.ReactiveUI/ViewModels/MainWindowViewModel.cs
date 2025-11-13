@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Database;
+﻿using autobid.Domain.API;
+using autobid.Domain.Database;
 using autobid.ReactiveUI.Views;
 using Avalonia.Controls.Chrome;
 using ReactiveUI;
@@ -30,8 +31,8 @@ namespace autobid.ReactiveUI.ViewModels
 		public MainWindowViewModel() : base("Main window")
 		{
 			_currentViewModel = this;
-			SqlAuctionRepository repository = new SqlAuctionRepository();
-			_=repository.EndAllAutionWhereCloseTimeOver();
+			AuctionAPICommunicator repository = new();
+			_=repository.CloseEndedAuctions();
 
 		}
     }

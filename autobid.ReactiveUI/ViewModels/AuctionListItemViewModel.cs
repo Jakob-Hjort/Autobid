@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Auctions;
+﻿using autobid.Domain.API;
+using autobid.Domain.Auctions;
 using autobid.Domain.Database;
 using autobid.Domain.Users;
 using ReactiveUI;
@@ -34,8 +35,8 @@ public class AuctionListItemViewModel : ViewModelBase
 
 	async Task GoToBidPage()
 	{
-        SqlAuctionRepository repo = new();
-        Auction? auction = await repo.FindById(_auctionListItem.Id);
+        AuctionAPICommunicator repo = new();
+        Auction? auction = await repo.GetAuctionById(_auctionListItem.Id);
 
 		if (auction == null)
 			return;

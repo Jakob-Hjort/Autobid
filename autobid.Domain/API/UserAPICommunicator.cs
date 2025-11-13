@@ -18,12 +18,12 @@ public class UserAPICommunicator
             : null;
     }
 
-    public async Task<User?> GetUserById(int id)
+    public async Task<User?> GetUserById(uint id)
     {
         using HttpClient client = new();
         var response = await client.GetAsync($"{baseUrl}/{id}");
 
-        return await _commonModules.ReadIfSucces<User>(response);
+        return await _commonModules.ReadJsonIfSucces<User>(response);
     }
 
     public async Task<bool> UpdatePasswordHash(uint userId, string newPassword)
@@ -33,10 +33,10 @@ public class UserAPICommunicator
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> DoesUsernameExist()
+    public async Task<bool> DoesUsernameExist(string username)
     {
         using HttpClient client = new();
-        var response = await client.GetAsync($"{baseUrl}/");
+        var response = await client.GetAsync($"{baseUrl}/DoesUsernameExist/{username}");
         return response.IsSuccessStatusCode &&
             await response.Content.ReadFromJsonAsync<bool>();
     }
@@ -59,15 +59,23 @@ public class UserAPICommunicator
     {
         using HttpClient client = new();
         var response = await client.PostAsJsonAsync($"{baseUrl}/CorporateCustomer", user);
-        return await _commonModules.ReadIfSucces<CorporateCustomer>(response);
+        return await _commonModules.ReadJsonIfSucces<CorporateCustomer>(response);
     }
 
     public async Task<PrivateCustomer?> CreatePrivateCustomer(PrivateCustomer user)
     {
         using HttpClient client = new();
         var response = await client.PostAsJsonAsync($"{baseUrl}/PrivateCustomer", user);
-        return await _commonModules.ReadIfSucces<PrivateCustomer>(response);
+        return await _commonModules.ReadJsonIfSucces<PrivateCustomer>(response);
     }
+
+    public async Task<UserProfileSummary?> GetuserProfileSummary(uint userId)
+    {
+        using HttpClient client = new();
+        var response = await client.GetAsync($"{baseUrl}/UserProfileSummary/{userId}");
+        return await _commonModules.ReadJsonIfSucces<UserProfileSummary>(response);
+    }
+
     
 
 }

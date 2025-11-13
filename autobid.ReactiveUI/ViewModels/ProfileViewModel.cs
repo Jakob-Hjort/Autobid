@@ -1,4 +1,5 @@
-﻿using autobid.Domain.Database;
+﻿using autobid.Domain.API;
+using autobid.Domain.Database;
 using autobid.Domain.Security;
 using autobid.Domain.Users;
 using ReactiveUI;
@@ -117,7 +118,6 @@ public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
     public ReactiveCommand<Unit, Unit> BackCommand { get; }
     public ReactiveCommand<Unit, Unit> LogOutCommand { get; }
 
-    // -------- Handlers --------
     private async Task LoadAsync()
     {
         var p = await _read.GetAsync(_user.Id);
@@ -134,8 +134,8 @@ public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
         Hasher hasher = new();
         string hashed = hasher.Hash(NewPassword);
 
-        UserRepository userRepository = new();
-        await userRepository.UpdatePassword(hashed, _user.Id);
+        UserAPICommunicator userRepository = new();
+        await userRepository.UpdatePasswordHash( _user.Id, hashed);
     }
 
     private void NavigateBack()
@@ -150,7 +150,7 @@ public sealed class ProfileViewModel : ViewModelBase, IActivatableViewModel
 
     async Task ChangeBalance()
     {
-        UserRepository userRepository = new();
+        UserAPICommunicator userRepository = new();
         _user.Balance = NewBalance ?? 0;
         Balance = NewBalance ?? 0;
 
