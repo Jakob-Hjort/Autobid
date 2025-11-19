@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using autobid.Domain.Common;                           // License enum
+using autobid.Domain.Common;
+using autobid.Domain.Common.Enums;                           // License enum
 
 namespace autobid.Domain.Vehicles;
 
@@ -17,8 +18,8 @@ public abstract class HeavyVehicle : Vehicle
     public double Length { get; set; }                  // Længde i meter
 
     protected HeavyVehicle(                             // Ctor passerer fælles felter til base
-        uint id, string name, int km, string regNo, int year, double kmPerLiter)
-        : base(id, name, km, regNo, year, kmPerLiter)               // Kald Vehicle-ctor
+        uint id, string name, int km, string regNo, int year, double kmPerLiter, Fuel fuel = default)
+        : base(id, name, km, regNo, year, kmPerLiter, fuel)               // Kald Vehicle-ctor
     { }
 
     protected HeavyVehicle()

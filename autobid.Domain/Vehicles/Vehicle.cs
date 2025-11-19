@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;                  // Til regex-validering af registreringsnr.
 using autobid.Domain.Common;
-using autobid.Domain.Common.Enums;                           // Fuel, License, EnergyClass
+using autobid.Domain.Common.Enums;
+using System.Text.Json.Serialization;                           // Fuel, License, EnergyClass
 
 namespace autobid.Domain.Vehicles;
 
@@ -50,12 +51,13 @@ public abstract class Vehicle
         }
     }
 
-    public int Year { get; init; }                      // Årgang (init—sættes kun i ctor)
+    public int Year { get; set; }                      // Årgang (init—sættes kun i ctor)
     public bool HasTowHitch { get; set; }                  // Træk-krog
 
-    public License LicenseType { get; protected set; } = License.B; // Krævet kørekorttype
+    public License LicenseType { get; set; } = License.B; // Krævet kørekorttype
     public Fuel Fuel { get; set; }                      // Brændstof
-    public double KmPerLiter { get; private set; }              // Brændstoføkonomi (km/l)
+    [JsonInclude]
+    public double KmPerLiter { get; set; }              // Brændstoføkonomi (km/l)
 
     // Motorstørrelse styres via protected setter (subtyper har egne regler for ranges)
     protected void SetEngineLiters(double v, double min, double max)
@@ -65,13 +67,14 @@ public abstract class Vehicle
                 nameof(v), $"Motorstørrelse skal være mellem {min} og {max} L");
         EngineLiters = v;                              
     }
-    public double EngineLiters { get; private set; }      
+    [JsonInclude]
+    public double EngineLiters { get; set; }      
 
     /// <summary>Udregnet energiklasse via helper – opfylder krav V4.</summary>
     public EnergyClass Energy => EnergyClassCalculator.GetFor(this);
 
     protected Vehicle(                                  // Beskyttet ctor: kun subklasser konstruerer
-        uint id, string name, int km, string regNo, int year, double kmPerLiter)
+        uint id, string name, int km, string regNo, int year, double kmPerLiter, Fuel fuel = default, EnergyClass energy = default)
     {
         Id = id;                                        // Sæt Id
         Name = name;                                    // Valideret i set
@@ -79,6 +82,7 @@ public abstract class Vehicle
         RegistrationNumber = regNo;                     // Valideret i set (regex)
         Year = year;                                    // Ingen validering her (kan tilføjes)
         KmPerLiter = kmPerLiter;
+        Fuel = fuel;
     }
 
     public override string ToString()

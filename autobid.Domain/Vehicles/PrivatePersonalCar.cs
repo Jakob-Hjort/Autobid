@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using autobid.Domain.Common.Enums;
 
 namespace autobid.Domain.Vehicles;
 
@@ -15,8 +16,8 @@ public sealed class PrivatePersonalCar : PersonalCar
 
     public PrivatePersonalCar(
         uint id, string name, int km, string regNo, int year,
-        double engineLiters, bool towHitch, double kmPerLiter)
-        : base(id, name, km, regNo, year, engineLiters, towHitch, kmPerLiter)
+        double engineLiters, bool towHitch, double kmPerLiter, Fuel fuel = default)
+        : base(id, name, km, regNo, year, engineLiters, towHitch, kmPerLiter, fuel)
     {
     }
 

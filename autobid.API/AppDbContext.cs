@@ -25,7 +25,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>().UseTptMappingStrategy()
             .HasIndex(user => user.Username)
             .IsUnique();
-
+        
         modelBuilder.Entity<Vehicle>().UseTptMappingStrategy().ToTable("Vehicles");
 
         modelBuilder.Entity<PrivateCustomer>()
@@ -74,6 +74,19 @@ public class AppDbContext : DbContext
     {
         optionsBuilder.UseSqlite("Data Source=autobid.db");
     }
-    
-    
+
+    public override int SaveChanges()
+    {
+        foreach (var entry in ChangeTracker.Entries<Auction>())
+        {
+            if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+            {
+                entry.Property(a => a.Bids).IsModified = false;
+                entry.Property(a => a.Seller).IsModified = false;
+                entry.Property(a => a.Vehicle).IsModified = false;
+            }
+        }
+
+        return base.SaveChanges();
+    }
 }

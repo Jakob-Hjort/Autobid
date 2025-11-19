@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using autobid.Domain.Users;                     
 using autobid.Domain.Vehicles;                  
@@ -26,7 +27,7 @@ public sealed class Auction
 
     private readonly List<Bid> _bids = new();   // Intern liste af bud
     public IReadOnlyList<Bid> Bids => _bids;    // Offentlig read-only visning
-
+    [JsonIgnore]
     public Bid? HighestBid                      // Hjælper: hent højeste bud (eller null)
         => _bids.OrderByDescending(b => b.Amount).FirstOrDefault();
 

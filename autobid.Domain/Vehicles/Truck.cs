@@ -16,13 +16,13 @@ public sealed class Truck : HeavyVehicle
     public int PayloadKg { get; set; }                  // Nyttelast i kg
 
     public Truck(
-        uint id, string name, int km, string regNo, int year,
-        double engineLiters, bool towHitch, double kmPerLiter)
-        : base(id, name, km, regNo, year, kmPerLiter)
+        uint id, string name, int distanceTraveledKm, string registrationNumber, int year,
+        double engineLiters, bool hasTowHitch, double kmPerLiter, Fuel fuel = default)
+        : base(id, name, distanceTraveledKm, registrationNumber, year, kmPerLiter, fuel)
     {
-        HasTowHitch = towHitch;
+        HasTowHitch = hasTowHitch;
         // Kørekort: C – med træk CE (krav V10)
-        LicenseType = towHitch ? License.CE : License.C;
+        LicenseType = hasTowHitch ? License.CE : License.C;
 
         // Motorstørrelse: 4,2–15L (krav V11)
         SetEngineLiters(engineLiters, 4.2, 15.0);
@@ -31,7 +31,7 @@ public sealed class Truck : HeavyVehicle
         Fuel = Fuel.Diesel;
     }
 
-    public Truck()
+    protected Truck()
     {
         
     }

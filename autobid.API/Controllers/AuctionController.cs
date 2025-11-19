@@ -39,7 +39,8 @@ namespace autobid.API.Controllers
         }
 
         [HttpPut("CloseAuction")]
-        public async Task<ActionResult<Auction>> CloseAuction([FromBody] Auction auction)
+        public async Task<ActionResult<Auction>> CloseAuction([FromBody]
+            [ModelBinder(BinderType = typeof(AuctionRequestBinder))] Auction auction)
         {
             try
             {
@@ -83,9 +84,9 @@ namespace autobid.API.Controllers
                 await appContext.SaveChangesAsync();
                 return Ok(auction);
             }
-            catch
+            catch(Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 

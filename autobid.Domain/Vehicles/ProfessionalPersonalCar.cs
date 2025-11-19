@@ -18,8 +18,9 @@ public sealed class ProfessionalPersonalCar : PersonalCar
 
     public ProfessionalPersonalCar(
         uint id, string name, int km, string regNo, int year,
-        double engineLiters, bool towHitch, double kmPerLiter, int trailerCapacityKg = 0)
-        : base(id, name, km, regNo, year, engineLiters, towHitch, kmPerLiter)
+        double engineLiters, bool towHitch, double kmPerLiter, 
+        int trailerCapacityKg = 0, Fuel fuel = default)
+        : base(id, name, km, regNo, year, engineLiters, towHitch, kmPerLiter, fuel)
     {
         TrailerCapacityKg = trailerCapacityKg;          // Gem kapacitet
 
