@@ -11,7 +11,8 @@ namespace autobid.Domain.Users;                   // Samme namespace som User
 /// </summary>
 public sealed class PrivateCustomer : User         // sealed: kan ikke arves videre
 {
-    public string CPR { get; }                     // CPR-nummer (string for at bevare leading zeros)
+    public const string TypeName = "Private";
+    public string CPR { get; init;}                     // CPR-nummer (string for at bevare leading zeros)
 
     public PrivateCustomer(                        // Ctor med alle nødvendige felter
         uint id,                                   // Primærnøgle (0 inden DB insert)

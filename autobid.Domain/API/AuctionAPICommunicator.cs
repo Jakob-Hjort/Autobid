@@ -6,7 +6,7 @@ namespace autobid.Domain.API;
 
 public class AuctionAPICommunicator
 {
-    const string baseUrl = "localhost:5240/api/Auction";
+    const string baseUrl = "http://localhost:5240/api/Auction";
 
     public async Task<Auction?> GetAuctionById(uint id)
     {

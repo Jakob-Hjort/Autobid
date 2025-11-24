@@ -13,6 +13,7 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public sealed class ProfessionalPersonalCar : PersonalCar
 {
+    const string TypeName = "ProfessionalPersonalCar";
     public bool HasSafetyBar { get; set; }                 // Sikkerhedsbøjle/afskærmning i varerum
     public int TrailerCapacityKg { get; set; }          // Tilladt trailervægt (kg)
 

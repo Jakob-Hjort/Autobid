@@ -26,7 +26,9 @@ public class AppDbContext : DbContext
             .HasIndex(user => user.Username)
             .IsUnique();
         
-        modelBuilder.Entity<Vehicle>().UseTptMappingStrategy().ToTable("Vehicles");
+        modelBuilder.Entity<Vehicle>()
+            .UseTptMappingStrategy()
+            .ToTable("Vehicles");
 
         modelBuilder.Entity<PrivateCustomer>()
         .Property(p => p.CPR)
@@ -53,11 +55,14 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Auction>()
             .HasOne(a => a.Vehicle)
             .WithMany()
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
+            
         modelBuilder.Entity<Auction>()
             .HasOne(a => a.Seller)
             .WithMany()
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
 
         modelBuilder.Entity<Auction>()
             .HasKey(a => a.Id);
@@ -83,7 +88,6 @@ public class AppDbContext : DbContext
             {
                 entry.Property(a => a.Bids).IsModified = false;
                 entry.Property(a => a.Seller).IsModified = false;
-                entry.Property(a => a.Vehicle).IsModified = false;
             }
         }
 

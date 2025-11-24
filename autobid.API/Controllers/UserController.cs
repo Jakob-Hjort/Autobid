@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using autobid.API.RequestBinders;
 using autobid.Domain.Auctions;
 using autobid.Domain.Database.EF;
 using autobid.Domain.Security;
@@ -29,6 +30,27 @@ public class UserController : ControllerBase
             return [];
         }
 
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<User>> CreateUser([FromBody]
+        [ModelBinder(BinderType = typeof(UserRequestBinder))] User user)
+    {
+        try
+        {
+            AppDbContext appDbContext = new();
+            if (user is PrivateCustomer privateCustomer)
+                appDbContext.PrivateCustomers.Add(privateCustomer);
+            if (user is CorporateCustomer corporateCustomer)
+                appDbContext.CorporateUsers.Add(corporateCustomer);
+
+            await appDbContext.SaveChangesAsync();
+            return Ok(user);
+        }
+        catch
+        {
+            return BadRequest();
+        }
     }
 
     [HttpGet("Login")]
@@ -149,7 +171,7 @@ public class UserController : ControllerBase
         }
 
     }
-
+    
     [HttpPut("PrivateCustomer/UpdateBalance")]
     public ActionResult UpdatePrivateCustomerBalance([FromQuery] int id, [FromQuery] decimal newBalance)
     {

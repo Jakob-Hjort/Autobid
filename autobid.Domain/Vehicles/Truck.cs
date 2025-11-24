@@ -13,6 +13,7 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public sealed class Truck : HeavyVehicle
 {
+    const string TypeName = "Truck";
     public int PayloadKg { get; set; }                  // Nyttelast i kg
 
     public Truck(

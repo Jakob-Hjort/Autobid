@@ -12,6 +12,7 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public abstract class PersonalCar : Vehicle
 {
+    const string TypeName = "PersonalCar";
     public int SeatsAmount { get; set; }                      // Antal sæder
     public Size Trunk { get; set; } = new();
 

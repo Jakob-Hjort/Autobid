@@ -6,7 +6,7 @@ namespace autobid.Domain.API;
 
 public class CarAPICommunicator
 {
-    const string baseUrl = "localhost:5240/api/Car";
+    const string baseUrl = "http://localhost:5240/api/Car";
 
     public async Task<IEnumerable<Vehicle>> GetAllVehicles()
     {

@@ -30,6 +30,8 @@ namespace autobid.ReactiveUI.ViewModels
 
 		public MainWindowViewModel() : base("Main window")
 		{
+			
+			_= new CarAPICommunicator().GetAllVehicles();
 			_currentViewModel = this;
 			AuctionAPICommunicator repository = new();
 			_=repository.CloseEndedAuctions();

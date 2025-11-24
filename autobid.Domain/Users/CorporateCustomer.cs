@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace autobid.Domain.Users
 {
     public sealed class CorporateCustomer : User       // sealed: ingen yderligere arvinger
     {
+        public const string TypeName = "Corporate";
         public string CVR { get; set; }                    // CVR-nummer (string)
         public decimal Credit { get; set; }            // Kredit – kan lægges oven i Balance ved bud
         public CorporateCustomer(                      // Ctor

@@ -18,7 +18,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
     public enum HeavyKind { Truck, Bus }
     public enum PersonalKind { Private, Professional }
 
-    // Kilder til ComboBox'ene (enum-værdierne)
+    // Kilder til ComboBox'ene (enum-vï¿½rdierne)
     public VehicleCategory[] Categories { get; } =
         Enum.GetValues(typeof(VehicleCategory)).Cast<VehicleCategory>().ToArray();
 
@@ -62,7 +62,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
         CancelCommand = ReactiveCommand.Create(NavBack);
     }
 
-    // ---------- fælles felter (venstre) ----------
+    // ---------- fï¿½lles felter (venstre) ----------
     string? _name; public string? Name { get => _name; set { this.RaiseAndSetIfChanged(ref _name, value); Recalc(); } }
     int? _mileage; public int? Mileage { get => _mileage; set { this.RaiseAndSetIfChanged(ref _mileage, value); Recalc(); } }
     string? _reg; public string? RegNum { get => _reg; set { this.RaiseAndSetIfChanged(ref _reg, value); Recalc(); } }
@@ -124,7 +124,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
     double? _engineLiters; public double? EngineLiters { get => _engineLiters; set { this.RaiseAndSetIfChanged(ref _engineLiters, value); Recalc(); } }
     bool _towBar = true; public bool TowBar { get => _towBar; set => this.RaiseAndSetIfChanged(ref _towBar, value); }
 
-    // Heavy fælles
+    // Heavy fï¿½lles
     double? _heightMeter; public double? HeightMeter { get => _heightMeter; set => this.RaiseAndSetIfChanged(ref _heightMeter, value); }
     double? _length; public double? Length { get => _length; set => this.RaiseAndSetIfChanged(ref _length, value); }
     double? _weightKg; public double? WeightKg { get => _weightKg; set => this.RaiseAndSetIfChanged(ref _weightKg, value); }
@@ -137,7 +137,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
     int? _busBeds; public int? BusBedsAmount { get => _busBeds; set => this.RaiseAndSetIfChanged(ref _busBeds, value); }
     bool _busHasToilet; public bool BusHasToilet { get => _busHasToilet; set => this.RaiseAndSetIfChanged(ref _busHasToilet, value); }
 
-    // Personal fælles
+    // Personal fï¿½lles
     int? _seats; public int? SeatsAmount { get => _seats; set => this.RaiseAndSetIfChanged(ref _seats, value); }
     double? _trunkL; public double? TrunkL { get => _trunkL; set => this.RaiseAndSetIfChanged(ref _trunkL, value); }
     double? _trunkW; public double? TrunkW { get => _trunkW; set => this.RaiseAndSetIfChanged(ref _trunkW, value); }
@@ -191,7 +191,7 @@ public sealed class SetForSaleViewModel : ViewModelBase
         var km = Mileage ?? 0;
         var reg = RegNum!.Trim();    // Vehicle vil selv validere regex LLDDDDD
         var year = Year!.Value;
-        // default afhænger af kategori (bare for UX – domæneklasserne tjekker selv ranges)
+        // default afhï¿½nger af kategori (bare for UX ï¿½ domï¿½neklasserne tjekker selv ranges)
         var liters = EngineLiters ?? (SelectedCategory == VehicleCategory.Heavy ? 6.0 : 1.6);
         double kmPerLiter = KmPerLiter != null ? (double)KmPerLiter : 0d;
         if (ShowHeavy)
@@ -231,9 +231,9 @@ public sealed class SetForSaleViewModel : ViewModelBase
 
             if (SeatsAmount is int seats) car.SeatsAmount = seats;
 
-            // Sæt trunk kun hvis alle tre værdier er udfyldt
+            // Sï¿½t trunk kun hvis alle tre vï¿½rdier er udfyldt
             if (TrunkL is double l && TrunkW is double w && TrunkH is double h)
-                car.Trunk = (l, w, h);
+                car.Trunk = new(l, w, h);
 
             if (car is PrivatePersonalCar priv) priv.HasIsofix = HasIsofix;
             if (car is ProfessionalPersonalCar prof) prof.HasSafetyBar = HasSafetyBar;

@@ -7,7 +7,7 @@ namespace autobid.Domain.API;
 
 public class UserAPICommunicator
 {
-    const string baseUrl = "localhost:5240/api/User";
+    const string baseUrl = "http://localhost:5240/api/User";
     readonly CommonApiCommunicatorModules _commonModules = new();
     public async Task<User?> Login(string username, string password)
     {
@@ -36,7 +36,15 @@ public class UserAPICommunicator
     public async Task<bool> DoesUsernameExist(string username)
     {
         using HttpClient client = new();
-        var response = await client.GetAsync($"{baseUrl}/DoesUsernameExist/{username}");
+        HttpResponseMessage response;
+        try
+        {
+            response = await client.GetAsync($"{baseUrl}/DoesUsernameExist/{username}");
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
         return response.IsSuccessStatusCode &&
             await response.Content.ReadFromJsonAsync<bool>();
     }
@@ -65,7 +73,15 @@ public class UserAPICommunicator
     public async Task<PrivateCustomer?> CreatePrivateCustomer(PrivateCustomer user)
     {
         using HttpClient client = new();
-        var response = await client.PostAsJsonAsync($"{baseUrl}/PrivateCustomer", user);
+        HttpResponseMessage response;
+        try
+        {
+            response = await client.PostAsJsonAsync($"{baseUrl}/PrivateCustomer", user);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
         return await _commonModules.ReadJsonIfSucces<PrivateCustomer>(response);
     }
 

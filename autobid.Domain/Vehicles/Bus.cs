@@ -13,6 +13,7 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public sealed class Bus : HeavyVehicle                  // sealed: ingen videre arv
 {
+    const string TypeName = "Bus";
     public int SeatsAmount { get; set; }                      // Antal siddepladser
     public int BedsAmount { get; set; }                       // Antal sovepladser (campingbus mv.)
     public bool HasToilet { get; set; }                    // Har toilet?

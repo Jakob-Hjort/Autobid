@@ -12,6 +12,7 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public sealed class PrivatePersonalCar : PersonalCar
 {
+    const string TypeName = "PrivatePersonalCar";
     public bool HasIsofix { get; set; }                    // Har bilen ISOFIX-beslag?
 
     public PrivatePersonalCar(

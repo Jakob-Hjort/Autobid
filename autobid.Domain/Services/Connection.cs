@@ -10,7 +10,6 @@ internal static class Connection
         Environment.GetEnvironmentVariable("AUTOBID_CS")
         ?? "Server=sql.itcn.dk;Database=jahj23.SKOLE; User ID=jahj2.SKOLE;Password=SJW56pm88b;TrustServerCertificate=True";
 
-
     public static async Task<SqlConnection> OpenAsync()
     {
         var conn = new SqlConnection(String);
