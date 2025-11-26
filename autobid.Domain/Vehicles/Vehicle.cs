@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;                  // Til regex-validering af registreringsnr.
 using autobid.Domain.Common;
 using autobid.Domain.Common.Enums;
-using System.Text.Json.Serialization;                           // Fuel, License, EnergyClass
+using System.Text.Json.Serialization;
+using System.Reflection.Metadata;                           // Fuel, License, EnergyClass
 
 namespace autobid.Domain.Vehicles;
 
@@ -15,6 +16,9 @@ namespace autobid.Domain.Vehicles;
 /// </summary>
 public abstract class Vehicle
 {
+    [JsonInclude]
+    [JsonPropertyName("vehicleType")]
+    string _typeName => this.GetType().Name;
     public uint Id { get; set; }                      // Primærnøgle fra DB (init: sættes i ctor/object-init)
 
     private string _name = string.Empty;               // Backing field til Name

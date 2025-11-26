@@ -11,9 +11,10 @@ class AuctionRequestBinder : IModelBinder
 {
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
+        string vehicleJsonString = bindingContext.ValueProvider.GetValue("vehicle").FirstValue ?? "";
+        var minPrice = decimal.Parse(bindingContext.ValueProvider.GetValue("minPrice").FirstValue ?? "-1");
         var closeDate = DateTimeOffset.Parse(bindingContext.ValueProvider.GetValue("closeDate").FirstValue ?? "");
         var vehicleType = bindingContext.ValueProvider.GetValue("vehicleType").FirstValue;
-        string vehicleJsonString = bindingContext.ValueProvider.GetValue("vehicle").FirstValue ?? "";
         var userType = bindingContext.ValueProvider.GetValue("sellerType").FirstValue ?? "";
         string sellerJsonString = bindingContext.ValueProvider.GetValue("seller").FirstValue ?? "";
 
@@ -27,7 +28,6 @@ class AuctionRequestBinder : IModelBinder
         User user = UserConverter.Convert(sellerData, userType);
         
 
-        var minPrice = decimal.Parse(bindingContext.ValueProvider.GetValue("minPrice").FirstValue ?? "0");
 
         Auction auction = new(vehicle, user, minPrice, closeDate);
         bindingContext.Result = ModelBindingResult.Success(auction);

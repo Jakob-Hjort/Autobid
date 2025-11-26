@@ -8,6 +8,7 @@ using autobid.Domain.Vehicles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Identity.Client;
 
 namespace autobid.API.Controllers;
@@ -25,7 +26,7 @@ public class UserController : ControllerBase
             var users = dbContext.CorporateUsers;
             return users.ToArray();
         }
-        catch (Exception ex)
+        catch
         {
             return [];
         }
@@ -61,12 +62,13 @@ public class UserController : ControllerBase
             AppDbContext appContext = new();
             Hasher hasher = new();
             User? user = appContext.CorporateUsers
-                .FirstOrDefault(u => u.Username == username && hasher.Verify(password, u.PasswordHash));
+                .FirstOrDefault(u => u.Username == username );
 
             user ??= appContext.PrivateCustomers
-                .FirstOrDefault(u => u.Username == username && hasher.Verify(password, u.PasswordHash));
+                .FirstOrDefault(u => u.Username == username );
 
-            return user != null ? Ok(user) : NotFound();
+
+            return user != null && hasher.Verify(password, user.PasswordHash) ? Ok(user) : NotFound();
         }
         catch
         {
@@ -221,22 +223,25 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appDbContext = new();
+            using AppDbContext appDbContext = new();
             User? user = await appDbContext.CorporateUsers.FindAsync(userId);
             user ??= await appDbContext.PrivateCustomers.FindAsync(userId);
             if (user == null)
             {
                 return BadRequest();
             }
-
-            int wonAuctionsCount = appDbContext.Auctions.Count(
-                (au) => Auction.isHighestBidder(au, user));
-            int auctionCount = appDbContext.Auctions.Count(au => au.Seller.Id == user.Id);
+            IQueryable<Auction> auctions = appDbContext.Auctions.Where(au => au.Seller.Id == user.Id);
+            var bids = appDbContext.Bids
+                .Where(bid => bid.Buyer.Id == user.Id)
+                .OrderByDescending(bid => bid)
+                .GroupBy(bid => bid.Auction.Id);
+            int auctionCount = auctions.Count();
+            int wonAuctionsCount = bids.Count();
             UserProfileSummary userProfile = new UserProfileSummary
                 (user.Id, user.Username, user.Balance, auctionCount, wonAuctionsCount);
             return Ok(userProfile);
         }
-        catch
+        catch (Exception ex)
         {
             return BadRequest();
         }

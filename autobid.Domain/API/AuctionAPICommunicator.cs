@@ -1,5 +1,9 @@
 using System;
+using System.Data.Common;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using autobid.Domain.Auctions;
 
 namespace autobid.Domain.API;
@@ -32,7 +36,16 @@ public class AuctionAPICommunicator
     public async Task<Auction?> CreateAuction(Auction auction)
     {
         using HttpClient client = new();
-        var response = await client.PostAsJsonAsync($"{baseUrl}", auction);
+        var body = new
+        {
+            id = auction.Id,
+            minimumPrice = auction.MinimumPrice,
+            seller = auction.Seller,
+            vehicle = auction.Vehicle,
+            vehicleType = auction.Vehicle.GetType().Name,
+            sellerType = auction.Vehicle.GetType().Name
+        };
+        var response = await client.PostAsJsonAsync($"{baseUrl}", body);
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadFromJsonAsync<Auction>();

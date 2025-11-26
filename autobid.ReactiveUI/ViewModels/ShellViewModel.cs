@@ -5,6 +5,7 @@ using ReactiveUI;
 using autobid.Domain.Users;
 using autobid.Domain.Database;
 using System.Reactive;
+using autobid.Domain.API;
 
 namespace autobid.ReactiveUI.ViewModels
 {
@@ -67,7 +68,7 @@ namespace autobid.ReactiveUI.ViewModels
            
 
         void GoToProfile() =>
-            CurrentPage = new ProfileViewModel(new UserProfileReadService(), _user);
+            CurrentPage = new ProfileViewModel(new UserProfileAPICommunicator(), _user);
 
         void GoToBidHistory() =>
           CurrentPage = new BidHistoryViewModel( _user);

@@ -7,21 +7,28 @@ namespace autobid.Domain.API;
 
 public class UserAPICommunicator
 {
-    const string baseUrl = "http://localhost:5240/api/User";
+    public const string BaseURL = "http://localhost:5240/api/User";
     readonly CommonApiCommunicatorModules _commonModules = new();
     public async Task<User?> Login(string username, string password)
     {
         using HttpClient client = new();
-        var response = await client.GetAsync($"{baseUrl}/Login?username={username}&password={password}");
-
-        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<User?>()
-            : null;
+        var response = await client.GetAsync($"{BaseURL}/Login?username={username}&password={password}");
+        User? user = null;
+        try
+        {
+            user = await response.Content.ReadFromJsonAsync<PrivateCustomer?>();
+        }
+        catch
+        {
+            user = await response.Content.ReadFromJsonAsync<CorporateCustomer?>();
+        }
+        return user;
     }
 
     public async Task<User?> GetUserById(uint id)
     {
         using HttpClient client = new();
-        var response = await client.GetAsync($"{baseUrl}/{id}");
+        var response = await client.GetAsync($"{BaseURL}/{id}");
 
         return await _commonModules.ReadJsonIfSucces<User>(response);
     }
@@ -29,7 +36,7 @@ public class UserAPICommunicator
     public async Task<bool> UpdatePasswordHash(uint userId, string newPassword)
     {
         using HttpClient client = new();
-        var response = await client.PutAsync($"{baseUrl}/UpdatePasswordHash?id={userId}&newPasswordHash={newPassword}", null);
+        var response = await client.PutAsync($"{BaseURL}/UpdatePasswordHash?id={userId}&newPasswordHash={newPassword}", null);
         return response.IsSuccessStatusCode;
     }
 
@@ -39,34 +46,36 @@ public class UserAPICommunicator
         HttpResponseMessage response;
         try
         {
-            response = await client.GetAsync($"{baseUrl}/DoesUsernameExist/{username}");
+            response = await client.GetAsync($"{BaseURL}/DoesUsernameExist/{username}");
         }
         catch (Exception ex)
         {
             return false;
         }
-        return response.IsSuccessStatusCode &&
-            await response.Content.ReadFromJsonAsync<bool>();
+
+        bool res = await response.Content.ReadFromJsonAsync<bool>();
+        return !response.IsSuccessStatusCode || res;
+            
     }
 
     public async Task<bool> UpdateBalance(uint userId, decimal balance)
     {
         using HttpClient client = new();
-        var response = await client.PutAsync($"{baseUrl}/UpdateBalance?id={userId}&balance={balance}", null);
+        var response = await client.PutAsync($"{BaseURL}/UpdateBalance?id={userId}&balance={balance}", null);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> DeleteUser(uint userId)
     {
         using HttpClient client = new();
-        var response = await client.DeleteAsync($"{baseUrl}/{userId}");
+        var response = await client.DeleteAsync($"{BaseURL}/{userId}");
         return response.IsSuccessStatusCode;
     }
 
     public async Task<CorporateCustomer?> CreateCorporateCustomer(CorporateCustomer user)
     {
         using HttpClient client = new();
-        var response = await client.PostAsJsonAsync($"{baseUrl}/CorporateCustomer", user);
+        var response = await client.PostAsJsonAsync($"{BaseURL}/CorporateCustomer", user);
         return await _commonModules.ReadJsonIfSucces<CorporateCustomer>(response);
     }
 
@@ -76,22 +85,12 @@ public class UserAPICommunicator
         HttpResponseMessage response;
         try
         {
-            response = await client.PostAsJsonAsync($"{baseUrl}/PrivateCustomer", user);
+            response = await client.PostAsJsonAsync($"{BaseURL}/PrivateCustomer", user);
         }
-        catch (Exception ex)
+        catch
         {
             return null;
         }
         return await _commonModules.ReadJsonIfSucces<PrivateCustomer>(response);
     }
-
-    public async Task<UserProfileSummary?> GetuserProfileSummary(uint userId)
-    {
-        using HttpClient client = new();
-        var response = await client.GetAsync($"{baseUrl}/UserProfileSummary/{userId}");
-        return await _commonModules.ReadJsonIfSucces<UserProfileSummary>(response);
-    }
-
-    
-
 }

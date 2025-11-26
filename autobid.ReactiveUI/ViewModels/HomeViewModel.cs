@@ -95,7 +95,7 @@ namespace autobid.ReactiveUI.ViewModels
 
         private void OpenProfile()
         {
-            var svc = new UserProfileReadService();
+            var svc = new UserProfileAPICommunicator();
             var vm = new ProfileViewModel(svc, _user);     // giv User, ikke kun Id
             ShellViewModel.ChangeContent(vm);          // VM-first → ViewLocator viser viewet
         }
