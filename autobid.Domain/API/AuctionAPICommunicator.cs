@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using autobid.Domain.Auctions;
+using autobid.Domain.Users;
+using autobid.Domain.Vehicles;
 
 namespace autobid.Domain.API;
 
@@ -36,13 +38,33 @@ public class AuctionAPICommunicator
     public async Task<Auction?> CreateAuction(Auction auction)
     {
         using HttpClient client = new();
+        Type type = auction.Seller.GetType();        
+        string userJson = "";
+        if (auction.Seller is CorporateCustomer corporateCustomer)
+            userJson = JsonSerializer.Serialize<CorporateCustomer>(corporateCustomer);
+        else if (auction.Seller is PrivateCustomer privateCustomer)
+            userJson = JsonSerializer.Serialize<PrivateCustomer>(privateCustomer);
+        else
+            throw new ArgumentException("unknown user type");
+        string vehicleJson;
+        if (auction.Vehicle is Truck truck)
+            vehicleJson = JsonSerializer.Serialize<Truck>(truck);
+        else if (auction.Vehicle is Bus bus)
+            vehicleJson = JsonSerializer.Serialize<Bus>(bus);
+        else if (auction.Vehicle is ProfessionalPersonalCar professionalPersonalCar)
+            vehicleJson = JsonSerializer.Serialize<ProfessionalPersonalCar>(professionalPersonalCar);
+        else if (auction.Vehicle is PrivatePersonalCar privatePersonalCar)
+            vehicleJson = JsonSerializer.Serialize<PrivatePersonalCar>(privatePersonalCar);
+        else
+            throw new ArgumentException("unknown vehicle type");
+
         var body = new
         {
             id = auction.Id,
             minimumPrice = auction.MinimumPrice,
-            seller = auction.Seller,
-            vehicle = auction.Vehicle,
-            vehicleType = auction.Vehicle.GetType().Name,
+            seller = userJson,
+            vehicle = vehicleJson,
+            vehicleType = auction.Seller.GetType().Name,
             sellerType = auction.Vehicle.GetType().Name
         };
         var response = await client.PostAsJsonAsync($"{baseUrl}", body);

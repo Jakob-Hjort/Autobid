@@ -5,7 +5,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using autobid.Domain.Users;                     
-using autobid.Domain.Vehicles;                  
+using autobid.Domain.Vehicles;
+using Microsoft.AspNetCore.Mvc;
 
 namespace autobid.Domain.Auctions;
 
@@ -14,6 +15,7 @@ namespace autobid.Domain.Auctions;
 /// Indeholder min. pris, alle bud og status (åben/lukket).
 /// </summary>
 /// 
+[BindProperties]
 public sealed class Auction
 {
     private static uint _nextId = 1;            // Statisk tæller (krav: static member/metode)

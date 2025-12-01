@@ -9,8 +9,10 @@ using autobid.Domain.Common.Enums;
 using autobid.Domain;
 class AuctionRequestBinder : IModelBinder
 {
+    
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
+        string auctionJsonString = bindingContext.ValueProvider.GetValue("auction").FirstValue ?? "";
         string vehicleJsonString = bindingContext.ValueProvider.GetValue("vehicle").FirstValue ?? "";
         var minPrice = decimal.Parse(bindingContext.ValueProvider.GetValue("minPrice").FirstValue ?? "-1");
         var closeDate = DateTimeOffset.Parse(bindingContext.ValueProvider.GetValue("closeDate").FirstValue ?? "");

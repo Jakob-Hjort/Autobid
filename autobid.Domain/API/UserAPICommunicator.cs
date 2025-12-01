@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using autobid.Domain.Users;
 
@@ -83,6 +84,7 @@ public class UserAPICommunicator
     {
         using HttpClient client = new();
         HttpResponseMessage response;
+        string ss = JsonSerializer.Serialize(user);
         try
         {
             response = await client.PostAsJsonAsync($"{BaseURL}/PrivateCustomer", user);
