@@ -1,7 +1,12 @@
+using System.Text.Json;
+using autobid.Domain.API;
 using autobid.Domain.Auctions;
 using autobid.Domain.Database.EF;
+using autobid.Domain.Users;
+using autobid.Domain.Vehicles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 
 namespace autobid.API.Controllers
@@ -15,7 +20,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.Auctions.ToArray();
             }
             catch
@@ -29,7 +34,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.Auctions.Where(a => a.Seller.Id == userId).ToArray();
             }
             catch
@@ -40,11 +45,16 @@ namespace autobid.API.Controllers
 
         [HttpPut("CloseAuction")]
         public async Task<ActionResult<Auction>> CloseAuction([FromBody]
-            [ModelBinder(BinderType = typeof(AuctionRequestBinder))] Auction auction)
+             AuctionForAPI auctionForAPI)
         {
             try
             {
-                AppDbContext appContext = new();
+                Vehicle? vehicle = ConvertJsonToVehicle(auctionForAPI.VehicleType, auctionForAPI.VehicleJson);
+                User? user = ConvertJsonToUser(auctionForAPI.SellerType, auctionForAPI.SellerJson);
+
+                Auction auction = new(vehicle!, user!, auctionForAPI.MinPrice, auctionForAPI.CloseDate);
+
+                using AppDbContext appContext = new();
                 Bid? highestBid = auction.HighestBid;
                 auction.Close();
 
@@ -60,9 +70,31 @@ namespace autobid.API.Controllers
             }
         }
 
+        Vehicle? ConvertJsonToVehicle(string TypeName, string json)
+        {
+            return TypeName switch
+            {
+                "Truck" => JsonSerializer.Deserialize<Truck>(json),
+                "Bus" => JsonSerializer.Deserialize<Bus>(json),
+                "ProfessionalPersonalCar" => JsonSerializer.Deserialize<ProfessionalPersonalCar>(json),
+                "PrivatePersonalCar" => JsonSerializer.Deserialize<PrivatePersonalCar>(json),
+                _ => null
+            };
+        }
+
+        User? ConvertJsonToUser(string TypeName, string json)
+        {
+            return TypeName switch
+            {
+                "CorporateCustomer" => JsonSerializer.Deserialize<CorporateCustomer>(json),
+                "PrivateCustomer" => JsonSerializer.Deserialize<PrivateCustomer>(json),
+                _ => null
+            };
+        }
+
         void OnAuctionClosedTransferMoney(Auction auction)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             Bid? highestBid = auction.HighestBid;
             if (highestBid != null)
             {
@@ -75,13 +107,19 @@ namespace autobid.API.Controllers
 
         [HttpPost]
         public async Task<ActionResult<Auction>> CreateAuction(
-            [ModelBinder(BinderType = typeof(AuctionRequestBinder))][FromBody] Auction auction)
+            [FromBody] AuctionForAPI auctionForAPI)
         {
+            Vehicle? vehicle = ConvertJsonToVehicle(auctionForAPI.VehicleType, auctionForAPI.VehicleJson);
+            User? user = ConvertJsonToUser(auctionForAPI.SellerType, auctionForAPI.SellerJson);
+            Auction auction = new(vehicle!, user!, auctionForAPI.MinPrice, auctionForAPI.CloseDate);
+
             try
             {
-                AppDbContext appContext = new();
+                using AppDbContext appContext = new();
+                appContext.Entry(user).State = EntityState.Unchanged;
                 appContext.Auctions.Add(auction);
-                await appContext.SaveChangesAsync();
+
+                appContext.SaveChanges();
                 return Ok(auction);
             }
             catch(Exception ex)
@@ -95,7 +133,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.Auctions.Where(a => a.Seller.Id == id).ToArray();
             }
             catch
@@ -109,7 +147,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.Auctions
                     .Where(a => !a.IsClosed)
                     .Select(a => new AuctionListItem(a.Id, a.Vehicle.Name, a.Vehicle.Year,
@@ -126,7 +164,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext appContext = new();
+                using AppDbContext appContext = new();
                 var endedAuctions = appContext.Auctions
                     .Where(a => !a.IsClosed && a.CloseDate <= DateTime.Now).ToList();
 

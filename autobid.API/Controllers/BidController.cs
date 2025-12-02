@@ -14,7 +14,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.Bids.ToArray();
             }
             catch
@@ -28,7 +28,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.Bids.Where(b => b.Buyer.Id == id).ToArray();
             }
             catch
@@ -42,7 +42,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.Bids.Where(b => b.Auction!.Id == id).ToArray();
             }
             catch
@@ -56,7 +56,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext appContext = new();
+                using AppDbContext appContext = new();
                 appContext.Bids.Add(bid);
                 await appContext.SaveChangesAsync();
                 return Ok(bid);

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using autobid.Domain.API;
 
 namespace autobid.Domain.Users;                   // Namespace for brugertyper
 
@@ -54,5 +56,6 @@ public abstract class User : IUser
 
     public override string ToString()               // Override af ToString for pæn debug/visning
         => $"{Username} ({GetType().Name})";        // F.eks. "jakob (PrivateCustomer)"
+
 }
 

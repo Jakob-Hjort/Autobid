@@ -15,7 +15,7 @@ class AuctionRequestBinder : IModelBinder
         string auctionJsonString = bindingContext.ValueProvider.GetValue("auction").FirstValue ?? "";
         string vehicleJsonString = bindingContext.ValueProvider.GetValue("vehicle").FirstValue ?? "";
         var minPrice = decimal.Parse(bindingContext.ValueProvider.GetValue("minPrice").FirstValue ?? "-1");
-        var closeDate = DateTimeOffset.Parse(bindingContext.ValueProvider.GetValue("closeDate").FirstValue ?? "");
+        var closeDate = DateTimeOffset.Parse(bindingContext.ValueProvider.GetValue("closeDate").FirstValue ?? DateTimeOffset.Now.ToString());
         var vehicleType = bindingContext.ValueProvider.GetValue("vehicleType").FirstValue;
         var userType = bindingContext.ValueProvider.GetValue("sellerType").FirstValue ?? "";
         string sellerJsonString = bindingContext.ValueProvider.GetValue("seller").FirstValue ?? "";

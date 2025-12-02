@@ -15,7 +15,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 List<Vehicle> vehicles = new(dbContext.Vehicles.Count());
                 vehicles.AddRange(dbContext.PrivatePersonalCars);
                 vehicles.AddRange(dbContext.ProfessionalPersonalCars);
@@ -35,7 +35,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.PrivatePersonalCars.ToArray();
             }
             catch
@@ -47,7 +47,7 @@ namespace autobid.API.Controllers
         [HttpPost("PrivatePersonalCar")]
         public async Task<ActionResult<PrivatePersonalCar>> CreatePrivatePersonalCar([FromBody] PrivatePersonalCar car)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.PrivatePersonalCars.Add(car);
             await appContext.SaveChangesAsync();
             return Ok(car);
@@ -56,7 +56,7 @@ namespace autobid.API.Controllers
         [HttpPut("PrivatePersonalCar")]
         public async Task<ActionResult<ProfessionalPersonalCar>> CreatePrivatePersonalCar([FromBody] ProfessionalPersonalCar car)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.ProfessionalPersonalCars.Update(car);
             await appContext.SaveChangesAsync();
             return Ok(car);
@@ -65,7 +65,7 @@ namespace autobid.API.Controllers
         [HttpDelete("PrivatePersonalCar/{id}")]
         public async Task<ActionResult> DeletePrivatePersonalCar(int id)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             PrivatePersonalCar? car = await appContext.PrivatePersonalCars.FindAsync(id);
             if (car == null)
             {
@@ -79,7 +79,7 @@ namespace autobid.API.Controllers
         [HttpDelete("PrivatePersonalCar")]
         public async Task<ActionResult> DeleteProfessionalPersonalCar([FromBody] PrivatePersonalCar car)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.PrivatePersonalCars.Remove(car);
             await appContext.SaveChangesAsync();
             return Ok();
@@ -90,7 +90,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.ProfessionalPersonalCars.ToArray();
             }
             catch
@@ -102,7 +102,7 @@ namespace autobid.API.Controllers
         [HttpPost("ProfessionalPersonalCar")]
         public async Task<ActionResult<ProfessionalPersonalCar>> CreateProfessionalPersonalCar([FromBody] ProfessionalPersonalCar ProfessionalPersonal)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.ProfessionalPersonalCars.Add(ProfessionalPersonal);
             await appContext.SaveChangesAsync();
             return Ok(ProfessionalPersonal);
@@ -113,7 +113,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext appDbContext = new();
+                using AppDbContext appDbContext = new();
                 appDbContext.ProfessionalPersonalCars.Update(updatedCar);
                 await appDbContext.SaveChangesAsync();
                 return Ok();
@@ -127,7 +127,7 @@ namespace autobid.API.Controllers
         [HttpDelete("ProfessionalPersonalCar/{id}")]
         public async Task<ActionResult> DeleteProfessionalPersonalCar(int id)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             ProfessionalPersonalCar? car = appContext.ProfessionalPersonalCars.Find(id);
             if (car == null)
             {
@@ -141,7 +141,7 @@ namespace autobid.API.Controllers
         [HttpDelete("ProfessionalPersonalCar")]
         public async Task<ActionResult> DeleteProfessionalPersonalCar([FromBody] ProfessionalPersonalCar car)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.ProfessionalPersonalCars.Remove(car);
             await appContext.SaveChangesAsync();
             return Ok();
@@ -152,7 +152,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.Trucks.ToArray();
             }
             catch
@@ -164,7 +164,7 @@ namespace autobid.API.Controllers
         [HttpPost("Truck")]
         public async Task<ActionResult<Truck>> CreateTruck([FromBody] Truck truck)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.Trucks.Add(truck);
             await appContext.SaveChangesAsync();
             return Ok(truck);
@@ -175,7 +175,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext appDbContext = new();
+                using AppDbContext appDbContext = new();
                 appDbContext.Trucks.Update(updatedTruck);
                 await appDbContext.SaveChangesAsync();
                 return Ok();
@@ -189,7 +189,7 @@ namespace autobid.API.Controllers
         [HttpDelete("Truck/{id}")]
         public async Task<ActionResult> DeleteTruck(int id)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             Truck? truck = appContext.Trucks.Find(id);
             if (truck == null)
             {
@@ -203,7 +203,7 @@ namespace autobid.API.Controllers
         [HttpDelete("Truck")]
         public async Task<ActionResult> DeleteTruck([FromBody] Truck truck)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.Trucks.Remove(truck);
             await appContext.SaveChangesAsync();
             return Ok();
@@ -214,7 +214,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext dbContext = new();
+                using AppDbContext dbContext = new();
                 return dbContext.Busses.ToArray();
             }
             catch
@@ -226,7 +226,7 @@ namespace autobid.API.Controllers
         [HttpPost("Bus")]
         public async Task<ActionResult<Bus>> CreateBus([FromBody] Bus bus)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.Busses.Add(bus);
             await appContext.SaveChangesAsync();
             return Ok(bus);
@@ -237,7 +237,7 @@ namespace autobid.API.Controllers
         {
             try
             {
-                AppDbContext appDbContext = new();
+                using AppDbContext appDbContext = new();
                 appDbContext.Busses.Update(updatedBus);
                 await appDbContext.SaveChangesAsync();
                 return Ok();
@@ -251,7 +251,7 @@ namespace autobid.API.Controllers
         [HttpDelete("Bus/{id}")]
         public async Task<ActionResult> DeleteBus(int id)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             Bus? bus = appContext.Busses.Find(id);
             if (bus == null)
             {
@@ -265,7 +265,7 @@ namespace autobid.API.Controllers
         [HttpDelete("Bus")]
         public async Task<ActionResult> DeleteBus([FromBody] Bus bus)
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.Busses.Remove(bus);
             await appContext.SaveChangesAsync();
             return Ok();

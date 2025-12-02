@@ -6,6 +6,7 @@ using autobid.Domain.Security;
 using autobid.Domain.Users;
 using autobid.Domain.Vehicles;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
@@ -22,7 +23,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext dbContext = new();
+            using AppDbContext dbContext = new();
             var users = dbContext.CorporateUsers;
             return users.ToArray();
         }
@@ -39,7 +40,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appDbContext = new();
+            using AppDbContext appDbContext = new();
             if (user is PrivateCustomer privateCustomer)
                 appDbContext.PrivateCustomers.Add(privateCustomer);
             if (user is CorporateCustomer corporateCustomer)
@@ -59,7 +60,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             Hasher hasher = new();
             User? user = appContext.CorporateUsers
                 .FirstOrDefault(u => u.Username == username );
@@ -79,7 +80,7 @@ public class UserController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<User> GetUserById(int id)
     {
-        AppDbContext appContext = new();
+        using AppDbContext appContext = new();
         User? user = appContext.CorporateUsers.Find(id);
         if (user == null)
         {
@@ -91,7 +92,7 @@ public class UserController : ControllerBase
     [HttpPost("CorporateCustomer")]
     public ActionResult<User> CreateCorporateCustomer([FromBody] CorporateCustomer user)
     {
-        AppDbContext appContext = new();
+        using AppDbContext appContext = new();
         appContext.CorporateUsers.Add(user);
         appContext.SaveChanges();
         return Ok(user);
@@ -103,7 +104,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appDbContext = new();
+            using AppDbContext appDbContext = new();
             if (user == null)
             {
                 return NotFound();
@@ -124,7 +125,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appDbContext = new();
+            using AppDbContext appDbContext = new();
             CorporateCustomer? user = appDbContext.CorporateUsers.Find(id);
             if (user == null)
             {
@@ -144,7 +145,7 @@ public class UserController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteUser(int id)
     {
-        AppDbContext appContext = new();
+        using AppDbContext appContext = new();
 
         User? user = appContext.CorporateUsers.Find(id);
         user ??= appContext.PrivateCustomers.Find(id);
@@ -162,7 +163,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appContext = new();
+            using AppDbContext appContext = new();
             appContext.PrivateCustomers.Add(user);
             await appContext.SaveChangesAsync();
             return Ok();
@@ -179,7 +180,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appDbContext = new();
+            using AppDbContext appDbContext = new();
             PrivateCustomer? user = appDbContext.PrivateCustomers.Find(id);
             if (user == null)
             {
@@ -201,7 +202,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appDbContext = new();
+            using AppDbContext appDbContext = new();
             PrivateCustomer? user = appDbContext.PrivateCustomers.Find(id);
             if (user == null)
             {
@@ -252,7 +253,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appDbContext = new();
+            using AppDbContext appDbContext = new();
             User? user = await appDbContext.PrivateCustomers.
                 FirstOrDefaultAsync(u => u.Username == username);
             user ??= await appDbContext.CorporateUsers.
@@ -271,7 +272,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            AppDbContext appDbContext = new();
+            using AppDbContext appDbContext = new();
             User? user = await appDbContext.CorporateUsers.FindAsync(userId);
             user ??= await appDbContext.PrivateCustomers.FindAsync(userId);
             if (user == null)

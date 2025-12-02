@@ -82,15 +82,6 @@ public class AppDbContext : DbContext
 
     public override int SaveChanges()
     {
-        foreach (var entry in ChangeTracker.Entries<Auction>())
-        {
-            if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
-            {
-                entry.Property(a => a.Bids).IsModified = false;
-                entry.Property(a => a.Seller).IsModified = false;
-            }
-        }
-
         return base.SaveChanges();
     }
 }

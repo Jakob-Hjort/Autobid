@@ -58,16 +58,11 @@ public class AuctionAPICommunicator
         else
             throw new ArgumentException("unknown vehicle type");
 
-        var body = new
-        {
-            id = auction.Id,
-            minimumPrice = auction.MinimumPrice,
-            seller = userJson,
-            vehicle = vehicleJson,
-            vehicleType = auction.Seller.GetType().Name,
-            sellerType = auction.Vehicle.GetType().Name
-        };
-        var response = await client.PostAsJsonAsync($"{baseUrl}", body);
+        var body = new AuctionForAPI(auction.Id, vehicleJson, userJson, auction.MinimumPrice, auction.CloseDate,
+            auction.Vehicle.GetType().Name, auction.Seller.GetType().Name);
+        
+        var response = await client.PostAsync($"{baseUrl}", 
+            new StringContent(JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json"));
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadFromJsonAsync<Auction>();
