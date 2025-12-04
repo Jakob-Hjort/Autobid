@@ -9,8 +9,15 @@ public class UserProfileAPICommunicator : IUserProfileReadService
     public async Task<UserProfileSummary> GetAsync(uint userId)
     {
         using HttpClient client = new();
-        var response = await client.GetAsync($"{UserAPICommunicator.BaseURL}/UserProfileSummary/{userId}");
-        return await _commonModules.ReadJsonIfSucces<UserProfileSummary>(response) 
-            ?? throw new Exception("Invalid UserProfile from API");
+        try
+        {
+            var response = await client.GetAsync($"{UserAPICommunicator.BaseURL}/UserProfileSummary/{userId}");
+            return await _commonModules.ReadJsonIfSucces<UserProfileSummary>(response) 
+                ?? throw new Exception("Invalid UserProfile from API");
+        }
+        catch
+        {
+            throw; 
+        }
     }
 }

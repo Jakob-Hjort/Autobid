@@ -29,6 +29,42 @@ namespace autobid.API.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public ActionResult<AuctionForAPI> GetAuctionById(int id)
+        {
+            try
+            {
+                using AppDbContext dbContext = new();
+                var auction = dbContext.Auctions.Single(a => a.Id == id);
+
+                string userJson = auction.Seller switch
+                {
+                    PrivateCustomer privateCustomer => JsonSerializer.Serialize<PrivateCustomer>(privateCustomer),
+                    CorporateCustomer corporateCustomer => JsonSerializer.Serialize<CorporateCustomer>(corporateCustomer),
+                    _ => throw new ArgumentException("unknown user type")
+                };
+
+                string vehicleJson = auction.Vehicle switch
+                {
+                    Truck truck => JsonSerializer.Serialize<Truck>(truck),
+                    Bus bus => JsonSerializer.Serialize<Bus>(bus),
+                    ProfessionalPersonalCar professionalPersonalCar => JsonSerializer
+                        .Serialize<ProfessionalPersonalCar>(professionalPersonalCar),
+                    PrivatePersonalCar privatePersonalCar => JsonSerializer
+                        .Serialize<PrivatePersonalCar>(privatePersonalCar),
+                    _ => throw new ArgumentException("unknown vehicle type")
+                };
+                AuctionForAPI auctionForAPI = new(auction.Id, vehicleJson, 
+                    userJson, auction.MinimumPrice, auction.CloseDate, 
+                    auction.Vehicle.GetType().Name, auction.Seller.GetType().Name);
+                return Ok(auctionForAPI);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
         [HttpGet("AuctionFromUser/{id}")]
         public IEnumerable<Auction> GetAuctionsFromUser(int userId)
         {
@@ -115,6 +151,11 @@ namespace autobid.API.Controllers
 
             try
             {
+                if (vehicle == null || user == null)
+                {
+                    return BadRequest("Invalid vehicle or user data.");
+                }
+
                 using AppDbContext appContext = new();
                 appContext.Entry(user).State = EntityState.Unchanged;
                 appContext.Auctions.Add(auction);

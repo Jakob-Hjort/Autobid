@@ -231,7 +231,8 @@ public class UserController : ControllerBase
             {
                 return BadRequest();
             }
-            IQueryable<Auction> auctions = appDbContext.Auctions.Where(au => au.Seller.Id == user.Id);
+            IQueryable<Auction> auctions = appDbContext.Auctions
+                .Where(au => au.Seller.Id == user.Id);
             var bids = appDbContext.Bids
                 .Where(bid => bid.Buyer.Id == user.Id)
                 .OrderByDescending(bid => bid)
@@ -242,7 +243,7 @@ public class UserController : ControllerBase
                 (user.Id, user.Username, user.Balance, auctionCount, wonAuctionsCount);
             return Ok(userProfile);
         }
-        catch (Exception ex)
+        catch
         {
             return BadRequest();
         }

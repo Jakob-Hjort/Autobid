@@ -15,6 +15,9 @@ public class UserAPICommunicator
         using HttpClient client = new();
         var response = await client.GetAsync($"{BaseURL}/Login?username={username}&password={password}");
         User? user = null;
+        if (!response.IsSuccessStatusCode)
+            return null;
+
         try
         {
             user = await response.Content.ReadFromJsonAsync<PrivateCustomer?>();
@@ -29,16 +32,30 @@ public class UserAPICommunicator
     public async Task<User?> GetUserById(uint id)
     {
         using HttpClient client = new();
-        var response = await client.GetAsync($"{BaseURL}/{id}");
+        try
+        {
+            var response = await client.GetAsync($"{BaseURL}/{id}");
 
-        return await _commonModules.ReadJsonIfSucces<User>(response);
+            return await _commonModules.ReadJsonIfSucces<User>(response);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public async Task<bool> UpdatePasswordHash(uint userId, string newPassword)
     {
         using HttpClient client = new();
-        var response = await client.PutAsync($"{BaseURL}/UpdatePasswordHash?id={userId}&newPasswordHash={newPassword}", null);
-        return response.IsSuccessStatusCode;
+        try
+        {
+            var response = await client.PutAsync($"{BaseURL}/UpdatePassword?id={userId}&newPassword={newPassword}", null);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<bool> DoesUsernameExist(string username)
@@ -49,35 +66,58 @@ public class UserAPICommunicator
         {
             response = await client.GetAsync($"{BaseURL}/DoesUsernameExist/{username}");
         }
-        catch (Exception ex)
+        catch
         {
             return false;
         }
 
         bool res = await response.Content.ReadFromJsonAsync<bool>();
         return !response.IsSuccessStatusCode || res;
-            
+
     }
 
     public async Task<bool> UpdateBalance(uint userId, decimal balance)
     {
         using HttpClient client = new();
-        var response = await client.PutAsync($"{BaseURL}/UpdateBalance?id={userId}&balance={balance}", null);
-        return response.IsSuccessStatusCode;
+        try
+        {
+
+            var response = await client.PutAsync($"{BaseURL}/UpdateBalance?id={userId}&balance={balance}", null);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<bool> DeleteUser(uint userId)
     {
         using HttpClient client = new();
-        var response = await client.DeleteAsync($"{BaseURL}/{userId}");
-        return response.IsSuccessStatusCode;
+        try
+        {
+
+            var response = await client.DeleteAsync($"{BaseURL}/{userId}");
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<CorporateCustomer?> CreateCorporateCustomer(CorporateCustomer user)
     {
         using HttpClient client = new();
-        var response = await client.PostAsJsonAsync($"{BaseURL}/CorporateCustomer", user);
-        return await _commonModules.ReadJsonIfSucces<CorporateCustomer>(response);
+        try
+        {
+            var response = await client.PostAsJsonAsync($"{BaseURL}/CorporateCustomer", user);
+            return await _commonModules.ReadJsonIfSucces<CorporateCustomer>(response);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public async Task<PrivateCustomer?> CreatePrivateCustomer(PrivateCustomer user)
