@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading.Tasks;
 using autobid.Domain.API;
 using autobid.Domain.Auctions;
 using autobid.Domain.Database.EF;
@@ -35,33 +36,36 @@ namespace autobid.API.Controllers
             try
             {
                 using AppDbContext dbContext = new();
-                var auction = dbContext.Auctions.Single(a => a.Id == id);
+                
+                var auction = dbContext.Auctions.Select(au =>
+                    new { 
+                        Vehicleid = au.Vehicle.Id,
+                        UserId = au.Seller.Id,
+                        AuctionId = au.Id,
+                        au.CloseDate,
+                        au.MinimumPrice
+                    }
+                ).First(a => a.AuctionId == id);
+                User? seller = dbContext.PrivateCustomers.SingleOrDefault(u => u.Id == auction.UserId);
+                seller ??= dbContext.CorporateUsers.SingleOrDefault(u => u.Id == auction.AuctionId);
 
-                string userJson = auction.Seller switch
-                {
-                    PrivateCustomer privateCustomer => JsonSerializer.Serialize<PrivateCustomer>(privateCustomer),
-                    CorporateCustomer corporateCustomer => JsonSerializer.Serialize<CorporateCustomer>(corporateCustomer),
-                    _ => throw new ArgumentException("unknown user type")
-                };
+                Vehicle? vehicle = dbContext.Trucks.SingleOrDefault(v => v.Id == auction.Vehicleid);
+                vehicle ??= dbContext.Busses.SingleOrDefault(v => v.Id == auction.Vehicleid);
+                vehicle ??= dbContext.ProfessionalPersonalCars.SingleOrDefault(v => v.Id == auction.Vehicleid);
+                vehicle ??= dbContext.PrivatePersonalCars.SingleOrDefault(v => v.Id == auction.Vehicleid);
 
-                string vehicleJson = auction.Vehicle switch
-                {
-                    Truck truck => JsonSerializer.Serialize<Truck>(truck),
-                    Bus bus => JsonSerializer.Serialize<Bus>(bus),
-                    ProfessionalPersonalCar professionalPersonalCar => JsonSerializer
-                        .Serialize<ProfessionalPersonalCar>(professionalPersonalCar),
-                    PrivatePersonalCar privatePersonalCar => JsonSerializer
-                        .Serialize<PrivatePersonalCar>(privatePersonalCar),
-                    _ => throw new ArgumentException("unknown vehicle type")
-                };
-                AuctionForAPI auctionForAPI = new(auction.Id, vehicleJson, 
-                    userJson, auction.MinimumPrice, auction.CloseDate, 
-                    auction.Vehicle.GetType().Name, auction.Seller.GetType().Name);
-                return Ok(auctionForAPI);
+                if (vehicle == null)
+                    throw new Exception("invalid car type");
+                if (seller == null)
+                    throw new Exception("invalid user type");  
+
+                Auction auctionForReturn = new(vehicle, seller, auction.MinimumPrice,
+                    auction.CloseDate, auction.AuctionId);
+                return Ok(AuctionForAPI.FromAuction(auctionForReturn));
             }
-            catch
+            catch(Exception ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
         }
 
@@ -80,15 +84,12 @@ namespace autobid.API.Controllers
         }
 
         [HttpPut("CloseAuction")]
-        public async Task<ActionResult<Auction>> CloseAuction([FromBody]
+        public async Task<ActionResult> CloseAuction([FromBody]
              AuctionForAPI auctionForAPI)
         {
             try
             {
-                Vehicle? vehicle = ConvertJsonToVehicle(auctionForAPI.VehicleType, auctionForAPI.VehicleJson);
-                User? user = ConvertJsonToUser(auctionForAPI.SellerType, auctionForAPI.SellerJson);
-
-                Auction auction = new(vehicle!, user!, auctionForAPI.MinPrice, auctionForAPI.CloseDate);
+                Auction auction = auctionForAPI.ToAuction();
 
                 using AppDbContext appContext = new();
                 Bid? highestBid = auction.HighestBid;
@@ -106,28 +107,6 @@ namespace autobid.API.Controllers
             }
         }
 
-        Vehicle? ConvertJsonToVehicle(string TypeName, string json)
-        {
-            return TypeName switch
-            {
-                "Truck" => JsonSerializer.Deserialize<Truck>(json),
-                "Bus" => JsonSerializer.Deserialize<Bus>(json),
-                "ProfessionalPersonalCar" => JsonSerializer.Deserialize<ProfessionalPersonalCar>(json),
-                "PrivatePersonalCar" => JsonSerializer.Deserialize<PrivatePersonalCar>(json),
-                _ => null
-            };
-        }
-
-        User? ConvertJsonToUser(string TypeName, string json)
-        {
-            return TypeName switch
-            {
-                "CorporateCustomer" => JsonSerializer.Deserialize<CorporateCustomer>(json),
-                "PrivateCustomer" => JsonSerializer.Deserialize<PrivateCustomer>(json),
-                _ => null
-            };
-        }
-
         void OnAuctionClosedTransferMoney(Auction auction)
         {
             using AppDbContext appContext = new();
@@ -142,26 +121,19 @@ namespace autobid.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Auction>> CreateAuction(
+        public async Task<ActionResult<AuctionForAPI>> CreateAuction(
             [FromBody] AuctionForAPI auctionForAPI)
         {
-            Vehicle? vehicle = ConvertJsonToVehicle(auctionForAPI.VehicleType, auctionForAPI.VehicleJson);
-            User? user = ConvertJsonToUser(auctionForAPI.SellerType, auctionForAPI.SellerJson);
-            Auction auction = new(vehicle!, user!, auctionForAPI.MinPrice, auctionForAPI.CloseDate);
+            Auction auction = auctionForAPI.ToAuction();
 
             try
             {
-                if (vehicle == null || user == null)
-                {
-                    return BadRequest("Invalid vehicle or user data.");
-                }
-
                 using AppDbContext appContext = new();
-                appContext.Entry(user).State = EntityState.Unchanged;
+                appContext.Entry(auction.Seller).State = EntityState.Unchanged;
                 appContext.Auctions.Add(auction);
 
                 appContext.SaveChanges();
-                return Ok(auction);
+                return Ok(auctionForAPI);
             }
             catch(Exception ex)
             {
@@ -194,7 +166,7 @@ namespace autobid.API.Controllers
                     .Select(a => new AuctionListItem(a.Id, a.Vehicle.Name, a.Vehicle.Year,
                     a.MinimumPrice, a.Seller.Username)).ToArray();
             }
-            catch
+            catch(Exception ex)
             {
                 return [];
             }

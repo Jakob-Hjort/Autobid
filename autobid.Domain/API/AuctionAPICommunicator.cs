@@ -23,28 +23,7 @@ public class AuctionAPICommunicator
             
             var auctionForAPI = await _commonModules
                 .ReadJsonIfSucces<AuctionForAPI>(response);
-            User? user = auctionForAPI?.SellerType switch
-            {
-                "PrivateCustomer" => JsonSerializer
-                    .Deserialize<PrivateCustomer>(auctionForAPI.SellerJson)!,
-                "CorporateCustomer" => JsonSerializer
-                    .Deserialize<CorporateCustomer>(auctionForAPI.SellerJson)!,
-                _ => throw new Exception("unknown user type")
-            };
-
-            Vehicle? vehicle = auctionForAPI.VehicleType switch
-            {
-                "PrivatePersonalCar" => JsonSerializer
-                    .Deserialize<PrivatePersonalCar>(auctionForAPI.VehicleJson)!,
-                "ProfessionalPersonalCar" => JsonSerializer
-                    .Deserialize<ProfessionalPersonalCar>(auctionForAPI.VehicleJson)!,
-                "Truck" => JsonSerializer.Deserialize<Truck>(auctionForAPI.VehicleJson)!,
-                "Bus" => JsonSerializer.Deserialize<Bus>(auctionForAPI.VehicleJson)!,
-                _ => throw new Exception("unknown vehicle type")
-            };
-
-            return new Auction(vehicle, user,
-                auctionForAPI.MinPrice, auctionForAPI.CloseDate);
+            return auctionForAPI?.ToAuction();    
         }
         catch
         {
@@ -57,7 +36,6 @@ public class AuctionAPICommunicator
         using HttpClient client = new();
         try
         {
-
             var response = await client.GetAsync($"{baseUrl}");
             return await _commonModules.ReadJsonIfSucces<IEnumerable<Auction>>(response) ?? [];
         }
@@ -70,42 +48,10 @@ public class AuctionAPICommunicator
     public async Task<Auction?> CreateAuction(Auction auction)
     {
         using HttpClient client = new();
-        Type type = auction.Seller.GetType();
-        string userJson = "";
-        if (auction.Seller is CorporateCustomer corporateCustomer)
-            userJson = JsonSerializer.Serialize<CorporateCustomer>(corporateCustomer);
-        else if (auction.Seller is PrivateCustomer privateCustomer)
-            userJson = JsonSerializer.Serialize<PrivateCustomer>(privateCustomer);
-        else
-            throw new ArgumentException("unknown user type");
-        string vehicleJson;
-        if (auction.Vehicle is Truck truck)
-        {
-            vehicleJson = JsonSerializer.Serialize<Truck>(truck);
-        }
-        else if (auction.Vehicle is Bus bus)
-        {
-            vehicleJson = JsonSerializer.Serialize<Bus>(bus);
-        }
-        else if (auction.Vehicle is ProfessionalPersonalCar professionalPersonalCar)
-        {
-            vehicleJson = JsonSerializer.Serialize<ProfessionalPersonalCar>(professionalPersonalCar);
-        }
-        else if (auction.Vehicle is PrivatePersonalCar privatePersonalCar)
-        {
-            vehicleJson = JsonSerializer.Serialize<PrivatePersonalCar>(privatePersonalCar);
-        }
-        else
-        {
-            throw new ArgumentException("unknown vehicle type");
-        }
-
-        var body = new AuctionForAPI(auction.Id, vehicleJson, userJson, auction.MinimumPrice, auction.CloseDate,
-            auction.Vehicle.GetType().Name, auction.Seller.GetType().Name);
 
         try
         {
-
+            var body = AuctionForAPI.FromAuction(auction);
             var response = await client.PostAsJsonAsync($"{baseUrl}",
                 body);
             return await _commonModules.ReadJsonIfSucces<Auction>(response);
@@ -136,7 +82,7 @@ public class AuctionAPICommunicator
         try
         {
 
-            var response = await client.PutAsJsonAsync($"{baseUrl}/AddBid?auctionId={auctionId}", bid);
+            var response = await client.PutAsJsonAsync($"{baseUrl}", bid);
             return response.IsSuccessStatusCode;
         }
         catch
