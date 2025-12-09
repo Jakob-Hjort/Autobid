@@ -1,7 +1,11 @@
+using System.Text.Json;
+using autobid.Domain.API;
 using autobid.Domain.Auctions;
 using autobid.Domain.Database.EF;
+using autobid.Domain.Vehicles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace autobid.API.Controllers
 {
@@ -52,12 +56,18 @@ namespace autobid.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Bid>> CreateBid([FromBody] Bid bid)
+        public async Task<ActionResult> CreateBid([FromBody] BidForApi bidForAPI)
         {
             try
             {
                 using AppDbContext appContext = new();
+
+                Bid bid = bidForAPI.ToBid();
                 appContext.Bids.Add(bid);
+                appContext.Entry(bid.Buyer).State = EntityState.Unchanged;
+                appContext.Entry(bid.Auction).State = EntityState.Unchanged;
+                appContext.Entry(bid.Auction.Seller).State = EntityState.Unchanged;
+                appContext.Entry(bid.Auction.Vehicle).State = EntityState.Unchanged;
                 await appContext.SaveChangesAsync();
                 return Ok(bid);
             }

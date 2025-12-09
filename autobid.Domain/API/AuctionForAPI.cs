@@ -6,7 +6,7 @@ using autobid.Domain.Vehicles;
 namespace autobid.Domain.API;
 
 public record class AuctionForAPI(uint Id, string VehicleJson, string SellerJson, decimal MinPrice,
-    DateTimeOffset CloseDate, VehicleTypes VehicleType, UserTypes SellerType)
+    DateTimeOffset CloseDate, VehicleTypes VehicleType, UserTypes SellerType, Bid[]? Bids = null)
 {
     public Auction ToAuction()
     {
@@ -31,7 +31,7 @@ public record class AuctionForAPI(uint Id, string VehicleJson, string SellerJson
         };
 
         return new Auction(vehicle, user,
-            MinPrice, CloseDate);
+            MinPrice, CloseDate, Id);
     }
 
     public static AuctionForAPI FromAuction(Auction auction)

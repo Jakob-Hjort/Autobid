@@ -46,6 +46,9 @@ namespace autobid.API.Controllers
                         au.MinimumPrice
                     }
                 ).First(a => a.AuctionId == id);
+
+                                
+
                 User? seller = dbContext.PrivateCustomers.SingleOrDefault(u => u.Id == auction.UserId);
                 seller ??= dbContext.CorporateUsers.SingleOrDefault(u => u.Id == auction.AuctionId);
 

@@ -18,7 +18,7 @@ namespace autobid.ReactiveUI.ViewModels
 		User _user;
 		Auction _auction;
 		Bid? bid;
-		AuctionAPICommunicator _auctionRepository = new();
+		BidsAPICommunicator _bidRepository = new();
         public decimal MinimumValue
 		{
 			get
@@ -84,12 +84,18 @@ namespace autobid.ReactiveUI.ViewModels
 			if (_user.Balance < BidAmount)
 				return;
 
-            Bid bid = new(_user, BidAmount);
+            Bid bid = new(_user, BidAmount)
+            {
+                Auction = _auction,
+            };
 			_auction.AddBid(bid);
 			this.RaisePropertyChanged(nameof(HighestBid));
-            await _auctionRepository.AddBid(new Bid(_user, BidAmount), _auction.Id);
-			isMakingBid = false;
-			ShellViewModel.ChangeContent(new BidHistoryViewModel(_user));
+            bool was_succes = await _bidRepository.AddBid(bid, _auction.Id);
+			if (was_succes)
+            {
+				ShellViewModel.ChangeContent(new BidHistoryViewModel(_user));
+				isMakingBid = false;
+            }
         }
     }
 }

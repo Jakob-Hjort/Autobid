@@ -34,6 +34,7 @@ namespace autobid.ReactiveUI.ViewModels
 				Task.Run(async () =>
 				{
 					Auction? auction = await _repository.GetAuctionById(value.Id);
+                    
 					if (auction != null)
                     {
 						if (_user.Username == value.Username)

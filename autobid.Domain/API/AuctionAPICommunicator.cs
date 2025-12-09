@@ -12,7 +12,7 @@ namespace autobid.Domain.API;
 
 public class AuctionAPICommunicator
 {
-    const string baseUrl = "http://localhost:5240/api/Auction";
+    const string baseUrl = $"http://localhost:5240/api/Auction";
     readonly CommonApiCommunicatorModules _commonModules = new();
     public async Task<Auction?> GetAuctionById(uint id)
     {
@@ -76,20 +76,6 @@ public class AuctionAPICommunicator
         }
     }
 
-    public async Task<bool> AddBid(Bid bid, uint auctionId)
-    {
-        using HttpClient client = new();
-        try
-        {
-
-            var response = await client.PutAsJsonAsync($"{baseUrl}", bid);
-            return response.IsSuccessStatusCode;
-        }
-        catch
-        {
-            return false;
-        }
-    }
 
 
     public async Task<IEnumerable<AuctionListItem>> GetAllAuctonOpenListItems()
